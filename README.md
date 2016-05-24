@@ -8,6 +8,7 @@ NOTE:
 
 1. Included in library release are standard SQL statements/clauses/operators as well as their MySQL extension. To support other vendors, use MySQL extension as an example of how to derive or add functionality.
 2. Since the purpose of these classes is to simplify the process of querying, in order to maintain simplicity, a few cases were left out, so in rare circumstances you may still need to compose queries manually.
+3. SQL programming sections (for which there is no vendor-unspecific standard), such as prepared statements, functions and triggers @ MySQL, were left out.
 
 This API, although totally decoupled, is <i>conceptual</i> part of SQL Suites, an integrated solution designed to cover all aspects of communication with SQL servers. To see the full documentation, please visit to SQL suites docs :
 
