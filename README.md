@@ -33,6 +33,7 @@ MySQL vendor statements extending SQL statements is also supported (found in **p
 - DELETE: using class
     - **Lucinda\Query\MySQLDelete**: extends **Lucinda\Query\Delete**, supporting MySQL-specific IGNORE clause as well
  
+Each of above or clauses they individually call to implement **Lucinda\Query\Stringable**, which manages conversion of statement/clause into SQL via *toString()* method. 
 
 ## Examples
 
