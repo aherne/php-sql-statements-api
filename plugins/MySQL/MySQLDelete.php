@@ -9,12 +9,20 @@ require_once("clauses/MySQLCondition.php");
  */
 class MySQLDelete extends Delete {
 	protected $isIgnore=false;
-	
+
+    /**
+     * Sets statement as "IGNORE" (ignoring foreign key errors / duplicates)
+     */
 	public function ignore() {
 		$this->isIgnore = true;
 		return $this;
 	}
-	
+
+    /**
+     * Compiles SQL statement based on data collected in class fields.
+     *
+     * @return string SQL that results from conversion
+     */
 	public function toString() {
         return "DELETE ".($this->isIgnore?"IGNORE":"")." FROM ".$this->table.
             ($this->where?"\r\n"."WHERE ".$this->where->toString():"");

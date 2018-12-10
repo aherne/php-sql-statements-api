@@ -1,5 +1,6 @@
 <?php
 require_once("../test.php");
+require_once("../../src/Stringable.php");
 require_once("../../src/clauses/OrderBy.php");
 
 $fields = new Lucinda\Query\OrderBy(["a"]);

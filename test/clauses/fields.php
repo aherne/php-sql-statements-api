@@ -1,5 +1,6 @@
 <?php
 require_once("../test.php");
+require_once("../../src/Stringable.php");
 require_once("../../src/clauses/Fields.php");
 
 $fields = new Lucinda\Query\Fields(["a","b"]);

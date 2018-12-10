@@ -2,7 +2,7 @@
 namespace Lucinda\Query;
 
 /**
- * Enum encapsulating possible SQL set operators
+ * Enum encapsulating possible SQL set operators (grouping SELECT statements)
  */
 interface SetOperator {
 	const UNION = "UNION";

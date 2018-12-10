@@ -1,21 +1,19 @@
 <?php
 namespace Lucinda\Query;
 
-require_once("AbstractClause.php");
 require_once("ComparisonOperator.php");
 require_once("LogicalOperator.php");
 
 /**
- * Encapsulates SQL WHERE clauses that use a single logical operator
+ * Encapsulates SQL WHERE/ON clauses that use a single logical operator
  */
-class Condition extends AbstractClause {
+class Condition implements Stringable {
 	protected $currentLogicalOperator;
-		
-	/**
-	 * Sets up clause directly from constructor. 
-	 *
-     * @param string[string] $condition
-	 * @param LogicalOperator $logicalOperator
+    protected $contents = array();
+
+    /**
+     * @param string[string] $condition Sets condition group directly when conditions are all of equals type
+     * @param LogicalOperator $logicalOperator Enum holding operator that will link conditions in group (default: AND)
 	 */
 	public function __construct($condition=array(), $logicalOperator=LogicalOperator::_AND_) {
 	    foreach($condition as $key=>$value) {
@@ -25,11 +23,11 @@ class Condition extends AbstractClause {
 	}
 	
 	/**
-	 * Adds a field vs value comparison condition. If comparison operator is not supplied, translates to an `equals` condition.
+	 * Adds a field vs value comparison condition.
 	 *  
-	 * @param string $columnName
-	 * @param mixed $mixValue
-	 * @param ComparisonOperator $comparisonOperator
+	 * @param string $columnName Name of column/field.
+	 * @param mixed $mixValue Value of column/field for row.
+	 * @param ComparisonOperator $comparisonOperator Enum holding logical operator that will be used in condition (default: =)
 	 * @return Condition
 	 */
 	public function set($columnName, $mixValue, $comparisonOperator=ComparisonOperator::EQUALS) {
@@ -44,9 +42,9 @@ class Condition extends AbstractClause {
 	/**
 	 * Adds an "IN/NOT IN" condition. 
 	 * 
-	 * @param string $columnName
-	 * @param mixed[] $values
-	 * @param boolean $isTrue
+	 * @param string $columnName Name of column/field.
+	 * @param string[]|Select|SelectGroup $values List of possible values for column/field in row or a Select/SelectGroup statement.
+	 * @param boolean $isTrue Whether or not condition is IN or NOT IN
 	 * @return Condition
 	 */
 	public function setIn($columnName, $values, $isTrue=true) {
@@ -61,8 +59,8 @@ class Condition extends AbstractClause {
 	/**
 	 * Adds a "NULL/NOT NULL" condition.
 	 * 
-	 * @param string $columnName
-	 * @param boolean $isTrue
+	 * @param string $columnName Name of column/field.
+	 * @param boolean $isTrue Whether or not condition is NULL or NOT NULL
 	 * @return Condition
 	 */
 	public function setIsNull($columnName, $isTrue=true) {
@@ -76,9 +74,9 @@ class Condition extends AbstractClause {
 	/**
 	 * Sets up a "LIKE/NOT LIKE" condition.
 	 * 
-	 * @param string $columnName
-	 * @param string $strPattern
-	 * @param boolean $isLike
+	 * @param string $columnName Name of column/field.
+	 * @param string $strPattern Value of pattern to match
+	 * @param boolean $isTrue Whether or not condition is LIKE or NOT LIKE
 	 * @return Condition
 	 */
 	public function setLike($columnName, $strPattern, $isTrue=true) {
@@ -93,10 +91,10 @@ class Condition extends AbstractClause {
 	/**
 	 * Sets up a "BETWEEN/NOT BETWEEN" condition.
 	 * 
-	 * @param string $columnName
-	 * @param string $mixValueLeft
-	 * @param string $mixValueRight
-	 * @param boolean $isBetween
+	 * @param string $columnName Name of column/field.
+	 * @param mixed $mixValueLeft Minimal value of column/field in row
+	 * @param mixed $mixValueRight Maximal value of column/field in row
+	 * @param boolean $isTrue Whether or not condition is BETWEEN or NOT BETWEEN
 	 * @return Condition
 	 */
 	public function setBetween($columnName, $mixValueLeft, $mixValueRight, $isTrue=true) {
@@ -110,20 +108,21 @@ class Condition extends AbstractClause {
 	}
 
     /**
-     * Sets a sub-conditional group
+     * Sets condition insides current condition (Eg: setting an OR condition inside an AND condition group)
      *
-     * @param Condition $where
+     * @param Condition $where Condition Encapsulates condition to set
      * @return Condition
      */
 	public function setGroup(Condition $where) {
 	    $this->contents[] = $where;
         return $this;
     }
-	
-	/**
-	 * (non-PHPdoc)
-	 * @see AbstractClause::toString()
-	 */
+
+    /**
+     * Compiles SQL clause based on data collected in class fields.
+     *
+     * @return string SQL that results from conversion
+     */
 	public function toString() {
 		$output = "";		
 		if($this->currentLogicalOperator==LogicalOperator::_NOT_) $output="NOT (";

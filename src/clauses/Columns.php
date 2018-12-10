@@ -1,16 +1,14 @@
 <?php
 namespace Lucinda\Query;
 
-require_once("AbstractClause.php");
-
 /**
- * Encapsulates columns in SQL INSERT INTO {table} (COLUMNS) VALUES clause.
+ * Encapsulates column lists clause
  */
-class Columns extends AbstractClause {
+class Columns implements Stringable {
+    protected $contents = array();
+
     /**
-     * Class constructor.
-     *
-     * @param string[] $contents
+     * @param string[] $contents Sets list of columns directly
      */
     public function __construct($contents = array())
     {
@@ -20,8 +18,8 @@ class Columns extends AbstractClause {
     /**
      * Adds column to list.
      *
-     * @param string $columnName
-     * @return Columns
+     * @param string $columnName Name of column to add
+     * @return Columns Object to set further columns on.
      */
     public function add($columnName) {
         $this->contents[]= $columnName;
@@ -29,8 +27,9 @@ class Columns extends AbstractClause {
     }
 
     /**
-     * (non-PHPdoc)
-     * @see AbstractClause::toString()
+     * Compiles SQL clause based on data collected in class fields.
+     *
+     * @return string SQL that results from conversion
      */
     public function toString() {
         $strOutput = "";

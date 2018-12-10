@@ -1,13 +1,14 @@
 <?php
 namespace Lucinda\Query;
 
-require_once("AbstractClause.php");
 require_once("Alias.php");
 
 /**
  * Encapsulates SQL select fields clause.
  */
-class Fields extends AbstractClause {
+class Fields implements Stringable {
+    protected $contents = array();
+
     /**
      * Class constructor.
      *
@@ -20,19 +21,21 @@ class Fields extends AbstractClause {
 
     /**
 	 * Adds column to list.
-	 * 
-	 * @param string $columnName
+	 *
+     * @param string $columnName Column name
+     * @param string $columnAlias Optional column alias
 	 * @return Fields
 	 */
 	public function add($columnName, $columnAlias = null) {
 		$this->contents[]=($columnAlias?new Alias($columnName, $columnAlias):$columnName);
 		return $this;
 	}
-	
-	/**
-	 * (non-PHPdoc)
-	 * @see AbstractClause::toString()
-	 */
+
+    /**
+     * Compiles SQL clause based on data collected in class fields.
+     *
+     * @return string SQL that results from conversion
+     */
 	public function toString() {
 		$strOutput = "";
 		if(!sizeof($this->contents)) return $strOutput;

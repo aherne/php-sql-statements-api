@@ -1,23 +1,23 @@
 <?php
 namespace Lucinda\Query;
 
-require_once("AbstractClause.php");
-
 /**
- * Encapsulates SQL row clause to be used by INSERT INTO ... VALUES statements
+ * Encapsulates SQL VALUES clause to be used by INSERT statements
  */
-class Row extends AbstractClause {
+class Row implements Stringable {
+    protected $contents = array();
+
     /**
-     * Constructor
-     * @param string[] $contents
+     * @param string[] $contents Sets list of values to write in columns directly
      */
     public function __construct($contents = array()) {
         $this->contents = $contents;
     }
 
     /**
-     * (non-PHPdoc)
-     * @see AbstractClause::toString()
+     * Compiles SQL clause based on data collected in class fields.
+     *
+     * @return string SQL that results from conversion
      */
 	public function toString() {
 		$output = "";		

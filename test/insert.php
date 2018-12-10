@@ -8,8 +8,8 @@ require_once("../plugins/MySQL/MySQLInsertSet.php");
 
 $statement = new Lucinda\Query\Insert("asd");
 $statement->columns(["a","s","d"]);
-$statement->values([":a",":s",":d"]);
-test($statement->toString(), "INSERT INTO asd (a, s, d) VALUES \r\n(:a, :s, :d)");
+$statement->values(["1","3","4"]);
+test($statement->toString(), "INSERT INTO asd (a, s, d) VALUES \r\n(1, 3, 4)");
 
 
 $statement = new Lucinda\Query\Insert("asd");

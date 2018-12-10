@@ -1,36 +1,36 @@
 <?php
 namespace Lucinda\Query;
 
-require_once("AbstractClause.php");
-
 /**
- * Encapsulates SQL update SET clause
+ * Encapsulates SQL SET clause
  */
-class Set extends AbstractClause {
+class Set implements Stringable {
+    protected $contents = array();
+
     /**
-     * Constructor
-     * @param string[string] $contents
+     * @param string[string] $contents Sets condition group directly by column name and value
      */
     public function __construct($contents = array()) {
         $this->contents = $contents;
     }
 
 	/**
-	 * Sets a column value.
+	 * Sets a value of column by name.
 	 * 
-	 * @param string $columnName
-	 * @param mixed $value
+	 * @param string $columnName Name of column to set
+	 * @param mixed $value Value of column set
 	 * @return Set
 	 */
 	public function set($columnName, $value) {
 		$this->contents[$columnName]=$value;
 		return $this;
 	}
-	
-	/**
-	 * (non-PHPdoc)
-	 * @see AbstractClause::toString()
-	 */
+
+    /**
+     * Compiles SQL clause based on data collected in class fields.
+     *
+     * @return string SQL that results from conversion
+     */
 	public function toString() {
 		$output = "";		
 		foreach($this->contents as $key=>$value) {

@@ -13,31 +13,67 @@ require_once("clauses/SetOperator.php");
  * ORDER BY {ORDER_BY}
  * LIMIT {LIMIT}
  */
-class SelectGroup extends AbstractStatement {
+class SelectGroup implements Stringable {
 	protected $operator;
 	protected $orderBy;
 	protected $limit;
 	protected $tblContents=array();
 
+    /**
+     * @param SetOperator $operator Enum holding operator that will link SELECT statements in group (default: UNION)
+     */
 	public function __construct($operator = SetOperator::UNION) {
 		$this->operator = $operator;
 	}
 
-	public function addSelect(AbstractStatement $select) {
+    /**
+     * Adds select statement to group
+     *
+     * @param Stringable $select Instance of Select or SelectGroup
+     * @return Stringable Instance of Select or SelectGroup
+     */
+	public function addSelect(Stringable $select) {
 		$this->tblContents[] = $select;
 		return $select;
 	}
 
+    /**
+     * Sets up ORDER BY clause
+     *
+     * @param string[] $fields Sets list of columns to order by directly in ASC mode
+     * @return OrderBy Object to set further clauses on.
+     */
     public function orderBy($fields = array()) {
         $orderBy = new OrderBy($fields);
         $this->orderBy = $orderBy;
         return $orderBy;
     }
 
-    public function limit($intLimit, $offset=0) {
-        $this->limit = new Limit($intLimit, $offset);
+    /**
+     * Sets a LIMIT clause
+     *
+     * @param integer $limit Sets how many rows SELECT will return.
+     * @param integer $offset Optionally sets offset to start limiting with.
+     */
+    public function limit($limit, $offset=0) {
+        $this->limit = new Limit($limit, $offset);
     }
 
+    /**
+     * Converts object to SQL statement.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->toString();
+    }
+
+    /**
+     * Compiles SQL statement based on data collected in class fields.
+     *
+     * @return string SQL that results from conversion
+     */
 	public function toString() {
 			$strOutput="";
 			foreach($this->tblContents as $objValue) {
