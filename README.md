@@ -1,15 +1,48 @@
-# PHPQueryingAPI
+# SQL Statements API
 
-The purpose of a database abstraction layer, in simplest terms, is to decouple code dedicated to SQL statement generation from code dedicated (primarily)  to SQL statement execution (assigned to data access layer). Unlike data access layer’s case, PHP provides no native implementation of this layer, leaving it completely at programmers’ disposal to implement. 
+The purpose of this API is to automate generation of CRUD statements based on SQL standards or their vendor-specific derivation.
 
-SQL standard provides blueprints for each statements and vendors that implement the SQL standard (for example MySQL) can alter these blueprints or add their own. The goal of this API  is to implement all of these query blueprints programatically into a statement-oriented class structure. Furthermore, complex statement blueprints are in turn composed of separate clauses (each with its own syntax), of which some appear in more than one blueprint. This clearly calls for API to encapsulate clauses logic in separate clause-oriented class structure. Both statements and clauses may employ operators, which can be inherited from SQL standard or vendor specific. This clearly calls for API to hold operators as constants in operator-oriented class structure.
+## Supported statements
 
-NOTE: 
+Following standard SQL statements are supported for generation (found in _src_ folder):
 
-1. Included in library release are standard SQL statements/clauses/operators as well as their MySQL extension. To support other vendors, use MySQL extension as an example of how to derive or add functionality.
-2. Since the purpose of these classes is to simplify the process of querying, in order to maintain simplicity, a few cases were left out, so in rare circumstances you may still need to compose queries manually.
-3. SQL programming sections (for example: stored procedures, functions and triggers @ MySQL) were put aside, because they are strictly vendor specific (cannot be abstracted to an SQL standard) and this library only abstracts querying.
+- SELECT: using classes 
+    - **Lucinda\Query\Select**: encapsulates a single SELECT statement (eg: SELECT id FROM table)
+    - **Lucinda\Query\SelectGroup**: encapsulates a group of SELECT statements (eg: (SELECT id from table1) UNION (SELECT id FROM table2))
+- INSERT: using classes 
+    - **Lucinda\Query\Insert**: encapsulates an INSERT INTO ... VALUES statement (eg: INSERT INTO table (id, name) VALUES (1, 'asd'))
+    - **Lucinda\Query\InsertSelect**: encapsulates an INSERT INTO ... SELECT statement (eg: INSERT INTO table (id, name) SELECT id, name FROM table2)
+- UPDATE: using class
+    - **Lucinda\Query\Update**: encapsulates an UPDATE statement (eg: UPDATE users SET name='Lucian' WHERE id=18)
+- DELETE: using class
+    - **Lucinda\Query\Delete**: encapsulates a DELETE statement (eg: DELETE FROM users WHERE id=18)
+- TRUNCATE: using class 
+    - **Lucinda\Query\Truncate**: encapsulates a TRUNCATE statement (eg: TRUNCATE TABLE users)
+    
+MySQL vendor statements extending SQL statements is also supported (found in _plugins/MySQL_ folder):
 
-This API, although totally decoupled, is <i>conceptual</i> part of SQL Suites, an integrated solution designed to cover all aspects of communication with SQL servers. To see the full documentation, please visit to SQL suites docs :
+- SELECT: using classes 
+    - **Lucinda\Query\MySQLSelect**: extends **Lucinda\Query\Select**, supporting MySQL-specific operators as well
+    - **Lucinda\Query\MySQLSelectGroup**: extends **Lucinda\Query\SelectGroup**, supporting MySQL-specific operators as well
+- INSERT: using classes 
+    - **Lucinda\Query\MySQLInsert**: extends **Lucinda\Query\Insert**, supporting MySQL-specific IGNORE and ON DUPLICATE KEY UPDATE clauses as well
+    - **Lucinda\Query\MySQLInsertSelect**: extends **Lucinda\Query\InsertSelect**, supporting MySQL-specific IGNORE and ON DUPLICATE KEY UPDATE clauses as well
+    - **Lucinda\Query\MySQLInsertSet**: encapsulates an INSERT INTO ... SET statement (eg: INSERT INTO table (id, name) SET id=1, name='Lucian'), supporting MySQL-specific IGNORE and ON DUPLICATE KEY UPDATE clauses as well
+- UPDATE: using class
+    - **Lucinda\Query\MySQLUpdate**: extends **Lucinda\Query\Update**, supporting MySQL-specific IGNORE clause as well
+- DELETE: using class
+    - **Lucinda\Query\MySQLDelete**: extends **Lucinda\Query\Delete**, supporting MySQL-specific IGNORE clause as well
 
-https://docs.google.com/document/d/1U5PtPyub4t273gB9gXoZTX7TQasjP6lj93kMcClovS4/edit# 
+Developers are free to add support for other vendors as well! 
+
+## Examples
+
+To see examples how each classes are used, check unit tests in _test_ folder!
+
+Example:
+
+_$statement = new \Lucinda\Query\SelectGroup();
+$statement->addSelect(new Lucinda\Query\Select("asd", "k"));
+$statement->addSelect(new Lucinda\Query\Select("fgh", "h"));
+$statement->orderBy(["k","z"]);
+$statement->limit(10,4);_
