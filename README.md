@@ -41,11 +41,13 @@ To see examples how each classes are used, check unit tests in **test** folder!
 
 Example:
 
-_$statement = new \Lucinda\Query\SelectGroup();
+```
+$statement = new \Lucinda\Query\SelectGroup();
 $statement->addSelect(new Lucinda\Query\Select("asd", "k"));
 $statement->addSelect(new Lucinda\Query\Select("fgh", "h"));
 $statement->orderBy(["k","z"]);
-$statement->limit(10,4);_
+$statement->limit(10,4);
+```
 
 ## Adding support for other vendors
 
