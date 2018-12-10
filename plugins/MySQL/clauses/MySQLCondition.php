@@ -3,6 +3,7 @@ namespace Lucinda\Query;
 
 require_once(dirname(dirname(dirname(__DIR__)))."/src/clauses/Condition.php");
 require_once("MySQLComparisonOperator.php");
+require_once("MySQLLogicalOperator.php");
 
 /**
  * Encapsulates MySQL clause: WHERE
