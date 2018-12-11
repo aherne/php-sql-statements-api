@@ -153,4 +153,13 @@ class Condition implements Stringable {
 		}
 		return substr($output,0, -2-strlen($this->currentLogicalOperator==LogicalOperator::_NOT_?LogicalOperator::_AND_:$this->currentLogicalOperator)).($this->currentLogicalOperator==LogicalOperator::_NOT_?")":"");
 	}
+
+    /**
+     * Checks if clause is empty
+     *
+     * @return bool
+     */
+	public function isEmpty() {
+	    return sizeof($this->contents) == 0;
+    }
 }

@@ -17,7 +17,7 @@ class SelectGroup implements Stringable {
 	protected $operator;
 	protected $orderBy;
 	protected $limit;
-	protected $tblContents=array();
+	protected $contents=array();
 
     /**
      * @param SetOperator $operator Enum holding operator that will link SELECT statements in group (default: UNION)
@@ -33,7 +33,7 @@ class SelectGroup implements Stringable {
      * @return Stringable Instance of Select or SelectGroup
      */
 	public function addSelect(Stringable $select) {
-		$this->tblContents[] = $select;
+		$this->contents[] = $select;
 		return $select;
 	}
 
@@ -75,13 +75,14 @@ class SelectGroup implements Stringable {
      * @return string SQL that results from conversion
      */
 	public function toString() {
-			$strOutput="";
-			foreach($this->tblContents as $objValue) {
-				$strOutput.="(\r\n".$objValue->toString()."\r\n)"."\r\n".$this->operator."\r\n";
-			}
-			$strOutput = substr($strOutput, 0, -strlen($this->operator)-2);
-			return $strOutput.
-					($this->orderBy?"\r\nORDER BY ".$this->orderBy->toString():"").
-					($this->limit?"\r\nLIMIT ".$this->limit->toString():"");
+	    if(empty($this->contents)) throw new Exception("running addSelect() method is mandatory");
+        $strOutput="";
+        foreach($this->contents as $objValue) {
+            $strOutput.="(\r\n".$objValue->toString()."\r\n)"."\r\n".$this->operator."\r\n";
+        }
+        $strOutput = substr($strOutput, 0, -strlen($this->operator)-2);
+        return $strOutput.
+                ($this->orderBy && !$this->orderBy->isEmpty()?"\r\nORDER BY ".$this->orderBy->toString():"").
+                ($this->limit?"\r\nLIMIT ".$this->limit->toString():"");
 	}
 } 

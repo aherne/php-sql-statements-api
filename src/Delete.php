@@ -39,6 +39,6 @@ class Delete implements Stringable {
      */
 	public function toString() {
 		return "DELETE FROM ".$this->table.
-            ($this->where?"\r\n"."WHERE ".$this->where->toString():"");
+            ($this->where && !$this->where->isEmpty()?"\r\n"."WHERE ".$this->where->toString():"");
 	}
 }

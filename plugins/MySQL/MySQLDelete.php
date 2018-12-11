@@ -25,6 +25,6 @@ class MySQLDelete extends Delete {
      */
 	public function toString() {
         return "DELETE ".($this->isIgnore?"IGNORE":"")." FROM ".$this->table.
-            ($this->where?"\r\n"."WHERE ".$this->where->toString():"");
+            ($this->where && !$this->where->isEmpty()?"\r\n"."WHERE ".$this->where->toString():"");
 	}
 }

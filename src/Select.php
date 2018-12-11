@@ -200,10 +200,10 @@ class Select implements Stringable {
 			}
 		}
 		$strOutput .=
-				($this->where?"\r\nWHERE ".$this->where->toString():"").
-				($this->groupBy?"\r\nGROUP BY ".$this->groupBy->toString():"").
-				($this->having?"\r\nHAVING ".$this->having->toString():"").
-				($this->orderBy?"\r\nORDER BY ".$this->orderBy->toString():"").
+				($this->where && !$this->where->isEmpty()?"\r\nWHERE ".$this->where->toString():"").
+				($this->groupBy && !$this->groupBy->isEmpty()?"\r\nGROUP BY ".$this->groupBy->toString():"").
+				($this->having && !$this->having->isEmpty()?"\r\nHAVING ".$this->having->toString():"").
+				($this->orderBy && !$this->orderBy->isEmpty()?"\r\nORDER BY ".$this->orderBy->toString():"").
 				($this->limit?"\r\nLIMIT ".$this->limit->toString():"");
 		return $strOutput;
 	}

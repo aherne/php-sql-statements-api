@@ -14,7 +14,7 @@ class MySQLReplaceSelect extends InsertSelect {
      * @throws Exception When statement could not be compiled due to incomplete class fields.
      */
     public function toString() {
-        if(!$this->columns) throw new Exception("running columns() method is required!");
+        if(!$this->columns || $this->columns->isEmpty()) throw new Exception("running columns() method is required!");
         if(!$this->select) throw new Exception("running select() method is required!");
 
         return  "REPLACE INTO ".$this->table." (".$this->columns->toString().")"."\r\n".

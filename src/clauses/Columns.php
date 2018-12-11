@@ -41,4 +41,13 @@ class Columns implements Stringable {
 
         return substr($strOutput,0,-2);
     }
+
+    /**
+     * Checks if clause is empty
+     *
+     * @return bool
+     */
+    public function isEmpty() {
+        return sizeof($this->contents) == 0;
+    }
 }

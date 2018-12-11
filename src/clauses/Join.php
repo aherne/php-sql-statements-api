@@ -44,6 +44,6 @@ class Join implements Stringable {
      * @return string SQL that results from conversion
      */
 	public function toString() {
-		return $this->joinType." ".($this->table instanceof Alias?$this->table->toString():$this->table).($this->whereClause?" ON ".$this->whereClause->toString():"");
+		return $this->joinType." ".($this->table instanceof Alias?$this->table->toString():$this->table).($this->whereClause && !$this->whereClause->isEmpty()?" ON ".$this->whereClause->toString():"");
 	}
 }

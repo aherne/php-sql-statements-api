@@ -59,10 +59,10 @@ class MySQLInsertSet implements Stringable {
      * @throws Exception When statement could not be compiled due to incomplete class fields.
      */
     public function toString() {
-        if(!$this->set) throw new Exception("running set() method is mandatory");
+        if(!$this->set || $this->set->isEmpty()) throw new Exception("running set() method is mandatory");
 
         return "INSERT ".($this->isIgnore?"IGNORE":"")." INTO ".$this->table." SET"."\r\n".
             $this->set->toString().
-            ($this->onDuplicateKeyUpdate?"\r\n"."ON DUPLICATE KEY UPDATE ".$this->onDuplicateKeyUpdate->toString():"");
+            ($this->onDuplicateKeyUpdate && !$this->onDuplicateKeyUpdate->isEmpty()?"\r\n"."ON DUPLICATE KEY UPDATE ".$this->onDuplicateKeyUpdate->toString():"");
     }
 }

@@ -53,10 +53,10 @@ class Update implements Stringable {
      * @throws Exception When statement could not be compiled due to incomplete class fields.
      */
 	public function toString() {
-		if(!$this->set) throw new Exception("running set() method is required");
+		if(!$this->set || $this->set->isEmpty()) throw new Exception("running set() method is required");
 
 		return	"UPDATE ".$this->table.
             "\r\n"."SET ".$this->set->toString().
-            ($this->where?"\r\n"."WHERE ".$this->where->toString():"");
+            ($this->where && !$this->where->isEmpty()?"\r\n"."WHERE ".$this->where->toString():"");
 	}
 }

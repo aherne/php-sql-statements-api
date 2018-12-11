@@ -37,11 +37,11 @@ class MySQLInsertSelect extends InsertSelect {
      * @throws Exception When statement could not be compiled due to incomplete class fields.
      */
 	public function toString() {
-        if(!$this->columns) throw new Exception("running columns() method is required!");
+        if(!$this->columns || $this->columns->isEmpty()) throw new Exception("running columns() method is required!");
         if(!$this->select) throw new Exception("running select() method is required!");
 
         return  "INSERT ".($this->isIgnore?"IGNORE":"")." INTO ".$this->table." (".$this->columns->toString().")"."\r\n".
             $this->select->toString().
-            ($this->onDuplicateKeyUpdate?"\r\n"."ON DUPLICATE KEY UPDATE ".$this->onDuplicateKeyUpdate->toString():"");
-	}
+            ($this->onDuplicateKeyUpdate && !$this->onDuplicateKeyUpdate->isEmpty()?"\r\n"."ON DUPLICATE KEY UPDATE ".$this->onDuplicateKeyUpdate->toString():"");
+    }
 }

@@ -15,8 +15,8 @@ class MySQLReplace extends Insert
      * @throws Exception When statement could not be compiled due to incomplete class fields.
      */
     public function toString() {
-        if(!$this->columns) throw new Exception("running columns() method is mandatory");
-        if(!$this->rows) throw new Exception("running values() is mandatory");
+        if(!$this->columns || $this->columns->isEmpty()) throw new Exception("running columns() method is mandatory");
+        if(empty($this->rows)) throw new Exception("running values() is mandatory");
 
         $output = "REPLACE INTO ".$this->table." (".$this->columns->toString().") VALUES "."\r\n";
         foreach($this->rows as $row) {

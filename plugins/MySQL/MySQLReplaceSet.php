@@ -37,7 +37,7 @@ class MySQLReplaceSet implements Stringable {
      * @throws Exception When statement could not be compiled due to incomplete class fields.
      */
     public function toString() {
-        if(!$this->set) throw new Exception("running set() method is mandatory");
+        if(!$this->set || $this->set->isEmpty()) throw new Exception("running set() method is mandatory");
 
         return "REPLACE INTO ".$this->table." SET"."\r\n".
             $this->set->toString();
