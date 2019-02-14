@@ -1,8 +1,8 @@
 <?php
 namespace Lucinda\Query;
 
+require_once(dirname(__DIR__, 2)."/src/Select.php");
 require_once("clauses/MySQLCondition.php");
-require_once(dirname(dirname(__DIR__))."/src/Select.php");
 
 /**
  * Encapsulates MySQL statement:

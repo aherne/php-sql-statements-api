@@ -1,8 +1,8 @@
 <?php
 namespace Lucinda\Query;
 
-require_once(dirname(dirname(__DIR__))."/src/clauses/Set.php");
-require_once(dirname(dirname(__DIR__))."/src/Stringable.php");
+require_once(dirname(__DIR__, 2)."/src/clauses/Set.php");
+require_once(dirname(__DIR__, 2)."/src/Stringable.php");
 
 /**
  * Encapsulates MySQL statement: INSERT {IGNORE} INTO {TABLE} SET {SET} ON DUPLICATE KEY UPDATE {UPDATES}

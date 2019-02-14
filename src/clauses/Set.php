@@ -1,6 +1,8 @@
 <?php
 namespace Lucinda\Query;
 
+require_once(dirname(__DIR__)."/Stringable.php");
+
 /**
  * Encapsulates SQL SET clause
  */

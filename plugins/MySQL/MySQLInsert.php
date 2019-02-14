@@ -1,7 +1,7 @@
 <?php
 namespace Lucinda\Query;
-require_once(dirname(dirname(__DIR__))."/src/Insert.php");
-require_once(dirname(dirname(__DIR__))."/src/clauses/Set.php");
+require_once(dirname(__DIR__, 2)."/src/Insert.php");
+require_once(dirname(__DIR__, 2)."/src/clauses/Set.php");
 
 /**
  * Encapsulates MySQL statement: INSERT {IGNORE} INTO {TABLE} ({COLUMNS}) VALUES ({ROW}), ... ON DUPLICATE KEY UPDATE {UPDATES}

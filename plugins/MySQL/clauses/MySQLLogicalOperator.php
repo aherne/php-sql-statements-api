@@ -1,7 +1,7 @@
 <?php
 namespace Lucinda\Query;
 
-require_once(dirname(dirname(dirname(__DIR__)))."/src/clauses/LogicalOperator.php");
+require_once(dirname(__DIR__, 3)."/src/clauses/LogicalOperator.php");
 
 /**
  * Enum encapsulating possible MySQL logical operators, extending those in standard SQL

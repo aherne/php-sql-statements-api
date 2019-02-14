@@ -1,6 +1,6 @@
 <?php
 namespace Lucinda\Query;
-require_once(dirname(dirname(__DIR__))."/src/Update.php");
+require_once(dirname(__DIR__, 2)."/src/Update.php");
 require_once("clauses/MySQLCondition.php");
 
 /**

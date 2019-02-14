@@ -3,6 +3,7 @@ namespace Lucinda\Query;
 
 require_once("ComparisonOperator.php");
 require_once("LogicalOperator.php");
+require_once(dirname(__DIR__)."/Stringable.php");
 
 /**
  * Encapsulates SQL WHERE/ON clauses that use a single logical operator

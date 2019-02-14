@@ -2,6 +2,7 @@
 namespace Lucinda\Query;
 
 require_once("OrderByOperator.php");
+require_once(dirname(__DIR__)."/Stringable.php");
 
 /**
  * Encapsulates SQL ORDER BY clause

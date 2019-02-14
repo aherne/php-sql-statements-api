@@ -1,7 +1,7 @@
 <?php
 namespace Lucinda\Query;
 
-require_once(dirname(__DIR__, 2)."/src/Delete.php");
+require_once(dirname(__DIR__,2)."/src/Delete.php");
 require_once("clauses/MySQLCondition.php");
 
 /**

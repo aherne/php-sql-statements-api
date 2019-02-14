@@ -1,7 +1,7 @@
 <?php
 namespace Lucinda\Query;
 
-require_once(dirname(dirname(__DIR__))."/src/Insert.php");
+require_once(dirname(__DIR__, 2)."/src/Insert.php");
 
 /**
  * Encapsulates MySQL statement: REPLACE INTO {TABLE} ({COLUMNS}) VALUES ({ROW})

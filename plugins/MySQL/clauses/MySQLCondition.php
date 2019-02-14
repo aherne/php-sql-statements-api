@@ -1,7 +1,7 @@
 <?php
 namespace Lucinda\Query;
 
-require_once(dirname(dirname(dirname(__DIR__)))."/src/clauses/Condition.php");
+require_once(dirname(__DIR__, 3)."/src/clauses/Condition.php");
 require_once("MySQLComparisonOperator.php");
 require_once("MySQLLogicalOperator.php");
 
