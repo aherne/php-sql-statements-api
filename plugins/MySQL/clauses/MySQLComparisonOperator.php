@@ -1,7 +1,7 @@
 <?php
 namespace Lucinda\Query;
 
-require_once(dirname(__DIR__, 3)."/src/clauses/ComparisonOperator.php");
+require_once(dirname(dirname(dirname(__DIR__)))."/src/clauses/ComparisonOperator.php");
 
 /**
  * Enum encapsulating possible MySQL WHERE comparison operators, extending those in standard SQL

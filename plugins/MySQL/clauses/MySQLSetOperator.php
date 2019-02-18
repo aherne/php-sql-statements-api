@@ -1,7 +1,7 @@
 <?php
 namespace Lucinda\Query;
 
-require_once(dirname(__DIR__, 3)."/src/clauses/SetOperator.php");
+require_once(dirname(dirname(dirname(__DIR__)))."/src/clauses/SetOperator.php");
 
 /**
  * Enum encapsulating possible SQL set operators (grouping SELECT statements), extending standard SQL
