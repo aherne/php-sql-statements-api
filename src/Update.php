@@ -9,15 +9,17 @@ require_once("clauses/Condition.php");
 /**
  * Encapsulates SQL statement: UPDATE {TABLE} SET {SET} WHERE {CONDITION}
  */
-class Update implements Stringable {
-	protected $set;
-	protected $where;
+class Update implements Stringable
+{
+    protected $set;
+    protected $where;
     protected $table;
 
     /**
      * @param string $table Name of table to update (including schema)
      */
-    public function __construct($table) {
+    public function __construct($table)
+    {
         $this->table = $table;
     }
 
@@ -27,11 +29,12 @@ class Update implements Stringable {
      * @param string[string] $contents Sets condition group directly by column name and value
      * @return Set Object to write further set clauses on.
      */
-	public function set($contents = array()) {
-		$set = new Set($contents);
-		$this->set = $set;
-		return $set;
-	}
+    public function set($contents = array())
+    {
+        $set = new Set($contents);
+        $this->set = $set;
+        return $set;
+    }
 
     /**
      * Sets up WHERE clause.
@@ -40,7 +43,8 @@ class Update implements Stringable {
      * @param LogicalOperator $logicalOperator Enum holding operator that will link conditions in group (default: AND)
      * @return Condition Object to set further conditions on.
      */
-    public function where($condition = array(), $logicalOperator=LogicalOperator::_AND_) {
+    public function where($condition = array(), $logicalOperator=LogicalOperator::_AND_)
+    {
         $where = new Condition($condition, $logicalOperator);
         $this->where=$where;
         return $where;
@@ -52,11 +56,14 @@ class Update implements Stringable {
      * @return string SQL that results from conversion
      * @throws Exception When statement could not be compiled due to incomplete class fields.
      */
-	public function toString() {
-		if(!$this->set || $this->set->isEmpty()) throw new Exception("running set() method is required");
+    public function toString()
+    {
+        if (!$this->set || $this->set->isEmpty()) {
+            throw new Exception("running set() method is required");
+        }
 
-		return	"UPDATE ".$this->table.
+        return	"UPDATE ".$this->table.
             "\r\n"."SET ".$this->set->toString().
             ($this->where && !$this->where->isEmpty()?"\r\n"."WHERE ".$this->where->toString():"");
-	}
+    }
 }

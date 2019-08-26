@@ -1,11 +1,13 @@
 <?php
 namespace Lucinda\Query;
+
 require_once(dirname(__DIR__)."/Stringable.php");
 
 /**
  * Encapsulates column lists clause
  */
-class Columns implements Stringable {
+class Columns implements Stringable
+{
     protected $contents = array();
 
     /**
@@ -22,7 +24,8 @@ class Columns implements Stringable {
      * @param string $columnName Name of column to add
      * @return Columns Object to set further columns on.
      */
-    public function add($columnName) {
+    public function add($columnName)
+    {
         $this->contents[]= $columnName;
         return $this;
     }
@@ -32,15 +35,18 @@ class Columns implements Stringable {
      *
      * @return string SQL that results from conversion
      */
-    public function toString() {
+    public function toString()
+    {
         $strOutput = "";
-        if(!sizeof($this->contents)) return $strOutput;
+        if (!sizeof($this->contents)) {
+            return $strOutput;
+        }
 
-        foreach($this->contents as $value) {
+        foreach ($this->contents as $value) {
             $strOutput .= $value.", ";
         }
 
-        return substr($strOutput,0,-2);
+        return substr($strOutput, 0, -2);
     }
 
     /**
@@ -48,7 +54,8 @@ class Columns implements Stringable {
      *
      * @return bool
      */
-    public function isEmpty() {
+    public function isEmpty()
+    {
         return sizeof($this->contents) == 0;
     }
 }

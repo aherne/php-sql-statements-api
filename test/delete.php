@@ -9,7 +9,7 @@ test($statement->toString(), "DELETE FROM asd\r\nWHERE x = y");
 
 $statement = new Lucinda\Query\Delete("asd");
 $statement->where()
-    ->set("x","y");
+    ->set("x", "y");
 test($statement->toString(), "DELETE FROM asd\r\nWHERE x = y");
 
 $statement = new Lucinda\Query\Delete("asd");
@@ -18,5 +18,5 @@ test($statement->toString(), "DELETE FROM asd");
 $statement = new Lucinda\Query\MySQLDelete("asd");
 $statement->ignore();
 $statement->where()
-    ->set("x","y");
+    ->set("x", "y");
 test($statement->toString(), "DELETE IGNORE FROM asd\r\nWHERE x = y");

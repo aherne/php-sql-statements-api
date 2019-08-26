@@ -21,7 +21,8 @@ test($clause->toString(), "a = b AND c > 'd' AND e BETWEEN 'f' AND 'g' AND h NOT
 
 $clause = new Lucinda\Query\Condition();
 $clause->set("a", "b");
-$clause->setGroup((new Lucinda\Query\Condition(array(), Lucinda\Query\LogicalOperator::_OR_))
+$clause->setGroup(
+    (new Lucinda\Query\Condition(array(), Lucinda\Query\LogicalOperator::_OR_))
     ->set("c", "d")
     ->set("e", "f")
 );

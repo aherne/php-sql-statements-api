@@ -13,18 +13,20 @@ require_once("clauses/SetOperator.php");
  * ORDER BY {ORDER_BY}
  * LIMIT {LIMIT}
  */
-class SelectGroup implements Stringable {
-	protected $operator;
-	protected $orderBy;
-	protected $limit;
-	protected $contents=array();
+class SelectGroup implements Stringable
+{
+    protected $operator;
+    protected $orderBy;
+    protected $limit;
+    protected $contents=array();
 
     /**
      * @param SetOperator $operator Enum holding operator that will link SELECT statements in group (default: UNION)
      */
-	public function __construct($operator = SetOperator::UNION) {
-		$this->operator = $operator;
-	}
+    public function __construct($operator = SetOperator::UNION)
+    {
+        $this->operator = $operator;
+    }
 
     /**
      * Adds select statement to group
@@ -32,10 +34,11 @@ class SelectGroup implements Stringable {
      * @param Stringable $select Instance of Select or SelectGroup
      * @return Stringable Instance of Select or SelectGroup
      */
-	public function addSelect(Stringable $select) {
-		$this->contents[] = $select;
-		return $select;
-	}
+    public function addSelect(Stringable $select)
+    {
+        $this->contents[] = $select;
+        return $select;
+    }
 
     /**
      * Sets up ORDER BY clause
@@ -43,7 +46,8 @@ class SelectGroup implements Stringable {
      * @param string[] $fields Sets list of columns to order by directly in ASC mode
      * @return OrderBy Object to set further clauses on.
      */
-    public function orderBy($fields = array()) {
+    public function orderBy($fields = array())
+    {
         $orderBy = new OrderBy($fields);
         $this->orderBy = $orderBy;
         return $orderBy;
@@ -55,7 +59,8 @@ class SelectGroup implements Stringable {
      * @param integer $limit Sets how many rows SELECT will return.
      * @param integer $offset Optionally sets offset to start limiting with.
      */
-    public function limit($limit, $offset=0) {
+    public function limit($limit, $offset=0)
+    {
         $this->limit = new Limit($limit, $offset);
     }
 
@@ -74,15 +79,18 @@ class SelectGroup implements Stringable {
      *
      * @return string SQL that results from conversion
      */
-	public function toString() {
-	    if(empty($this->contents)) throw new Exception("running addSelect() method is mandatory");
+    public function toString()
+    {
+        if (empty($this->contents)) {
+            throw new Exception("running addSelect() method is mandatory");
+        }
         $strOutput="";
-        foreach($this->contents as $objValue) {
+        foreach ($this->contents as $objValue) {
             $strOutput.="(\r\n".$objValue->toString()."\r\n)"."\r\n".$this->operator."\r\n";
         }
         $strOutput = substr($strOutput, 0, -strlen($this->operator)-2);
         return $strOutput.
                 ($this->orderBy && !$this->orderBy->isEmpty()?"\r\nORDER BY ".$this->orderBy->toString():"").
                 ($this->limit?"\r\nLIMIT ".$this->limit->toString():"");
-	}
-} 
+    }
+}

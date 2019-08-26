@@ -6,7 +6,8 @@ require_once("Alias.php");
 /**
  * Encapsulates SQL select fields clause.
  */
-class Fields implements Stringable {
+class Fields implements Stringable
+{
     protected $contents = array();
 
     /**
@@ -20,39 +21,44 @@ class Fields implements Stringable {
     }
 
     /**
-	 * Adds column to list.
-	 *
+     * Adds column to list.
+     *
      * @param string $columnName Column name
      * @param string $columnAlias Optional column alias
-	 * @return Fields
-	 */
-	public function add($columnName, $columnAlias = null) {
-		$this->contents[]=($columnAlias?new Alias($columnName, $columnAlias):$columnName);
-		return $this;
-	}
+     * @return Fields
+     */
+    public function add($columnName, $columnAlias = null)
+    {
+        $this->contents[]=($columnAlias?new Alias($columnName, $columnAlias):$columnName);
+        return $this;
+    }
 
     /**
      * Compiles SQL clause based on data collected in class fields.
      *
      * @return string SQL that results from conversion
      */
-	public function toString() {
-		$strOutput = "";
-		if(!sizeof($this->contents)) return $strOutput;
-		
-		foreach($this->contents as $value) {
-			$strOutput .= ($value instanceof Alias?$value->toString():$value).", ";
-		}
-		
-		return substr($strOutput,0,-2);
-	}
+    public function toString()
+    {
+        $strOutput = "";
+        if (!sizeof($this->contents)) {
+            return $strOutput;
+        }
+        
+        foreach ($this->contents as $value) {
+            $strOutput .= ($value instanceof Alias?$value->toString():$value).", ";
+        }
+        
+        return substr($strOutput, 0, -2);
+    }
 
     /**
      * Checks if clause is empty
      *
      * @return bool
      */
-    public function isEmpty() {
+    public function isEmpty()
+    {
         return sizeof($this->contents) == 0;
     }
 }

@@ -1,18 +1,21 @@
 <?php
 namespace Lucinda\Query;
+
 require_once(dirname(dirname(__DIR__))."/src/Update.php");
 require_once("clauses/MySQLCondition.php");
 
 /**
  * Encapsulates MySQL statement: UPDATE {IGNORE} {TABLE} SET {SET} WHERE {CONDITION}
  */
-class MySQLUpdate extends Update {
+class MySQLUpdate extends Update
+{
     protected $isIgnore=false;
 
     /**
      * Sets statement as "IGNORE" (ignoring foreign key errors / duplicates)
      */
-    public function ignore() {
+    public function ignore()
+    {
         $this->isIgnore = true;
         return $this;
     }
@@ -23,8 +26,11 @@ class MySQLUpdate extends Update {
      * @return string SQL that results from conversion
      * @throws Exception When statement could not be compiled due to incomplete class fields.
      */
-    public function toString() {
-        if(!$this->set || $this->set->isEmpty()) throw new Exception("running set() method is required");
+    public function toString()
+    {
+        if (!$this->set || $this->set->isEmpty()) {
+            throw new Exception("running set() method is required");
+        }
 
         return "UPDATE ".($this->isIgnore?"IGNORE ":"").$this->table.
             "\r\n"."SET ".$this->set->toString().

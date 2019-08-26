@@ -6,13 +6,15 @@ require_once(dirname(__DIR__)."/Stringable.php");
 /**
  * Encapsulates SQL VALUES clause to be used by INSERT statements
  */
-class Row implements Stringable {
+class Row implements Stringable
+{
     protected $contents = array();
 
     /**
      * @param string[] $contents Sets list of values to write in columns directly
      */
-    public function __construct($contents = array()) {
+    public function __construct($contents = array())
+    {
         $this->contents = $contents;
     }
 
@@ -21,20 +23,22 @@ class Row implements Stringable {
      *
      * @return string SQL that results from conversion
      */
-	public function toString() {
-		$output = "";		
-		foreach($this->contents as $mixValue) {
-			$output .= $mixValue.", ";
-		}
-		return "(".substr($output,0,-2).")";
-	}
+    public function toString()
+    {
+        $output = "";
+        foreach ($this->contents as $mixValue) {
+            $output .= $mixValue.", ";
+        }
+        return "(".substr($output, 0, -2).")";
+    }
 
     /**
      * Checks if clause is empty
      *
      * @return bool
      */
-    public function isEmpty() {
+    public function isEmpty()
+    {
         return sizeof($this->contents) == 0;
     }
 }

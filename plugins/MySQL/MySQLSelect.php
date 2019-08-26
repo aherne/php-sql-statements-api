@@ -23,7 +23,8 @@ class MySQLSelect extends Select
     /**
      * Appends a SQL_CALC_FOUND_ROWS option to SELECT
      */
-    public function setCalcFoundRows() {
+    public function setCalcFoundRows()
+    {
         $this->calcFoundRows = true;
     }
 
@@ -32,7 +33,8 @@ class MySQLSelect extends Select
      *
      * @return string
      */
-    public function getCalcFoundRows() {
+    public function getCalcFoundRows()
+    {
         return "SELECT FOUND_ROWS()";
     }
 
@@ -41,13 +43,14 @@ class MySQLSelect extends Select
      *
      * @return string SQL that results from conversion
      */
-    public function toString() {
+    public function toString()
+    {
         $strOutput =
             "SELECT ".($this->isDistinct?" DISTINCT":"").($this->calcFoundRows?" SQL_CALC_FOUND_ROWS":"").
             "\r\n".($this->columns?$this->columns->toString():"*").
             "\r\n"."FROM ".$this->table;
-        if(sizeof($this->joins)>0) 	{
-            foreach($this->joins as $join) {
+        if (sizeof($this->joins)>0) {
+            foreach ($this->joins as $join) {
                 $strOutput .= "\r\n".$join->toString();
             }
         }

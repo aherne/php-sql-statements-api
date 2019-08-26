@@ -14,14 +14,19 @@ class MySQLReplace extends Insert
      * @return string SQL that results from conversion
      * @throws Exception When statement could not be compiled due to incomplete class fields.
      */
-    public function toString() {
-        if(!$this->columns || $this->columns->isEmpty()) throw new Exception("running columns() method is mandatory");
-        if(empty($this->rows)) throw new Exception("running values() is mandatory");
+    public function toString()
+    {
+        if (!$this->columns || $this->columns->isEmpty()) {
+            throw new Exception("running columns() method is mandatory");
+        }
+        if (empty($this->rows)) {
+            throw new Exception("running values() is mandatory");
+        }
 
         $output = "REPLACE INTO ".$this->table." (".$this->columns->toString().") VALUES "."\r\n";
-        foreach($this->rows as $row) {
+        foreach ($this->rows as $row) {
             $output.=$row->toString().", ";
         }
-        return substr($output,0,-2);
+        return substr($output, 0, -2);
     }
 }
