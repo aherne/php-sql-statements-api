@@ -18,7 +18,8 @@ require_once("clauses/MySQLCondition.php");
  */
 class MySQLSelect extends Select
 {
-    private $calcFoundRows;
+    private $calcFoundRows = false;
+    private $straightJoin = false;
 
     /**
      * Appends a SQL_CALC_FOUND_ROWS option to SELECT
@@ -26,6 +27,14 @@ class MySQLSelect extends Select
     public function setCalcFoundRows()
     {
         $this->calcFoundRows = true;
+    }
+
+    /**
+     * Appends a STRAIGHT_JOIN option to SELECT
+     */
+    public function setStraightJoin()
+    {
+        $this->straightJoin = true;
     }
 
     /**
@@ -46,7 +55,7 @@ class MySQLSelect extends Select
     public function toString()
     {
         $strOutput =
-            "SELECT ".($this->isDistinct?" DISTINCT":"").($this->calcFoundRows?" SQL_CALC_FOUND_ROWS":"").
+            "SELECT ".($this->isDistinct?" DISTINCT":"").($this->straightJoin?" STRAIGHT_JOIN":"").($this->calcFoundRows?" SQL_CALC_FOUND_ROWS":"").
             "\r\n".($this->columns?$this->columns->toString():"*").
             "\r\n"."FROM ".$this->table;
         if (sizeof($this->joins)>0) {
