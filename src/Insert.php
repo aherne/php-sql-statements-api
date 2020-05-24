@@ -1,10 +1,8 @@
 <?php
 namespace Lucinda\Query;
 
-require_once("Exception.php");
-require_once("Stringable.php");
-require_once("clauses/Columns.php");
-require_once("clauses/Row.php");
+use Lucinda\Query\Clause\Columns;
+use Lucinda\Query\Clause\Row;
 
 /**
  * Encapsulates SQL statement: INSERT INTO {TABLE} ({COLUMNS}) VALUES ({ROW}), ...
@@ -18,7 +16,7 @@ class Insert implements Stringable
     /**
      * @param string $table Name of table to insert into (including schema)
      */
-    public function __construct($table)
+    public function __construct(string $table)
     {
         $this->table = $table;
     }
@@ -29,7 +27,7 @@ class Insert implements Stringable
      * @param string[] $columns Sets list of columns directly
      * @return Columns Object to add further columns on.
      */
-    public function columns($columns = array())
+    public function columns(array $columns = array()): Columns
     {
         $fields = new Columns($columns);
         $this->columns = $fields;
@@ -42,7 +40,7 @@ class Insert implements Stringable
      * @param string[] $updates Sets list of values to write in columns directly
      * @return Row Object to set further values on.
      */
-    public function values($updates = array())
+    public function values(array $updates = array()): Row
     {
         $row = new Row($updates);
         $this->rows[] = $row;
@@ -55,7 +53,7 @@ class Insert implements Stringable
      * @return string SQL that results from conversion
      * @throws Exception When statement could not be compiled due to incomplete class fields.
      */
-    public function toString()
+    public function toString(): string
     {
         if (!$this->columns || $this->columns->isEmpty()) {
             throw new Exception("running columns() method is mandatory");

@@ -1,10 +1,9 @@
 <?php
 namespace Lucinda\Query;
 
-require_once("Exception.php");
-require_once("Stringable.php");
-require_once("clauses/Set.php");
-require_once("clauses/Condition.php");
+use Lucinda\Query\Clause\Set;
+use Lucinda\Query\Operator\Logical;
+use Lucinda\Query\Clause\Condition;
 
 /**
  * Encapsulates SQL statement: UPDATE {TABLE} SET {SET} WHERE {CONDITION}
@@ -18,7 +17,7 @@ class Update implements Stringable
     /**
      * @param string $table Name of table to update (including schema)
      */
-    public function __construct($table)
+    public function __construct(string $table)
     {
         $this->table = $table;
     }
@@ -29,7 +28,7 @@ class Update implements Stringable
      * @param string[string] $contents Sets condition group directly by column name and value
      * @return Set Object to write further set clauses on.
      */
-    public function set($contents = array())
+    public function set(array $contents = array()): Set
     {
         $set = new Set($contents);
         $this->set = $set;
@@ -40,10 +39,10 @@ class Update implements Stringable
      * Sets up WHERE clause.
      *
      * @param string[string] $condition Sets condition group directly when conditions are all of equals type
-     * @param LogicalOperator $logicalOperator Enum holding operator that will link conditions in group (default: AND)
+     * @param Logical $logicalOperator Enum holding operator that will link conditions in group (default: AND)
      * @return Condition Object to set further conditions on.
      */
-    public function where($condition = array(), $logicalOperator=LogicalOperator::_AND_)
+    public function where(array $condition = array(), int $logicalOperator=Logical::_AND_): Condition
     {
         $where = new Condition($condition, $logicalOperator);
         $this->where=$where;
@@ -56,7 +55,7 @@ class Update implements Stringable
      * @return string SQL that results from conversion
      * @throws Exception When statement could not be compiled due to incomplete class fields.
      */
-    public function toString()
+    public function toString(): string
     {
         if (!$this->set || $this->set->isEmpty()) {
             throw new Exception("running set() method is required");

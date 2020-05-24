@@ -2,7 +2,7 @@
 require_once("test.php");
 require_once("../src/Select.php");
 require_once("../src/SelectGroup.php");
-require_once("../plugins/MySQL/MySQLSelect.php");
+require_once("../drivers/MySQL/Select.php");
 
 $statement = new Lucinda\Query\Select("asd", "k");
 $statement->distinct();
@@ -26,7 +26,7 @@ $statement->limit(10, 4);
 test($statement->toString(), "(\r\nSELECT\r\n*\r\nFROM asd AS k\r\n)\r\nUNION\r\n(\r\nSELECT\r\n*\r\nFROM fgh AS h\r\n)\r\n\r\nORDER BY k ASC, z ASC\r\nLIMIT 10 OFFSET 4");
 
 
-$statement = new Lucinda\Query\MySQLSelect("asd", "k");
+$statement = new Lucinda\Query\Select("asd", "k");
 $statement->distinct();
 $statement->fields(["a","s","d"]);
 $statement->joinLeft("mmm", "z")

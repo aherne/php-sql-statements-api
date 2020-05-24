@@ -1,7 +1,7 @@
 <?php
 require_once("../test.php");
 require_once("../../src/Stringable.php");
-require_once("../../src/clauses/Condition.php");
+require_once("../../src/Clause/Condition.php");
 
 $clause = new Lucinda\Query\Condition(["a"=>"b", "c"=>"d"]);
 test($clause->toString(), "a = b AND c = d");

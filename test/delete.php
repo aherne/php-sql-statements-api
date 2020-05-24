@@ -1,7 +1,7 @@
 <?php
 require_once("test.php");
 require_once("../src/Delete.php");
-require_once("../plugins/MySQL/MySQLDelete.php");
+require_once("../drivers/MySQL/Delete.php");
 
 $statement = new Lucinda\Query\Delete("asd");
 $statement->where(["x"=>"y"]);
@@ -15,7 +15,7 @@ test($statement->toString(), "DELETE FROM asd\r\nWHERE x = y");
 $statement = new Lucinda\Query\Delete("asd");
 test($statement->toString(), "DELETE FROM asd");
 
-$statement = new Lucinda\Query\MySQLDelete("asd");
+$statement = new Lucinda\Query\Delete("asd");
 $statement->ignore();
 $statement->where()
     ->set("x", "y");

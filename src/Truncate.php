@@ -1,9 +1,6 @@
 <?php
 namespace Lucinda\Query;
 
-require_once("Exception.php");
-require_once("Stringable.php");
-
 /**
  * Encapsulates SQL statement: TRUNCATE TABLE {TABLE}
  */
@@ -14,7 +11,7 @@ class Truncate implements Stringable
     /**
      * @param string $table Name of table to truncate (including schema)
      */
-    public function __construct($table)
+    public function __construct(string $table)
     {
         $this->table = $table;
     }
@@ -24,7 +21,7 @@ class Truncate implements Stringable
      *
      * @return string SQL that results from conversion
      */
-    public function toString()
+    public function toString(): string
     {
         return "TRUNCATE TABLE ".$this->table;
     }

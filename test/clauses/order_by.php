@@ -1,7 +1,7 @@
 <?php
 require_once("../test.php");
 require_once("../../src/Stringable.php");
-require_once("../../src/clauses/OrderBy.php");
+require_once("../../src/Clause/OrderBy.php");
 
 $fields = new Lucinda\Query\OrderBy(["a"]);
 test($fields->toString(), "a ASC");

@@ -1,7 +1,7 @@
 <?php
 require_once("../test.php");
 require_once("../../src/Stringable.php");
-require_once("../../src/clauses/Set.php");
+require_once("../../src/Clause/Set.php");
 
 $clause = new Lucinda\Query\Set(["a"=>"b", "c"=>"d"]);
 test($clause->toString(), "a = b, c = d");

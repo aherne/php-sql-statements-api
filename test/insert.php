@@ -2,9 +2,9 @@
 require_once("test.php");
 require_once("../src/Insert.php");
 require_once("../src/InsertSelect.php");
-require_once("../plugins/MySQL/MySQLInsert.php");
-require_once("../plugins/MySQL/MySQLInsertSelect.php");
-require_once("../plugins/MySQL/MySQLInsertSet.php");
+require_once("../drivers/MySQL/Insert.php");
+require_once("../drivers/MySQL/InsertSelect.php");
+require_once("../drivers/MySQL/InsertSet.php");
 
 $statement = new Lucinda\Query\Insert("asd");
 $statement->columns(["a","s","d"]);
@@ -25,13 +25,13 @@ $statement->columns(["a","s","d"]);
 $statement->select($subselect);
 test($statement->toString(), "INSERT INTO asd (a, s, d)\r\nSELECT\r\nk, l, 12\r\nFROM fff");
 
-$statement = new Lucinda\Query\MySQLInsert("asd");
+$statement = new Lucinda\Query\Insert("asd");
 $statement->ignore();
 $statement->columns(["a","s","d"]);
 $statement->values([":a",":s",":d"]);
 test($statement->toString(), "INSERT IGNORE INTO asd (a, s, d) VALUES \r\n(:a, :s, :d)");
 
-$statement = new Lucinda\Query\MySQLInsert("asd");
+$statement = new Lucinda\Query\Insert("asd");
 $statement->ignore();
 $statement->columns(["a","s","d"]);
 $statement->values([":a",":s",":d"]);
@@ -40,13 +40,13 @@ test($statement->toString(), "INSERT IGNORE INTO asd (a, s, d) VALUES \r\n(:a, :
 
 $subselect = new \Lucinda\Query\Select("fff");
 $subselect->fields(["k","l",12]);
-$statement = new Lucinda\Query\MySQLInsertSelect("asd");
+$statement = new Lucinda\Query\InsertSelect("asd");
 $statement->ignore();
 $statement->columns(["a","s","d"]);
 $statement->select($subselect);
 test($statement->toString(), "INSERT IGNORE INTO asd (a, s, d)\r\nSELECT\r\nk, l, 12\r\nFROM fff");
 
 
-$statement = new Lucinda\Query\MySQLInsertSet("asd");
+$statement = new Lucinda\Query\InsertSet("asd");
 $statement->set(["a"=>"b", "c"=>"d"]);
 test($statement->toString(), "INSERT  INTO asd SET\r\na = b, c = d");

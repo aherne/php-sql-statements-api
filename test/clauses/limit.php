@@ -1,7 +1,7 @@
 <?php
 require_once("../test.php");
 require_once("../../src/Stringable.php");
-require_once("../../src/clauses/Limit.php");
+require_once("../../src/Clause/Limit.php");
 
 $clause = new Lucinda\Query\Limit("10");
 test($clause->toString(), "10");

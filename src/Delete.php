@@ -1,9 +1,8 @@
 <?php
 namespace Lucinda\Query;
 
-require_once("Exception.php");
-require_once("Stringable.php");
-require_once("clauses/Condition.php");
+use Lucinda\Query\Clause\Condition;
+use Lucinda\Query\Operator\Logical;
 
 /**
  * Encapsulates SQL statement: DELETE FROM {TABLE} WHERE {CONDITION}
@@ -16,7 +15,7 @@ class Delete implements Stringable
     /**
      * @param string $table Name of table to delete from (including schema)
      */
-    public function __construct($table)
+    public function __construct(string $table)
     {
         $this->table = $table;
     }
@@ -25,10 +24,10 @@ class Delete implements Stringable
      * Sets up WHERE clause.
      *
      * @param string[string] $condition Sets condition group directly when conditions are all of equals type
-     * @param LogicalOperator $logicalOperator Enum holding operator that will link conditions in group (default: AND)
+     * @param Logical $logicalOperator Enum holding operator that will link conditions in group (default: AND)
      * @return Condition Object to set further conditions on.
      */
-    public function where($condition=array(), $logicalOperator=LogicalOperator::_AND_)
+    public function where(array $condition=array(), int $logicalOperator=Logical::_AND_): Condition
     {
         $where = new Condition($condition, $logicalOperator);
         $this->where=$where;
@@ -40,7 +39,7 @@ class Delete implements Stringable
      *
      * @return string SQL that results from conversion
      */
-    public function toString()
+    public function toString(): string
     {
         return "DELETE FROM ".$this->table.
             ($this->where && !$this->where->isEmpty()?"\r\n"."WHERE ".$this->where->toString():"");

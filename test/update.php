@@ -1,7 +1,7 @@
 <?php
 require_once("test.php");
 require_once("../src/Update.php");
-require_once("../plugins/MySQL/MySQLUpdate.php");
+require_once("../drivers/MySQL/Update.php");
 
 $statement = new Lucinda\Query\Update("asd");
 $statement->set(["a"=>"b"]);
@@ -20,7 +20,7 @@ $statement->set(["a"=>"b"]);
 test($statement->toString(), "UPDATE asd\r\nSET a = b");
 
 
-$statement = new Lucinda\Query\MySQLUpdate("asd");
+$statement = new Lucinda\Query\Update("asd");
 $statement->ignore();
 $statement->set(["a"=>"b"]);
 test($statement->toString(), "UPDATE IGNORE asd\r\nSET a = b");
