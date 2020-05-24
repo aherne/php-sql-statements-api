@@ -28,7 +28,7 @@ class Select implements Stringable
 {
     protected $isDistinct=false;
     protected $columns;
-    protected $joins=array();
+    protected $joins=[];
     protected $where;
     protected $groupBy;
     protected $having;
@@ -59,7 +59,7 @@ class Select implements Stringable
      * @param string[] $columns Sets list of column names directly
      * @return Fields Object to set further fields on.
      */
-    public function fields(array $columns = array()): Fields
+    public function fields(array $columns = []): Fields
     {
         $columns = new Fields($columns);
         $this->columns = $columns;
@@ -129,7 +129,7 @@ class Select implements Stringable
      * @param Logical $logicalOperator Enum holding operator that will link conditions in group (default: AND)
      * @return Condition Object to set further conditions on.
      */
-    public function where(array $condition=array(), int $logicalOperator=Logical::_AND_): Condition
+    public function where(array $condition=[], string $logicalOperator=Logical::_AND_): Condition
     {
         $where = new Condition($condition, $logicalOperator);
         $this->where=$where;
@@ -142,7 +142,7 @@ class Select implements Stringable
      * @param string[] $columns Sets list of column names directly
      * @return Columns Object to set further fields on.
      */
-    public function groupBy(array $columns = array()): Columns
+    public function groupBy(array $columns = []): Columns
     {
         $columns = new Columns($columns);
         $this->groupBy = $columns;
@@ -156,7 +156,7 @@ class Select implements Stringable
      * @param Logical $logicalOperator Enum holding operator that will link conditions in group (default: AND)
      * @return Condition Object to set further conditions on.
      */
-    public function having(array $condition=array(), int $logicalOperator=Logical::_AND_): Condition
+    public function having(array $condition=[], string $logicalOperator=Logical::_AND_): Condition
     {
         $where = new Condition($condition, $logicalOperator);
         $this->having=$where;
@@ -169,7 +169,7 @@ class Select implements Stringable
      * @param string[] $fields Sets list of columns to order by directly in ASC mode
      * @return OrderBy Object to set further clauses on.
      */
-    public function orderBy(array $fields = array()): OrderBy
+    public function orderBy(array $fields = []): OrderBy
     {
         $orderBy = new OrderBy($fields);
         $this->orderBy = $orderBy;

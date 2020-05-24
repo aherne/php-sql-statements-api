@@ -19,12 +19,12 @@ class SelectGroup implements Stringable
     protected $operator;
     protected $orderBy;
     protected $limit;
-    protected $contents=array();
+    protected $contents=[];
 
     /**
      * @param Set $operator Enum holding operator that will link SELECT statements in group (default: UNION)
      */
-    public function __construct(int $operator = Set::UNION)
+    public function __construct(string $operator = Set::UNION)
     {
         $this->operator = $operator;
     }
@@ -47,7 +47,7 @@ class SelectGroup implements Stringable
      * @param string[] $fields Sets list of columns to order by directly in ASC mode
      * @return OrderBy Object to set further clauses on.
      */
-    public function orderBy(array $fields = array()): OrderBy
+    public function orderBy(array $fields = []): OrderBy
     {
         $orderBy = new OrderBy($fields);
         $this->orderBy = $orderBy;
@@ -91,7 +91,7 @@ class SelectGroup implements Stringable
         }
         $output = substr($output, 0, -strlen($this->operator)-2);
         return $output.
-                ($this->orderBy && !$this->orderBy->isEmpty()?"\r\nORDER BY ".$this->orderBy->toString():"").
-                ($this->limit?"\r\nLIMIT ".$this->limit->toString():"");
+                ($this->orderBy && !$this->orderBy->isEmpty()?"ORDER BY ".$this->orderBy->toString()."\r\n":"").
+                ($this->limit?"LIMIT ".$this->limit->toString():"");
     }
 }

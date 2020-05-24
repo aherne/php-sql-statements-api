@@ -13,13 +13,13 @@ use Lucinda\Query\Operator\Comparison;
 class Condition implements Stringable
 {
     protected $currentLogical;
-    protected $contents = array();
+    protected $contents = [];
 
     /**
      * @param string[string] $condition Sets condition group directly when conditions are all of equals type
      * @param Logical $logicalOperator Enum holding operator that will link conditions in group (default: AND)
      */
-    public function __construct(array $condition=array(), int $logicalOperator=Logical::_AND_)
+    public function __construct(array $condition=[], string $logicalOperator = Logical::_AND_)
     {
         foreach ($condition as $key=>$value) {
             $this->set($key, $value, Comparison::EQUALS);
@@ -35,9 +35,9 @@ class Condition implements Stringable
      * @param Comparison $comparisonOperator Enum holding logical operator that will be used in condition (default: =)
      * @return Condition
      */
-    public function set(string $columnName, $value, int $comparisonOperator=Comparison::EQUALS): Condition
+    public function set(string $columnName, $value, string $comparisonOperator=Comparison::EQUALS): Condition
     {
-        $clause = array();
+        $clause = [];
         $clause["KEY"]=$columnName;
         $clause["COMPARATOR"]=$comparisonOperator;
         $clause["VALUE"]=$value;
@@ -55,7 +55,7 @@ class Condition implements Stringable
      */
     public function setIn(string $columnName, $values, bool $isTrue=true): Condition
     {
-        $clause = array();
+        $clause = [];
         $clause["KEY"]=$columnName;
         $clause["COMPARATOR"]=($isTrue?Comparison::IN:Comparison::NOT_IN);
         $clause["VALUE"]=$values;
@@ -72,7 +72,7 @@ class Condition implements Stringable
      */
     public function setIsNull(string $columnName, bool $isTrue=true): Condition
     {
-        $clause = array();
+        $clause = [];
         $clause["KEY"]=$columnName;
         $clause["COMPARATOR"]=($isTrue?Comparison::IS_NULL:Comparison::IS_NOT_NULL);
         $this->contents[]=$clause;
@@ -89,7 +89,7 @@ class Condition implements Stringable
      */
     public function setLike(string $columnName, string $pattern, bool $isTrue=true): Condition
     {
-        $clause = array();
+        $clause = [];
         $clause["KEY"]=$columnName;
         $clause["COMPARATOR"]=($isTrue?Comparison::LIKE:Comparison::NOT_LIKE);
         $clause["VALUE"]=$pattern;
@@ -108,7 +108,7 @@ class Condition implements Stringable
      */
     public function setBetween(string $columnName, $valueLeft, $valueRight, bool $isTrue=true): Condition
     {
-        $clause = array();
+        $clause = [];
         $clause["KEY"]=$columnName;
         $clause["COMPARATOR"]=($isTrue?Comparison::BETWEEN:Comparison::NOT_BETWEEN);
         $clause["VALUE_LEFT"]=$valueLeft;
@@ -151,11 +151,11 @@ class Condition implements Stringable
             } elseif ($values["COMPARATOR"] == Comparison::IN || $values["COMPARATOR"] == Comparison::NOT_IN) {
                 $tmp = $values["VALUE"];
                 if (is_array($tmp)) {
-                    $values = "";
+                    $valuesText = "";
                     foreach ($tmp as $string) {
-                        $values .= $string.",";
+                        $valuesText .= $string.", ";
                     }
-                    $output .= $values["KEY"]." ".$values["COMPARATOR"]." (".substr($values, 0, -1).")";
+                    $output .= $values["KEY"]." ".$values["COMPARATOR"]." (".substr($valuesText, 0, -2).")";
                 } else {
                     $output .= $values["KEY"]." ".$values["COMPARATOR"]." (".$tmp.")";
                 }

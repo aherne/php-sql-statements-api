@@ -9,14 +9,14 @@ use Lucinda\Query\Operator\OrderBy as OrderByOperator;
  */
 class OrderBy implements Stringable
 {
-    protected $contents = array();
+    protected $contents = [];
 
     /**
      * Class constructor.
      *
      * @param string[] $fields Sets list of columns to order by directly in ASC mode
      */
-    public function __construct(array $fields = array())
+    public function __construct(array $fields = [])
     {
         foreach ($fields as $field) {
             $this->contents[$field] = OrderByOperator::ASC;
@@ -30,7 +30,7 @@ class OrderBy implements Stringable
      * @param OrderByOperator $operator Enum encapsulating order by direction (default: ASC)
      * @return OrderBy Object to set further clauses on.
      */
-    public function add(string $columnName, int $operator = OrderByOperator::ASC): OrderBy
+    public function add(string $columnName, string $operator = OrderByOperator::ASC): OrderBy
     {
         $this->contents[$columnName] = $operator;
         return $this;

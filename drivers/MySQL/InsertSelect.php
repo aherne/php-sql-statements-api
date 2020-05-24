@@ -27,7 +27,7 @@ class InsertSelect extends DefaultInsertSelect
      * @param string[string] $contents Sets condition group directly by column name and value
      * @return Set Object to write further set clauses on.
      */
-    public function onDuplicateKeyUpdate(array $contents = array()): Set
+    public function onDuplicateKeyUpdate(array $contents = []): Set
     {
         $set = new Set($contents);
         $this->onDuplicateKeyUpdate=$set;

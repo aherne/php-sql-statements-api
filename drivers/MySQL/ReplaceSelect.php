@@ -2,12 +2,11 @@
 namespace Lucinda\Query\Vendor\MySQL;
 
 use Lucinda\Query\Exception;
-use Lucinda\Query\InsertSelect;
 
 /**
  * Encapsulates MySQL statement: REPLACE INTO {TABLE} ({COLUMNS}) {SELECT}
  */
-class ReplaceSelect extends InsertSelect
+class ReplaceSelect extends \Lucinda\Query\InsertSelect
 {
     /**
      * Compiles SQL statement based on data collected in class fields.

@@ -10,7 +10,7 @@ use Lucinda\Query\Clause\Row;
 class Insert implements Stringable
 {
     protected $columns;
-    protected $rows = array();
+    protected $rows = [];
     protected $table;
 
     /**
@@ -27,7 +27,7 @@ class Insert implements Stringable
      * @param string[] $columns Sets list of columns directly
      * @return Columns Object to add further columns on.
      */
-    public function columns(array $columns = array()): Columns
+    public function columns(array $columns = []): Columns
     {
         $fields = new Columns($columns);
         $this->columns = $fields;
@@ -40,7 +40,7 @@ class Insert implements Stringable
      * @param string[] $updates Sets list of values to write in columns directly
      * @return Row Object to set further values on.
      */
-    public function values(array $updates = array()): Row
+    public function values(array $updates = []): Row
     {
         $row = new Row($updates);
         $this->rows[] = $row;
@@ -62,7 +62,7 @@ class Insert implements Stringable
             throw new Exception("running values() is mandatory");
         }
 
-        $output = "INSERT INTO ".$this->table." (".$this->columns->toString().") VALUES "."\r\n";
+        $output = "INSERT INTO ".$this->table." (".$this->columns->toString().") VALUES\r\n";
         foreach ($this->rows as $row) {
             $output.=$row->toString().", ";
         }

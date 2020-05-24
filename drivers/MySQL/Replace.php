@@ -2,12 +2,11 @@
 namespace Lucinda\Query\Vendor\MySQL;
 
 use Lucinda\Query\Exception;
-use Lucinda\Query\Insert;
 
 /**
  * Encapsulates MySQL statement: REPLACE INTO {TABLE} ({COLUMNS}) VALUES ({ROW})
  */
-class Replace extends Insert
+class Replace extends \Lucinda\Query\Insert
 {
     /**
      * Compiles SQL statement based on data collected in class fields.
@@ -24,7 +23,7 @@ class Replace extends Insert
             throw new Exception("running values() is mandatory");
         }
 
-        $output = "REPLACE INTO ".$this->table." (".$this->columns->toString().") VALUES "."\r\n";
+        $output = "REPLACE INTO ".$this->table." (".$this->columns->toString().") VALUES"."\r\n";
         foreach ($this->rows as $row) {
             $output.=$row->toString().", ";
         }

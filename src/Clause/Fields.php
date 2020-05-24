@@ -8,14 +8,14 @@ use Lucinda\Query\Stringable;
  */
 class Fields implements Stringable
 {
-    protected $contents = array();
+    protected $contents = [];
 
     /**
      * Class constructor.
      *
      * @param string[] $contents
      */
-    public function __construct(array $contents = array())
+    public function __construct(array $contents = [])
     {
         $this->contents = $contents;
     }
@@ -46,7 +46,7 @@ class Fields implements Stringable
         }
         
         foreach ($this->contents as $value) {
-            $output .= ($value instanceof Alias?$value->toString():$value).", ";
+            $output .= $value.", ";
         }
         
         return substr($output, 0, -2);

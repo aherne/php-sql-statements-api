@@ -54,7 +54,7 @@ class Select extends DefaultSelect
     public function toString(): string
     {
         $output =
-            "SELECT ".($this->isDistinct?" DISTINCT":"").($this->straightJoin?" STRAIGHT_JOIN":"").($this->calcFoundRows?" SQL_CALC_FOUND_ROWS":"").
+            "SELECT ".($this->isDistinct?"DISTINCT ":"").($this->straightJoin?"STRAIGHT_JOIN ":"").($this->calcFoundRows?"SQL_CALC_FOUND_ROWS ":"").
             "\r\n".($this->columns?$this->columns->toString():"*").
             "\r\n"."FROM ".$this->table;
         if (sizeof($this->joins)>0) {

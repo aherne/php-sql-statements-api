@@ -1,5 +1,5 @@
 <?php
-namespace Lucinda\Query;
+namespace Lucinda\Query\Vendor\MySQL\Operator;
 
 use Lucinda\Query\Operator\Logical as DefaultSet;
 

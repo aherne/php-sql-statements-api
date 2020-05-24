@@ -8,12 +8,12 @@ use Lucinda\Query\Stringable;
  */
 class Set implements Stringable
 {
-    protected $contents = array();
+    protected $contents = [];
 
     /**
      * @param string[string] $contents Sets condition group directly by column name and value
      */
-    public function __construct(array $contents = array())
+    public function __construct(array $contents = [])
     {
         $this->contents = $contents;
     }

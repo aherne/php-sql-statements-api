@@ -27,7 +27,7 @@ class Delete implements Stringable
      * @param Logical $logicalOperator Enum holding operator that will link conditions in group (default: AND)
      * @return Condition Object to set further conditions on.
      */
-    public function where(array $condition=array(), int $logicalOperator=Logical::_AND_): Condition
+    public function where(array $condition=[], string $logicalOperator=Logical::_AND_): Condition
     {
         $where = new Condition($condition, $logicalOperator);
         $this->where=$where;

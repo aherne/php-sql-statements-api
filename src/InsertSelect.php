@@ -26,7 +26,7 @@ class InsertSelect implements Stringable
      * @param string[] $columns Sets list of columns directly
      * @return Columns Objects to add further columns on.
      */
-    public function columns(array $columns = array()): Columns
+    public function columns(array $columns = []): Columns
     {
         $fields = new Columns($columns);
         $this->columns = $fields;

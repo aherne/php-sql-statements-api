@@ -30,6 +30,6 @@ class Limit implements Stringable
      */
     public function toString(): string
     {
-        return ($this->offset?$this->limit." OFFSET ".$this->offset:$this->limit);
+        return $this->limit." OFFSET ".$this->offset;
     }
 }

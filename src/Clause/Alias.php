@@ -22,6 +22,16 @@ class Alias implements Stringable
         $this->fieldName = $fieldName;
         $this->fieldAlias = $fieldAlias;
     }
+    
+    /**
+     * Converts object to SQL statement.
+     *
+     * @return string SQL that results from conversion
+     */
+    public function __toString(): string
+    {
+        return $this->toString();
+    }
 
     /**
      * Compiles SQL clause based on data collected in class fields.

@@ -8,12 +8,12 @@ use Lucinda\Query\Stringable;
  */
 class Row implements Stringable
 {
-    protected $contents = array();
+    protected $contents = [];
 
     /**
      * @param string[] $contents Sets list of values to write in columns directly
      */
-    public function __construct(array $contents = array())
+    public function __construct(array $contents = [])
     {
         $this->contents = $contents;
     }

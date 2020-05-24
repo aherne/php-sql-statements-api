@@ -21,7 +21,7 @@ class Join implements Stringable
      * @param string $tableAlias Optional alias of table to join.
      * @param JoinOperator $joinType  Enum holding join operator that will be used in statement (default: INNER)
      */
-    public function __construct(string $tableName, string $tableAlias = "", int $joinType=JoinOperator::INNER)
+    public function __construct(string $tableName, string $tableAlias = "", string $joinType=JoinOperator::INNER)
     {
         $this->table = $tableAlias?new Alias($tableName, $tableAlias):$tableName;
         $this->joinType = $joinType;
@@ -34,7 +34,7 @@ class Join implements Stringable
      * @param Logical $logicalOperator Enum holding operator that will link conditions in group (default: AND)
      * @return Condition Condition to setup.
      */
-    public function on(array $condition = array(), int $logicalOperator=Logical::_AND_): Join
+    public function on(array $condition = [], string $logicalOperator=Logical::_AND_): Condition
     {
         $whereClause = new Condition($condition, $logicalOperator);
         $this->whereClause=$whereClause;
@@ -48,6 +48,6 @@ class Join implements Stringable
      */
     public function toString(): string
     {
-        return $this->joinType." ".($this->table instanceof Alias?$this->table->toString():$this->table).($this->whereClause && !$this->whereClause->isEmpty()?" ON ".$this->whereClause->toString():"");
+        return $this->joinType." ".$this->table.($this->whereClause && !$this->whereClause->isEmpty()?" ON ".$this->whereClause->toString():"");
     }
 }
