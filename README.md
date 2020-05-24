@@ -83,171 +83,64 @@ $statement->limit(10,4);
 
 ### Class Select
 
-[Lucinda\Queries\Select](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Select.php) encapsulates a standard SELECT statement via following methods:
-
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| __construct | string $table, string $alias="" |  | ? |
-| distinct |  | void | ? |
-| fields | array $columns = [] | Fields | ? |
-| joinLeft | string $tableName, string $tableAlias = "" | Join | ? |
-| joinRight | string $tableName, string $tableAlias = "" | Join | ? |
-| joinInner | string $tableName, string $tableAlias = "" | Join | ? |
-| joinCross | string $tableName, string $tableAlias = "" | Join | ? |
-| where | array $condition=[], string $logicalOperator=Logical::_AND_ | Condition | ? |
-| groupBy | array $columns = [] | Columns | ? |
-| having | array $condition=[], string $logicalOperator=Logical::_AND_ | Condition | ? |
-| orderBy | array $fields = [] | OrderBy | ? |
-| limit | int $limit, int $offset=0 | void | ? |
-| toString |  | string | ? |
+[Lucinda\Queries\Select](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Select.php) encapsulates a standard SELECT statement. 
 
 ### Class SelectGroup
 
-[Lucinda\Queries\SelectGroup](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/SelectGroup.php) encapsulates a list of SELECT statements joined by a SET operator (eg: UNION) via following methods:
-
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| __construct | string $operator = Set::UNION |  | ? |
-| addSelect | Stringable $select | Stringable | ? |
-| orderBy | array $fields = [] | OrderBy | ? |
-| limit | int $limit, int $offset=0 | void | ? |
-| toString |  | string | ? |
+[Lucinda\Queries\SelectGroup](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/SelectGroup.php) encapsulates a list of SELECT statements joined by a SET operator (eg: UNION).
 
 ### Class Insert
 
-[Lucinda\Queries\Insert](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Insert.php) encapsulates a standard INSERT INTO VALUES statement via following methods:
-
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| __construct | string $table |  | ? |
-| columns | array $columns = [] | Columns | ? |
-| values | array $updates = [] | Row | ? |
-| toString |  | string | ? |
+[Lucinda\Queries\Insert](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Insert.php) encapsulates a standard INSERT INTO VALUES statement.
 
 ### Class InsertSelect
 
-[Lucinda\Queries\InsertSelect](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/InsertSelect.php) encapsulates a standard INSERT INTO SELECT statement via following methods:
-
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| __construct | string $table |  | ? |
-| columns | array $columns = [] | Columns | ? |
-| select | Stringable $select | Stringable | ? |
-| toString |  | string | ? |
+[Lucinda\Queries\InsertSelect](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/InsertSelect.php) encapsulates a standard INSERT INTO SELECT statement.
 
 ### Class Update
 
-[Lucinda\Queries\Update](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Update.php) encapsulates a standard UPDATE statement via following methods:
-
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| __construct | string $table |  | ? |
-| set | array $contents = [] | Set | ? |
-| where | array $condition = [], string $logicalOperator=Logical::_AND_ | Condition | ? |
-| toString |  | string | ? |
+[Lucinda\Queries\Update](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Update.php) encapsulates a standard UPDATE statement.
 
 ### Class Delete
 
-[Lucinda\Queries\Delete](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Delete.php) encapsulates a standard DELETE statement via following methods:
-
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| __construct | string $table |  | ? |
-| where | array $condition=[], string $logicalOperator=Logical::_AND_ | Condition | ? |
-| toString |  | string | ? |
+[Lucinda\Queries\Delete](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Delete.php) encapsulates a standard DELETE statement.
 
 ### Class Truncate
 
-[Lucinda\Queries\Truncate](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Truncate.php) encapsulates a standard TRUNCATE statement via following methods:
-
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| __construct | string $table |  | ? |
-| toString |  | string | ? |
+[Lucinda\Queries\Truncate](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Truncate.php) encapsulates a standard TRUNCATE statement.
 
 ### Class MySQL Select
 
-[Lucinda\Queries\Vendor\MySQL\Select](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/) encapsulates a MySQL SELECT statement on top of [Lucinda\Queries\Select](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Select.php) with following extra methods:
-
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| setCalcFoundRows |  | void | ? |
-| setStraightJoin |  | void | ? |
-| getCalcFoundRows |  | string | ? |
-| toString |  | string | ? |
+[Lucinda\Queries\Vendor\MySQL\Select](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/) encapsulates a MySQL SELECT statement on top of [Lucinda\Queries\Select](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Select.php).
 
 ### Class MySQL Insert
 
-[Lucinda\Queries\Vendor\MySQL\Insert](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/) encapsulates a MySQL INSERT INTO VALUES statement on top of [Lucinda\Queries\Insert](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Insert.php) with following extra methods:
-
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| ignore |  | void | ? |
-| onDuplicateKeyUpdate | array $contents = [] | Set | ? |
-| toString |  | string | ? |
+[Lucinda\Queries\Vendor\MySQL\Insert](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/) encapsulates a MySQL INSERT INTO VALUES statement on top of [Lucinda\Queries\Insert](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Insert.php).
 
 ### Class MySQL InsertSelect
 
-[Lucinda\Queries\Vendor\MySQL\InsertSelect](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/) encapsulates a MySQL INSERT INTO SELECT statement on top of [Lucinda\Queries\InsertSelect](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/InsertSelect.php) with following extra methods:
-
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| ignore |  | void | ? |
-| onDuplicateKeyUpdate | array $contents = [] | Set | ? |
-| toString |  | string | ? |
+[Lucinda\Queries\Vendor\MySQL\InsertSelect](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/) encapsulates a MySQL INSERT INTO SELECT statement on top of [Lucinda\Queries\InsertSelect](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/InsertSelect.php).
 
 ### Class MySQL InsertSet
 
-[Lucinda\Queries\Vendor\MySQL\InsertSet](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/) encapsulates a MySQL INSERT INTO SET statement via following methods:
-
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| __construct | string $table |  | ? |
-| ignore |  |  | ? |
-| set | array $contents = [] | Set | ? |
-| onDuplicateKeyUpdate | array $contents = [] | Set | ? |
-| toString |  | string | ? |
+[Lucinda\Queries\Vendor\MySQL\InsertSet](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/) encapsulates a MySQL INSERT INTO SET statement.
 
 ### Class MySQL Replace
 
-[Lucinda\Queries\Vendor\MySQL\Replace](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/) encapsulates a MySQL REPLACE INTO VALUES statement on top of XXX with following extra methods:
-
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| toString |  | string | ? |
+[Lucinda\Queries\Vendor\MySQL\Replace](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/) encapsulates a MySQL REPLACE INTO VALUES statement on top of [Lucinda\Queries\Insert](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Insert.php).
 
 ### Class MySQL ReplaceSelect
 
-[Lucinda\Queries\Vendor\MySQL\ReplaceSelect](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/) encapsulates a MySQL REPLACE INTO SELECT statement on top of XXX with following extra methods:
-
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| toString |  | string | ? |
+[Lucinda\Queries\Vendor\MySQL\ReplaceSelect](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/) encapsulates a MySQL REPLACE INTO SELECT statement on top of [Lucinda\Queries\InsertSelect](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/InsertSelect.php).
 
 ### Class MySQL ReplaceSet
 
-[Lucinda\Queries\Vendor\MySQL\ReplaceSet](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/) encapsulates a MySQL REPLACE INTO SET statement via following methods:
-
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| __construct | string $table |  | ? |
-| set | array $contents = [] | Set | ? |
-| toString |  | string | ? |
+[Lucinda\Queries\Vendor\MySQL\ReplaceSet](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/) encapsulates a MySQL REPLACE INTO SET statement.
 
 ### Class MySQL Update
 
-[Lucinda\Queries\Vendor\MySQL\Update](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/) encapsulates a MySQL UPDATE statement on top of [Lucinda\Queries\Update](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Update.php) with following extra methods:
-
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| ignore |  | void | ? |
-| toString |  | string | ? |
+[Lucinda\Queries\Vendor\MySQL\Update](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/) encapsulates a MySQL UPDATE statement on top of [Lucinda\Queries\Update](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Update.php).
 
 ### Class MySQL Delete
 
-[Lucinda\Queries\Vendor\MySQL\Delete](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/) encapsulates a MySQL DELETE statement on top of [Lucinda\Queries\Delete](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Delete.php) with following extra methods:
-
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| ignore |  | void | ? |
-| toString |  | string | ? |
+[Lucinda\Queries\Vendor\MySQL\Delete](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/) encapsulates a MySQL DELETE statement on top of [Lucinda\Queries\Delete](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Delete.php). 
