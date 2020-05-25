@@ -37,6 +37,8 @@ class Select implements Stringable
     protected $table;
 
     /**
+     * Constructs a SELECT statement based on table name and optional alias
+     * 
      * @param string $table Name of table to select from (including schema)
      * @param string $alias Optional alias to identify table with
      */

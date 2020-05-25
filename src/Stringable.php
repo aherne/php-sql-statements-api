@@ -7,7 +7,7 @@ namespace Lucinda\Query;
 interface Stringable
 {
     /**
-     * Converts php data in statement/clauses classes to SQL
+     * Converts php data in statement or clauses classes to SQL
      *
      * @return string SQL that results from conversion
      * @throws Exception When data in statement/clause couldn't be converted to a valid SQL

@@ -2,7 +2,7 @@
 namespace Lucinda\Query\Vendor\MySQL;
 
 use Lucinda\Query\Exception;
-use Lucinda\Query\Update AS DefaultUpdate;
+use Lucinda\Query\Update as DefaultUpdate;
 
 /**
  * Encapsulates MySQL statement: UPDATE {IGNORE} {TABLE} SET {SET} WHERE {CONDITION}
@@ -12,7 +12,7 @@ class Update extends DefaultUpdate
     protected $isIgnore=false;
 
     /**
-     * Sets statement as "IGNORE" (ignoring foreign key errors / duplicates)
+     * Sets statement as IGNORE, ignoring foreign key errors and duplicates
      */
     public function ignore(): void
     {

@@ -14,6 +14,8 @@ class ReplaceSet implements Stringable
     protected $set;
 
     /**
+     * Constructs a REPLACE INTO ... SET statement based on table name
+     * 
      * @param string $table Name of table to replace into (including schema)
      */
     public function __construct(string $table)

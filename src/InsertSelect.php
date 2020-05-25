@@ -13,6 +13,8 @@ class InsertSelect implements Stringable
     protected $table;
 
     /**
+     * Constructs a INSERT INTO ... SELECT statement based on table name
+     * 
      * @param string $table Name of table to insert into (including schema)
      */
     public function __construct(string $table)

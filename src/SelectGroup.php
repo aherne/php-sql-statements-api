@@ -22,6 +22,8 @@ class SelectGroup implements Stringable
     protected $contents=[];
 
     /**
+     * Constructs a SELECT ... OPERATOR ... SELECT statement based on Set OPERATOR
+     * 
      * @param Set $operator Enum holding operator that will link SELECT statements in group (default: UNION)
      */
     public function __construct(string $operator = Set::UNION)

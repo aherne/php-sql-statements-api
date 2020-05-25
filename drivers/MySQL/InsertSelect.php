@@ -14,7 +14,7 @@ class InsertSelect extends DefaultInsertSelect
     protected $onDuplicateKeyUpdate;
 
     /**
-     * Sets statement as "IGNORE" (ignoring foreign key errors / duplicates)
+     * Sets statement as IGNORE, ignoring foreign key errors and duplicates
      */
     public function ignore(): void
     {

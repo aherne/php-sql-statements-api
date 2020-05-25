@@ -11,7 +11,7 @@ class Delete extends DefaultDelete
     protected $isIgnore=false;
 
     /**
-     * Sets statement as "IGNORE" (ignoring foreign key errors / duplicates)
+     * Sets statement as IGNORE, ignoring foreign key errors and duplicates
      */
     public function ignore(): void
     {

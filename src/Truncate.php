@@ -9,6 +9,8 @@ class Truncate implements Stringable
     protected $table;
 
     /**
+     * Constructs a TRUNCATE statement based on table name
+     * 
      * @param string $table Name of table to truncate (including schema)
      */
     public function __construct(string $table)

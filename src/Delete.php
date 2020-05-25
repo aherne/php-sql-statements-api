@@ -13,6 +13,8 @@ class Delete implements Stringable
     protected $table;
 
     /**
+     * Constructs a DELETE statement based on table name
+     * 
      * @param string $table Name of table to delete from (including schema)
      */
     public function __construct(string $table)

@@ -16,6 +16,8 @@ class InsertSet implements Stringable
     protected $onDuplicateKeyUpdate;
 
     /**
+     * Constructs a INSERT INTO ... SET statement based on table name
+     * 
      * @param string $table Name of table to insert into (including schema)
      */
     public function __construct(string $table)
@@ -24,7 +26,7 @@ class InsertSet implements Stringable
     }
 
     /**
-     * Sets statement as "IGNORE" (ignoring foreign key errors / duplicates)
+     * Sets statement as IGNORE, ignoring foreign key errors and duplicates
      */
     public function ignore()
     {
