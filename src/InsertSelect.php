@@ -39,12 +39,10 @@ class InsertSelect implements Stringable
      * Sets rows to insert based on a SELECT statement
      *
      * @param Stringable $select Instance of Select or SelectGroup.
-     * @return Stringable  Instance of Select or SelectGroup.
      */
-    public function select(Stringable $select): Stringable
+    public function select(Stringable $select): void
     {
         $this->select=$select;
-        return $select;
     }
 
     /**

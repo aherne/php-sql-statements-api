@@ -109,7 +109,8 @@ $statement->limit(10,4);
 | Method | Arguments | Returns | Description |
 | --- | --- | --- | --- |
 | __construct | string $operator = Set::UNION | void | Constructs a SELECT ... OPERATOR ... SELECT statement based on Set OPERATOR |
-| addSelect | Stringable $select | Stringable | Adds select statement to group |
+| addSelect | [Lucinda\Queries\Select](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Select.php) $select | void | Adds SELECT statement to group |
+| addSelect | [Lucinda\Queries\SelectGroup](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/SelectGroup.php) | void | Adds SELECT ... OPERATOR ... SELECT statement to group |
 | orderBy | array $fields = [] | [Lucinda\Queries\Clause\OrderBy](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Clause/OrderBy.php) | Sets up ORDER BY clause |
 | limit | int $limit, int $offset=0 | void | Sets a LIMIT clause |
 | __toString | void | string | Converts object to SQL statement. |
@@ -134,7 +135,8 @@ $statement->limit(10,4);
 | --- | --- | --- | --- |
 | __construct | string $table | void | Constructs a INSERT INTO ... SELECT statement based on table name |
 | columns | array $columns = [] | [Lucinda\Queries\Clause\Columns](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Clause/Columns.php) | Sets columns that will be inserted into. |
-| select | Stringable $select | Stringable | Sets rows to insert based on a SELECT statement |
+| select | [Lucinda\Queries\Select](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Select.php) $select | void | Sets rows to insert based on a SELECT statement |
+| select | [Lucinda\Queries\SelectGroup](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/SelectGroup.php) | void | Sets rows to insert based on a SELECT ... OPERATOR ... SELECT group statement |
 | toString | void | string | Compiles SQL statement based on data collected in class fields. |
 
 ### Class Update

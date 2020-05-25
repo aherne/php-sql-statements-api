@@ -35,12 +35,10 @@ class SelectGroup implements Stringable
      * Adds select statement to group
      *
      * @param Stringable $select Instance of Select or SelectGroup
-     * @return Stringable Instance of Select or SelectGroup
      */
-    public function addSelect(Stringable $select): Stringable
+    public function addSelect(Stringable $select): void
     {
         $this->contents[] = $select;
-        return $select;
     }
 
     /**
