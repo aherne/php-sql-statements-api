@@ -11,7 +11,7 @@ class ReplaceSetTest
     public function __construct()
     {
         $this->object = new ReplaceSet("x");
-    }    
+    }
     
     public function set()
     {
@@ -23,6 +23,4 @@ class ReplaceSetTest
     {
         return new Result($this->object->toString()=="REPLACE INTO x SET\r\na = b");
     }
-    
-    
 }

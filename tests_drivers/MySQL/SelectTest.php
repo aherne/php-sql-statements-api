@@ -1,6 +1,6 @@
 <?php
 namespace Test\Lucinda\Query\Vendor\MySQL;
-    
+
 use Lucinda\Query\Vendor\MySQL\Select;
 use Lucinda\UnitTest\Result;
 

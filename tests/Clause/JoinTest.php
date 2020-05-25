@@ -1,6 +1,6 @@
 <?php
 namespace Test\Lucinda\Query\Clause;
-    
+
 use Lucinda\Query\Clause\Join;
 use Lucinda\UnitTest\Result;
 use Lucinda\Query\Operator\Logical;
@@ -8,7 +8,6 @@ use Lucinda\Query\Operator\Comparison;
 
 class JoinTest
 {
-
     public function on()
     {
         $join = new Join("x", "t1");
@@ -25,6 +24,4 @@ class JoinTest
         $condition->set("c", "d", Comparison::DIFFERS);
         return new Result($join->toString() == "LEFT OUTER JOIN x ON a > b OR c != d");
     }
-        
-
 }

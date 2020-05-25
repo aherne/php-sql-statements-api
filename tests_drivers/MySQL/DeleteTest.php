@@ -1,6 +1,6 @@
 <?php
 namespace Test\Lucinda\Query\Vendor\MySQL;
-    
+
 use Lucinda\Query\Vendor\MySQL\Delete;
 use Lucinda\UnitTest\Result;
 
@@ -25,6 +25,4 @@ class DeleteTest
     {
         return new Result($this->object->toString()=="DELETE IGNORE FROM q\r\nWHERE x = c");
     }
-        
-
 }

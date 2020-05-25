@@ -19,6 +19,4 @@ class ReplaceTest
     {
         return new Result($this->object->toString()=="REPLACE INTO x (a, b) VALUES\r\n(1, 2)");
     }
-    
-    
 }

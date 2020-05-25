@@ -1,6 +1,6 @@
 <?php
 namespace Test\Lucinda\Query;
-    
+
 use Lucinda\Query\Delete;
 use Lucinda\UnitTest\Result;
 
@@ -24,6 +24,4 @@ class DeleteTest
     {
         return new Result($this->object->toString()=="DELETE FROM x\r\nWHERE a = b AND c = d");
     }
-        
-
 }

@@ -1,6 +1,6 @@
 <?php
 namespace Test\Lucinda\Query\Clause;
-    
+
 use Lucinda\Query\Clause\Columns;
 use Lucinda\UnitTest\Result;
 
@@ -18,7 +18,6 @@ class ColumnsTest
         $this->object->add("a");
         $this->object->add("b");
         return new Result(true);// tested by toString
-        
     }
         
 
@@ -32,6 +31,4 @@ class ColumnsTest
     {
         return new Result(!$this->object->isEmpty());
     }
-        
-
 }

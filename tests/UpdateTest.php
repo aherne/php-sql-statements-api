@@ -1,6 +1,6 @@
 <?php
 namespace Test\Lucinda\Query;
-    
+
 use Lucinda\Query\Update;
 use Lucinda\UnitTest\Result;
 
@@ -31,6 +31,4 @@ class UpdateTest
     {
         return new Result($this->object->toString()=="UPDATE q\r\nSET a = s\r\nWHERE d = f");
     }
-        
-
 }

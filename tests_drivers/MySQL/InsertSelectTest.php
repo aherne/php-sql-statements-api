@@ -1,6 +1,6 @@
 <?php
 namespace Test\Lucinda\Query\Vendor\MySQL;
-    
+
 use Lucinda\Query\Vendor\MySQL\InsertSelect;
 use Lucinda\Query\Vendor\MySQL\Select;
 use Lucinda\UnitTest\Result;
@@ -40,6 +40,4 @@ c, d\r
 FROM y\r
 ON DUPLICATE KEY UPDATE e = e + 1");
     }
-        
-
 }

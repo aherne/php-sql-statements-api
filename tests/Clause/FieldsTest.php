@@ -1,6 +1,6 @@
 <?php
 namespace Test\Lucinda\Query\Clause;
-    
+
 use Lucinda\Query\Clause\Fields;
 use Lucinda\UnitTest\Result;
 
@@ -31,6 +31,4 @@ class FieldsTest
     {
         return new Result(!$this->object->isEmpty());
     }
-        
-
 }

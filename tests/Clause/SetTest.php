@@ -1,12 +1,11 @@
 <?php
 namespace Test\Lucinda\Query\Clause;
-    
+
 use Lucinda\Query\Clause\Set;
 use Lucinda\UnitTest\Result;
 
 class SetTest
 {
-
     public function set()
     {
         $set = new Set();
@@ -27,6 +26,4 @@ class SetTest
         $set = new Set(["a"=>"b", "c"=>"d"]);
         return new Result(!$set->isEmpty());
     }
-        
-
 }

@@ -1,6 +1,6 @@
 <?php
 namespace Test\Lucinda\Query\Vendor\MySQL;
-    
+
 use Lucinda\Query\Vendor\MySQL\Insert;
 use Lucinda\UnitTest\Result;
 
@@ -33,6 +33,4 @@ class InsertTest
     {
         return new Result($this->object->toString()=="INSERT IGNORE INTO x (a, b) VALUES\r\n(1, 2)\r\nON DUPLICATE KEY UPDATE e = e + 1");
     }
-        
-
 }

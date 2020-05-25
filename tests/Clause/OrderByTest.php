@@ -1,6 +1,6 @@
 <?php
 namespace Test\Lucinda\Query\Clause;
-    
+
 use Lucinda\Query\Clause\OrderBy;
 use Lucinda\UnitTest\Result;
 
@@ -27,6 +27,4 @@ class OrderByTest
         $object = new OrderBy(["a", "b"]);
         return new Result(!$object->isEmpty());
     }
-        
-
 }

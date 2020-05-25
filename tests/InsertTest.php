@@ -1,6 +1,6 @@
 <?php
 namespace Test\Lucinda\Query;
-    
+
 use Lucinda\Query\Insert;
 use Lucinda\UnitTest\Result;
 
@@ -32,6 +32,4 @@ class InsertTest
     {
         return new Result($this->object->toString()=="INSERT INTO x (a, b) VALUES\r\n(1, 2), (3, 4)");
     }
-        
-
 }

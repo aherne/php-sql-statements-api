@@ -1,6 +1,6 @@
 <?php
 namespace Test\Lucinda\Query;
-    
+
 use Lucinda\Query\SelectGroup;
 use Lucinda\Query\Operator\Set;
 use Lucinda\Query\Select;
@@ -53,6 +53,4 @@ class SelectGroupTest
     {
         return new Result($this->object->toString()=="(\r\nSELECT\r\nb, c\r\nFROM t1\r\n)\r\nUNION ALL\r\n(\r\nSELECT\r\nd, e\r\nFROM t2\r\n)\r\nORDER BY b ASC\r\nLIMIT 10 OFFSET 0");
     }
-        
-
 }

@@ -1,6 +1,6 @@
 <?php
 namespace Test\Lucinda\Query\Vendor\MySQL;
-    
+
 use Lucinda\Query\Vendor\MySQL\Update;
 use Lucinda\UnitTest\Result;
 
@@ -26,6 +26,4 @@ class UpdateTest
         $this->object->where(["d"=>"f"]);
         return new Result($this->object->toString()=="UPDATE IGNORE q\r\nSET a = s\r\nWHERE d = f");
     }
-        
-
 }

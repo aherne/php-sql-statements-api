@@ -1,6 +1,6 @@
 <?php
 namespace Test\Lucinda\Query\Clause;
-    
+
 use Lucinda\Query\Clause\Alias;
 use Lucinda\UnitTest\Result;
 
@@ -22,6 +22,4 @@ class AliasTest
     {
         return new Result($this->object->toString() == "a AS b");
     }
-        
-
 }

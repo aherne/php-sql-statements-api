@@ -1,6 +1,6 @@
 <?php
 namespace Test\Lucinda\Query\Clause;
-    
+
 use Lucinda\Query\Clause\Condition;
 use Lucinda\Query\Operator\Comparison;
 use Lucinda\UnitTest\Result;
@@ -13,7 +13,6 @@ class ConditionTest
         $object = new Condition();
         $object->set("a", "b");
         return new Result($object->toString()=="a = b");
-        
     }
         
 
@@ -80,6 +79,4 @@ class ConditionTest
         $object->set("a", "b", Comparison::GREATER_EQUALS);
         return new Result(!$object->isEmpty());
     }
-        
-
 }

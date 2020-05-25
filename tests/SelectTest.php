@@ -1,6 +1,6 @@
 <?php
 namespace Test\Lucinda\Query;
-    
+
 use Lucinda\Query\Select;
 use Lucinda\UnitTest\Result;
 use Lucinda\Query\Operator\Comparison;
@@ -123,6 +123,4 @@ HAVING t2.g > 18\r
 ORDER BY t2.g ASC\r
 LIMIT 10 OFFSET 20");
     }
-        
-
 }

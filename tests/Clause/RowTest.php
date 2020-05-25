@@ -1,12 +1,11 @@
 <?php
 namespace Test\Lucinda\Query\Clause;
-    
+
 use Lucinda\Query\Clause\Row;
 use Lucinda\UnitTest\Result;
 
 class RowTest
 {
-
     public function toString()
     {
         $row = new Row(["a", "b", "c"]);
@@ -19,6 +18,4 @@ class RowTest
         $row = new Row(["a", "b", "c"]);
         return new Result(!$row->isEmpty());
     }
-        
-
 }
