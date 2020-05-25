@@ -69,14 +69,26 @@ For tests and examples, check following files/folders in API sources:
 
 ## Examples
 
-To see examples how each classes are used, check unit tests in **tests** or **tests_drivers** folder! Usage example:
+To see examples how each classes are used, check unit tests in **[tests](https://github.com/aherne/php-sql-statements-api/tree/v2.0.0/tests)** or **[tests_drivers](https://github.com/aherne/php-sql-statements-api/tree/v2.0.0/tests_frivers)** folder! Simple example:
 
 ```php
-$statement = new \Lucinda\Query\SelectGroup();
-$statement->addSelect(new Lucinda\Query\Select("asd", "k"));
-$statement->addSelect(new Lucinda\Query\Select("fgh", "h"));
-$statement->orderBy(["k","z"]);
-$statement->limit(10,4);
+$statement = new \Lucinda\Query\Select("users", "t1");
+$statement->fields(["t3.name"]);
+$statement->joinInner("user_departments", "t2")->on(["t1.id"=>"t2.user_id"]);
+$statement->joinInner("departments", "t3")->on(["t2.department_id"=>"t3.id"]);
+$statement->where(["t1.id"=>":id"]);
+$statement->orderBy(["t3.name"]);
+```
+
+Encapsulating:
+
+```sql
+SELECT t3.name
+FROM users AS t1
+INNER JOIN user_departments AS t2 ON t1.id = t2.user_id
+INNER JOIN departments AS t3 ON t2.department_id = t3.id
+WHERE t1.id = :id
+ORDER BY t3.name
 ```
 
 ## Reference Guide
