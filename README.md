@@ -88,16 +88,16 @@ $statement->limit(10,4);
 | Method | Arguments | Returns | Description |
 | --- | --- | --- | --- |
 | __construct | string $table, string $alias="" | void | Constructs a SELECT statement based on table name and optional alias |
-| distinct | void | void | Constructs a SELECT statement based on table name and optional alias |
-| fields | array $columns = [] | Fields | Constructs a SELECT statement based on table name and optional alias |
-| joinLeft | string $tableName, string $tableAlias = "" | Join | Adds a LEFT JOIN statement |
-| joinRight | string $tableName, string $tableAlias = "" | Join | Adds a RIGHT JOIN statement |
-| joinInner | string $tableName, string $tableAlias = "" | Join | Adds a INNER JOIN statement |
-| joinCross | string $tableName, string $tableAlias = "" | Join | Adds a CROSS JOIN statement |
-| where | array $condition=[], string $logicalOperator=Logical::_AND_ | Condition | Sets up WHERE clause. |
-| groupBy | array $columns = [] | Columns | Sets up GROUP BY statement |
-| having | array $condition=[], string $logicalOperator=Logical::_AND_ | Condition | Sets up HAVING clause. |
-| orderBy | array $fields = [] | OrderBy | Sets up ORDER BY clause |
+| distinct | void | void | Sets statement as DISTINCT, filtering out repeating rows |
+| fields | array $columns = [] | [Lucinda\Queries\Clause\Fields](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Clause/Fields.php) | Sets fields or columns to select |
+| joinLeft | string $tableName, string $tableAlias = "" | [Lucinda\Queries\Clause\Join](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Clause/Join.php) | Adds a LEFT JOIN statement |
+| joinRight | string $tableName, string $tableAlias = "" | [Lucinda\Queries\Clause\Join](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Clause/Join.php) | Adds a RIGHT JOIN statement |
+| joinInner | string $tableName, string $tableAlias = "" | [Lucinda\Queries\Clause\Join](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Clause/Join.php) | Adds a INNER JOIN statement |
+| joinCross | string $tableName, string $tableAlias = "" | [Lucinda\Queries\Clause\Join](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Clause/Join.php) | Adds a CROSS JOIN statement |
+| where | array $condition=[], string $logicalOperator=Logical::_AND_ | [Lucinda\Queries\Clause\Condition](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Clause/Condition.php) | Sets up WHERE clause. |
+| groupBy | array $columns = [] | [Lucinda\Queries\Clause\Columns](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Clause/Columns.php) | Sets up GROUP BY statement |
+| having | array $condition=[], string $logicalOperator=Logical::_AND_ | [Lucinda\Queries\Clause\Condition](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Clause/Condition.php) | Sets up HAVING clause. |
+| orderBy | array $fields = [] | [Lucinda\Queries\Clause\OrderBy](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Clause/OrderBy.php) | Sets up ORDER BY clause |
 | limit | int $limit, int $offset=0 | void | Sets a LIMIT clause |
 | __toString | void | string | Converts object to SQL statement. |
 | toString | void | string | Compiles SQL statement based on data collected in class fields. |
@@ -110,7 +110,7 @@ $statement->limit(10,4);
 | --- | --- | --- | --- |
 | __construct | string $operator = Set::UNION | void | Constructs a SELECT ... OPERATOR ... SELECT statement based on Set OPERATOR |
 | addSelect | Stringable $select | Stringable | Adds select statement to group |
-| orderBy | array $fields = [] | OrderBy | Sets up ORDER BY clause |
+| orderBy | array $fields = [] | [Lucinda\Queries\Clause\OrderBy](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Clause/OrderBy.php) | Sets up ORDER BY clause |
 | limit | int $limit, int $offset=0 | void | Sets a LIMIT clause |
 | __toString | void | string | Converts object to SQL statement. |
 | toString | void | string | Compiles SQL statement based on data collected in class fields. |
@@ -122,8 +122,8 @@ $statement->limit(10,4);
 | Method | Arguments | Returns | Description |
 | --- | --- | --- | --- |
 | __construct | string $table | void | Constructs a INSERT INTO ... VALUES statement based on table name |
-| columns | array $columns = [] | Columns | Sets columns that will be inserted into. |
-| values | array $updates = [] | Row | Adds row to table via list of values to insert in columns |
+| columns | array $columns = [] | [Lucinda\Queries\Clause\Columns](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Clause/Columns.php) | Sets columns that will be inserted into. |
+| values | array $updates = [] | [Lucinda\Queries\Clause\Row](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Clause/Row.php) | Adds row to table via list of values to insert in columns |
 | toString | void | string | Compiles SQL statement based on data collected in class fields. |
 
 ### Class InsertSelect
@@ -133,7 +133,7 @@ $statement->limit(10,4);
 | Method | Arguments | Returns | Description |
 | --- | --- | --- | --- |
 | __construct | string $table | void | Constructs a INSERT INTO ... SELECT statement based on table name |
-| columns | array $columns = [] | Columns | Sets columns that will be inserted into. |
+| columns | array $columns = [] | [Lucinda\Queries\Clause\Columns](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Clause/Columns.php) | Sets columns that will be inserted into. |
 | select | Stringable $select | Stringable | Sets rows to insert based on a SELECT statement |
 | toString | void | string | Compiles SQL statement based on data collected in class fields. |
 
@@ -144,8 +144,8 @@ $statement->limit(10,4);
 | Method | Arguments | Returns | Description |
 | --- | --- | --- | --- |
 | __construct | string $table | void | Constructs a UPDATE statement based on table name |
-| set | array $contents = [] | Set | Sets up SET clause. |
-| where | array $condition = [], string $logicalOperator=Logical::_AND_ | Condition | Sets up WHERE clause. |
+| set | array $contents = [] | [Lucinda\Queries\Clause\Set](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Clause/Set.php) | Sets up SET clause. |
+| where | array $condition = [], string $logicalOperator=Logical::_AND_ | [Lucinda\Queries\Clause\Condition](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Clause/Condition.php) | Sets up WHERE clause. |
 | toString | void | string | Compiles SQL statement based on data collected in class fields. |
 
 ### Class Delete
@@ -155,7 +155,7 @@ $statement->limit(10,4);
 | Method | Arguments | Returns | Description |
 | --- | --- | --- | --- |
 | __construct | string $table | void | Constructs a DELETE statement based on table name |
-| where | array $condition=[], string $logicalOperator=Logical::_AND_ | Condition | Sets up WHERE clause. |
+| where | array $condition=[], string $logicalOperator=Logical::_AND_ | [Lucinda\Queries\Clause\Condition](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Clause/Condition.php) | Sets up WHERE clause. |
 | toString | void | string | Compiles SQL statement based on data collected in class fields. |
 
 ### Class Truncate
@@ -181,7 +181,7 @@ $statement->limit(10,4);
 | Method | Arguments | Returns | Description |
 | --- | --- | --- | --- |
 | ignore | void | void | Sets statement as IGNORE, ignoring foreign key errors and duplicates |
-| onDuplicateKeyUpdate | array $contents = [] | Set | Sets up ON DUPLICATE KEY UPDATE clause. |
+| onDuplicateKeyUpdate | array $contents = [] | [Lucinda\Queries\Clause\Set](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Clause/Set.php) | Sets up ON DUPLICATE KEY UPDATE clause. |
 
 ### Class MySQL InsertSelect
 
@@ -190,7 +190,7 @@ $statement->limit(10,4);
 | Method | Arguments | Returns | Description |
 | --- | --- | --- | --- |
 | ignore | void | void | Sets statement as IGNORE, ignoring foreign key errors and duplicates |
-| onDuplicateKeyUpdate | array $contents = [] | Set | Sets up ON DUPLICATE KEY UPDATE clause. |
+| onDuplicateKeyUpdate | array $contents = [] | [Lucinda\Queries\Clause\Set](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Clause/Set.php) | Sets up ON DUPLICATE KEY UPDATE clause. |
 
 ### Class MySQL InsertSet
 
@@ -200,8 +200,8 @@ $statement->limit(10,4);
 | --- | --- | --- | --- |
 | __construct | string $table | void | Constructs a INSERT INTO ... SET statement based on table name |
 | ignore | void | void | Sets statement as IGNORE, ignoring foreign key errors and duplicates |
-| set | array $contents = [] | Set | Sets up SET clause. |
-| onDuplicateKeyUpdate | array $contents = [] | Set | Sets up ON DUPLICATE KEY UPDATE clause. |
+| set | array $contents = [] | [Lucinda\Queries\Clause\Set](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Clause/Set.php) | Sets up SET clause. |
+| onDuplicateKeyUpdate | array $contents = [] | [Lucinda\Queries\Clause\Set](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Clause/Set.php) | Sets up ON DUPLICATE KEY UPDATE clause. |
 | toString | void | string | Compiles SQL statement based on data collected in class fields. |
 
 ### Class MySQL Replace
@@ -219,7 +219,7 @@ $statement->limit(10,4);
 | Method | Arguments | Returns | Description |
 | --- | --- | --- | --- |
 | __construct | string $table | void | Constructs a REPLACE INTO ... SET statement based on table name |
-| set | array $contents = [] | Set | Sets up SET clause. |
+| set | array $contents = [] | [Lucinda\Queries\Clause\Set](https://github.com/aherne/php-sql-statements-api/blob/v2.0.0/src/Clause/Set.php) | Sets up SET clause. |
 | toString | void | string | Compiles SQL statement based on data collected in class fields. |
 
 ### Class MySQL Update

@@ -48,7 +48,7 @@ class Select implements Stringable
     }
 
     /**
-     * Sets statement as "DISTINCT" (filtering out repeating rows)
+     * Sets statement as DISTINCT, filtering out repeating rows
      */
     public function distinct(): void
     {
@@ -56,7 +56,7 @@ class Select implements Stringable
     }
 
     /**
-     * Sets fields (columns) to select
+     * Sets fields or columns to select
      *
      * @param string[] $columns Sets list of column names directly
      * @return Fields Object to set further fields on.
