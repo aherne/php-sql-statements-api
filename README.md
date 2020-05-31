@@ -1,7 +1,5 @@
 # SQL Statements API
 
-*Documentation below refers to latest API version, available in branch [v3.0.0](https://github.com/aherne/php-sql-statements-api/tree/v2.0.0)!*
-
 Table of contents:
 
 - [About](#about)

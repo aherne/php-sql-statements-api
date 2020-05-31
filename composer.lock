@@ -1,0 +1,63 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "10cc07dae1624900d7af4e48109bb427",
+    "packages": [],
+    "packages-dev": [
+        {
+            "name": "lucinda/unit-testing",
+            "version": "v1.1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/aherne/unit-testing.git",
+                "reference": "2f23a0ba2db61798052d85f945876f2bc6905a77"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/aherne/unit-testing/zipball/2f23a0ba2db61798052d85f945876f2bc6905a77",
+                "reference": "2f23a0ba2db61798052d85f945876f2bc6905a77",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-pdo": "*",
+                "ext-simplexml": "*",
+                "php": "^7.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Lucinda\\UnitTest\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Lucian Popescu",
+                    "email": "lucian.gabriel.popescu@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Lightweight PHP7.1 library for unit testing with zero dependencies",
+            "keywords": [
+                "unit testing"
+            ],
+            "time": "2020-04-18T06:39:50+00:00"
+        }
+    ],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": "^7.1"
+    },
+    "platform-dev": []
+}

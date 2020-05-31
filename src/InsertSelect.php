@@ -1,8 +1,7 @@
 <?php
 namespace Lucinda\Query;
 
-require_once("Exception.php");
-require_once("Select.php");
+use Lucinda\Query\Clause\Columns;
 
 /**
  * Encapsulates SQL statement: INSERT INTO {TABLE} ({COLUMNS}) {SELECT}
@@ -14,9 +13,11 @@ class InsertSelect implements Stringable
     protected $table;
 
     /**
+     * Constructs a INSERT INTO ... SELECT statement based on table name
+     * 
      * @param string $table Name of table to insert into (including schema)
      */
-    public function __construct($table)
+    public function __construct(string $table)
     {
         $this->table = $table;
     }
@@ -27,7 +28,7 @@ class InsertSelect implements Stringable
      * @param string[] $columns Sets list of columns directly
      * @return Columns Objects to add further columns on.
      */
-    public function columns($columns = array())
+    public function columns(array $columns = []): Columns
     {
         $fields = new Columns($columns);
         $this->columns = $fields;
@@ -38,12 +39,10 @@ class InsertSelect implements Stringable
      * Sets rows to insert based on a SELECT statement
      *
      * @param Stringable $select Instance of Select or SelectGroup.
-     * @return Stringable  Instance of Select or SelectGroup.
      */
-    public function select(Stringable $select)
+    public function select(Stringable $select): void
     {
         $this->select=$select;
-        return $select;
     }
 
     /**
@@ -52,7 +51,7 @@ class InsertSelect implements Stringable
      * @return string SQL that results from conversion
      * @throws Exception When statement could not be compiled due to incomplete class fields.
      */
-    public function toString()
+    public function toString(): string
     {
         if (!$this->columns || $this->columns->isEmpty()) {
             throw new Exception("running columns() method is required!");
