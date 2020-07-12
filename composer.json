@@ -1,7 +1,7 @@
 {
 	"name": "lucinda/queries",
 	"type": "library",
-	"description": "Generates SQL statements programmatically based on SQL standards or their vendor-specific derivation",
+	"description": "API that generates SQL statements programmatically based on official standards or their vendor-specific derivation",
 	"keywords": ["sql","query","generation"],
 	"homepage": "https://github.com/aherne/php-sql-statements-api",
 	"license": "MIT",
