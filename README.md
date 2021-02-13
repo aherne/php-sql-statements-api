@@ -193,7 +193,7 @@ ORDER BY t3.name
 
 In addition of above operations, *where* method can use:
 
-- [Lucinda\Queries\Vendor\MySQL\Clause\Condition](https://github.com/aherne/php-sql-statements-api/blob/master/drivers/MySQL/Clause/Condition.php) to support regexp conditions
+- [Lucinda\Queries\Vendor\MySQL\Clause\Condition](https://github.com/aherne/php-sql-statements-api/blob/master/drivers/MySQL/Clause/Condition.php) to support regexp condition and fulltext searches
 - [Lucinda\Queries\Vendor\MySQL\Operator\Logical](https://github.com/aherne/php-sql-statements-api/blob/master/drivers/MySQL/Operator/Logical.php) to support XOR operator
 
 ### Class MySQL Insert
@@ -254,7 +254,7 @@ In addition of above operations, *where* method can use:
 
 In addition of above operations, *where* method can use:
 
-- [Lucinda\Queries\Vendor\MySQL\Clause\Condition](https://github.com/aherne/php-sql-statements-api/blob/master/drivers/MySQL/Clause/Condition.php) to support regexp conditions
+- [Lucinda\Queries\Vendor\MySQL\Clause\Condition](https://github.com/aherne/php-sql-statements-api/blob/master/drivers/MySQL/Clause/Condition.php) to support regexp condition and fulltext searches
 - [Lucinda\Queries\Vendor\MySQL\Operator\Logical](https://github.com/aherne/php-sql-statements-api/blob/master/drivers/MySQL/Operator/Logical.php) to support XOR operator
 
 ### Class MySQL Delete
@@ -267,5 +267,5 @@ In addition of above operations, *where* method can use:
 
 In addition of above operations, *where* method can use:
 
-- [Lucinda\Queries\Vendor\MySQL\Clause\Condition](https://github.com/aherne/php-sql-statements-api/blob/master/drivers/MySQL/Clause/Condition.php) to support regexp conditions
+- [Lucinda\Queries\Vendor\MySQL\Clause\Condition](https://github.com/aherne/php-sql-statements-api/blob/master/drivers/MySQL/Clause/Condition.php) to support regexp condition and fulltext searches
 - [Lucinda\Queries\Vendor\MySQL\Operator\Logical](https://github.com/aherne/php-sql-statements-api/blob/master/drivers/MySQL/Operator/Logical.php) to support XOR operator
