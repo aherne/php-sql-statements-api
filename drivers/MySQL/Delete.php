@@ -2,6 +2,8 @@
 namespace Lucinda\Query\Vendor\MySQL;
 
 use Lucinda\Query\Delete as DefaultDelete;
+use Lucinda\Query\Clause\Condition;
+use Lucinda\Query\Operator\Logical;
 
 /**
  * Encapsulates MySQL statement: DELETE {IGNORE} FROM {TABLE} WHERE {CONDITION}
@@ -16,6 +18,17 @@ class Delete extends DefaultDelete
     public function ignore(): void
     {
         $this->isIgnore = true;
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \Lucinda\Query\Update::where()
+     */
+    public function where(array $condition=[], string $logicalOperator=Logical::_AND_): Condition
+    {
+        $where = new \Lucinda\Query\Vendor\MySQL\Clause\Condition($condition, $logicalOperator);
+        $this->where=$where;
+        return $where;
     }
 
     /**

@@ -2,6 +2,8 @@
 namespace Lucinda\Query\Vendor\MySQL;
 
 use Lucinda\Query\Select as DefaultSelect;
+use Lucinda\Query\Clause\Condition;
+use Lucinda\Query\Operator\Logical;
 
 /**
  * Encapsulates MySQL statement:
@@ -44,6 +46,17 @@ class Select extends DefaultSelect
     public function getCalcFoundRows(): string
     {
         return "SELECT FOUND_ROWS()";
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \Lucinda\Query\Select::where()
+     */
+    public function where(array $condition=[], string $logicalOperator=Logical::_AND_): Condition
+    {
+        $where = new \Lucinda\Query\Vendor\MySQL\Clause\Condition($condition, $logicalOperator);
+        $this->where=$where;
+        return $where;
     }
 
     /**

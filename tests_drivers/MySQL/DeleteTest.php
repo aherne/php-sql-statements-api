@@ -11,7 +11,6 @@ class DeleteTest
     public function __construct()
     {
         $this->object = new Delete("q");
-        $this->object->where(["x"=>"c"]);
     }
 
     public function ignore()
@@ -19,10 +18,17 @@ class DeleteTest
         $this->object->ignore();
         return new Result(true); // tested by toString
     }
+    
+    public function where()
+    {
+        $this->object->where(["x"=>"c"]);
+        return new Result(true); // tested by toString
+    }    
         
 
     public function toString()
     {
         return new Result($this->object->toString()=="DELETE IGNORE FROM q\r\nWHERE x = c");
     }
+
 }

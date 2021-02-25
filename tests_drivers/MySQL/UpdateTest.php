@@ -11,6 +11,7 @@ class UpdateTest
     public function __construct()
     {
         $this->object = new Update("q");
+        $this->object->set(["a"=>"s"]);
     }
 
     public function ignore()
@@ -18,12 +19,15 @@ class UpdateTest
         $this->object->ignore();
         return new Result(true); // tested by toString
     }
-        
+    
+    public function where()
+    {
+        $this->object->where(["d"=>"f"]);
+        return new Result(true); // tested by toString
+    }
 
     public function toString()
     {
-        $this->object->set(["a"=>"s"]);
-        $this->object->where(["d"=>"f"]);
         return new Result($this->object->toString()=="UPDATE IGNORE q\r\nSET a = s\r\nWHERE d = f");
     }
 }

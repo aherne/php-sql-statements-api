@@ -3,6 +3,8 @@ namespace Lucinda\Query\Vendor\MySQL;
 
 use Lucinda\Query\Exception;
 use Lucinda\Query\Update as DefaultUpdate;
+use Lucinda\Query\Clause\Condition;
+use Lucinda\Query\Operator\Logical;
 
 /**
  * Encapsulates MySQL statement: UPDATE {IGNORE} {TABLE} SET {SET} WHERE {CONDITION}
@@ -17,6 +19,17 @@ class Update extends DefaultUpdate
     public function ignore(): void
     {
         $this->isIgnore = true;
+    }
+    
+    /**
+     * {@inheritDoc}
+     * @see \Lucinda\Query\Update::where()
+     */
+    public function where(array $condition=[], string $logicalOperator=Logical::_AND_): Condition
+    {
+        $where = new \Lucinda\Query\Vendor\MySQL\Clause\Condition($condition, $logicalOperator);
+        $this->where=$where;
+        return $where;
     }
 
     /**
