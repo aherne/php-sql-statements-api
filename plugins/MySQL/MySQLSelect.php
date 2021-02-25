@@ -46,6 +46,17 @@ class MySQLSelect extends Select
     {
         return "SELECT FOUND_ROWS()";
     }
+    
+    /**
+     * {@inheritDoc}
+     * @see \Lucinda\Query\Select::where()
+     */
+    public function where($condition=array(), $logicalOperator=LogicalOperator::_AND_)
+    {
+        $where = new MySQLCondition($condition, $logicalOperator);
+        $this->where=$where;
+        return $where;
+    }
 
     /**
      * Compiles SQL statement based on data collected in class fields.

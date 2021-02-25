@@ -19,6 +19,17 @@ class MySQLDelete extends Delete
         $this->isIgnore = true;
         return $this;
     }
+    
+    /**
+     * {@inheritDoc}
+     * @see \Lucinda\Query\Delete::where()
+     */
+    public function where($condition=array(), $logicalOperator=LogicalOperator::_AND_)
+    {
+        $where = new MySQLCondition($condition, $logicalOperator);
+        $this->where=$where;
+        return $where;
+    }
 
     /**
      * Compiles SQL statement based on data collected in class fields.
