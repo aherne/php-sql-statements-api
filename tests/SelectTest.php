@@ -93,34 +93,34 @@ class SelectTest
 
     public function __toString()
     {
-        return new Result($this->object->toString()=="SELECT DISTINCT\r
-a, s\r
-FROM q AS t1\r
-LEFT OUTER JOIN w AS t2 ON t1.z = t2.b\r
-RIGHT OUTER JOIN e AS t3 ON t2.x = t3.n\r
-INNER JOIN r AS t4 ON t3.c = t4.m\r
-CROSS JOIN t AS t5 ON t4.v = t5.k\r
-WHERE t1.f = 11\r
-GROUP BY t1.id\r
-HAVING t2.g > 18\r
-ORDER BY t2.g ASC\r
+        return new Result($this->object->toString()=="SELECT DISTINCT
+a, s
+FROM q AS t1
+LEFT OUTER JOIN w AS t2 ON t1.z = t2.b
+RIGHT OUTER JOIN e AS t3 ON t2.x = t3.n
+INNER JOIN r AS t4 ON t3.c = t4.m
+CROSS JOIN t AS t5 ON t4.v = t5.k
+WHERE t1.f = 11
+GROUP BY t1.id
+HAVING t2.g > 18
+ORDER BY t2.g ASC
 LIMIT 10 OFFSET 20");
     }
         
 
     public function toString()
     {
-        return new Result($this->object->toString()=="SELECT DISTINCT\r
-a, s\r
-FROM q AS t1\r
-LEFT OUTER JOIN w AS t2 ON t1.z = t2.b\r
-RIGHT OUTER JOIN e AS t3 ON t2.x = t3.n\r
-INNER JOIN r AS t4 ON t3.c = t4.m\r
-CROSS JOIN t AS t5 ON t4.v = t5.k\r
-WHERE t1.f = 11\r
-GROUP BY t1.id\r
-HAVING t2.g > 18\r
-ORDER BY t2.g ASC\r
+        return new Result($this->object->toString()=="SELECT DISTINCT
+a, s
+FROM q AS t1
+LEFT OUTER JOIN w AS t2 ON t1.z = t2.b
+RIGHT OUTER JOIN e AS t3 ON t2.x = t3.n
+INNER JOIN r AS t4 ON t3.c = t4.m
+CROSS JOIN t AS t5 ON t4.v = t5.k
+WHERE t1.f = 11
+GROUP BY t1.id
+HAVING t2.g > 18
+ORDER BY t2.g ASC
 LIMIT 10 OFFSET 20");
     }
 }

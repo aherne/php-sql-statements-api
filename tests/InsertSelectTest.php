@@ -32,6 +32,7 @@ class InsertSelectTest
 
     public function toString()
     {
-        return new Result($this->object->toString()=="INSERT INTO x (a, b)\r\nSELECT\r\nc, d\r\nFROM y");
+        $query = str_replace("\n", " ", str_replace("\r", "", $this->object->toString()));
+        return new Result($query=="INSERT INTO x (a, b) SELECT c, d FROM y");
     }
 }

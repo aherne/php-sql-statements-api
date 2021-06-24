@@ -13,8 +13,10 @@
 	},
 	"autoload": {
 		"psr-4": {
-	    	"Lucinda\\Queries\\Vendor\\": "drivers/",
-	    	"Lucinda\\Queries\\": "src/"
+	    	"Lucinda\\Query\\Vendor\\": "drivers/",
+	    	"Lucinda\\Query\\": "src/",
+                "Test\\Lucinda\\Query\\Vendor\\": "tests_drivers/",
+                "Test\\Lucinda\\Query\\": "tests/"
 		}
 	},
 	"authors": [
