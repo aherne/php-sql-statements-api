@@ -4,30 +4,30 @@ namespace Lucinda\Query\Operator;
 /**
  * Enum encapsulating possible SQL WHERE comparison operators
  */
-interface Comparison
+enum Comparison: string
 {
     // simple comparison operators
-    const EQUALS = "=";
-    const GREATER = ">";
-    const LESSER = "<";
-    const DIFFERS = "!=";
-    const GREATER_EQUALS = ">=";
-    const LESSER_EQUALS = "<=";
-    const NULL_SAFE_EQUALS = "<=>";
+    case EQUALS = "=";
+    case GREATER = ">";
+    case LESSER = "<";
+    case DIFFERS = "!=";
+    case GREATER_EQUALS = ">=";
+    case LESSER_EQUALS = "<=";
+    case NULL_SAFE_EQUALS = "<=>";
     
     // pattern comparison operators
-    const LIKE ="LIKE";
-    const NOT_LIKE ="NOT LIKE";
+    case LIKE ="LIKE";
+    case NOT_LIKE ="NOT LIKE";
     
     // in comparison
-    const IN = "IN";
-    const NOT_IN = "NOT IN";
+    case IN = "IN";
+    case NOT_IN = "NOT IN";
     
     // range comparison operators
-    const BETWEEN ="BETWEEN";
-    const NOT_BETWEEN = "NOT BETWEEN";
+    case BETWEEN ="BETWEEN";
+    case NOT_BETWEEN = "NOT BETWEEN";
     
     // null operators
-    const IS_NULL = "IS NULL";
-    const IS_NOT_NULL = "IS NOT NULL";
+    case IS_NULL = "IS NULL";
+    case IS_NOT_NULL = "IS NOT NULL";
 }

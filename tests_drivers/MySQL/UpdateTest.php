@@ -28,6 +28,12 @@ class UpdateTest
 
     public function toString()
     {
-        return new Result($this->object->toString()=="UPDATE IGNORE q\r\nSET a = s\r\nWHERE d = f");
+        return new Result($this->object->__toString()=="UPDATE IGNORE q\r\nSET a = s\r\nWHERE d = f");
     }
+
+    public function __toString():string
+    {
+        return "OK";
+    }
+
 }

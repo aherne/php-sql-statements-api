@@ -8,12 +8,12 @@ use Lucinda\Query\Clause\Set;
 /**
  * Encapsulates MySQL statement: INSERT {IGNORE} INTO {TABLE} SET {SET} ON DUPLICATE KEY UPDATE {UPDATES}
  */
-class InsertSet implements Stringable
+class InsertSet implements \Stringable
 {
-    protected $table;
-    protected $set;
-    protected $isIgnore=false;
-    protected $onDuplicateKeyUpdate;
+    protected string $table;
+    protected ?Set $set = null;
+    protected bool $isIgnore=false;
+    protected ?Set $onDuplicateKeyUpdate = null;
 
     /**
      * Constructs a INSERT INTO ... SET statement based on table name
@@ -28,10 +28,9 @@ class InsertSet implements Stringable
     /**
      * Sets statement as IGNORE, ignoring foreign key errors and duplicates
      */
-    public function ignore()
+    public function ignore(): void
     {
         $this->isIgnore = true;
-        return $this;
     }
 
     /**
@@ -66,14 +65,14 @@ class InsertSet implements Stringable
      * @return string SQL that results from conversion
      * @throws Exception When statement could not be compiled due to incomplete class fields.
      */
-    public function toString(): string
+    public function __toString(): string
     {
         if (!$this->set || $this->set->isEmpty()) {
             throw new Exception("running set() method is mandatory");
         }
 
         return "INSERT ".($this->isIgnore?"IGNORE":"")." INTO ".$this->table." SET"."\r\n".
-            $this->set->toString().
-            ($this->onDuplicateKeyUpdate && !$this->onDuplicateKeyUpdate->isEmpty()?"\r\n"."ON DUPLICATE KEY UPDATE ".$this->onDuplicateKeyUpdate->toString():"");
+            $this->set.
+            ($this->onDuplicateKeyUpdate && !$this->onDuplicateKeyUpdate->isEmpty()?"\r\n"."ON DUPLICATE KEY UPDATE ".$this->onDuplicateKeyUpdate:"");
     }
 }

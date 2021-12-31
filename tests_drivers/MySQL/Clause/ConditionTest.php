@@ -11,14 +11,14 @@ class ConditionTest
         $object = new Condition();
         $object->set("q", "w");
         $object->setRegexp("e", "'.*'");
-        return new Result($object->toString()=="q = w AND e REGEXP '.*'");
+        return new Result($object->__toString()=="q = w AND e REGEXP '.*'");
     }
     
     public function setMatchAgainst()
     {
         $object = new Condition();
         $object->setMatchAgainst(["test"], "'me'");
-        return new Result($object->toString()=="MATCH(test) AGAINST ('me' IN NATURAL LANGUAGE MODE)");
+        return new Result($object->__toString()=="MATCH(test) AGAINST ('me' IN NATURAL LANGUAGE MODE)");
     }        
 
 }

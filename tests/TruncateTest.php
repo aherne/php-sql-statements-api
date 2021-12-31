@@ -9,6 +9,12 @@ class TruncateTest
     public function toString()
     {
         $object = new Truncate("a");
-        return new Result($object->toString()=="TRUNCATE TABLE a");
+        return new Result($object->__toString()=="TRUNCATE TABLE a");
     }
+
+    public function __toString():string
+    {
+        return "OK";
+    }
+
 }

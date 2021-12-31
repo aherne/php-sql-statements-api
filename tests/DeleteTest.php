@@ -22,6 +22,13 @@ class DeleteTest
 
     public function toString()
     {
-        return new Result($this->object->toString()=="DELETE FROM x\r\nWHERE a = b AND c = d");
+        return new Result($this->object->__toString()=="DELETE FROM x\r\nWHERE a = b AND c = d");
     }
+
+    public function __toString(): string
+    {
+        return "OK";
+    }
+        
+
 }

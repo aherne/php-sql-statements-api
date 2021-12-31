@@ -21,6 +21,12 @@ class ReplaceSetTest
     
     public function toString()
     {
-        return new Result($this->object->toString()=="REPLACE INTO x SET\r\na = b");
+        return new Result($this->object->__toString()=="REPLACE INTO x SET\r\na = b");
     }
+
+    public function __toString():string
+    {
+        return "OK";
+    }
+
 }

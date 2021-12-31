@@ -10,14 +10,14 @@ class SetTest
     {
         $set = new Set();
         $set->set("a", "b");
-        return new Result($set->toString()=="a = b");
+        return new Result($set->__toString()=="a = b");
     }
         
 
     public function toString()
     {
         $set = new Set(["a"=>"b", "c"=>"d"]);
-        return new Result($set->toString()=="a = b, c = d");
+        return new Result($set->__toString()=="a = b, c = d");
     }
         
 
@@ -25,5 +25,10 @@ class SetTest
     {
         $set = new Set(["a"=>"b", "c"=>"d"]);
         return new Result(!$set->isEmpty());
+    }
+
+    public function __toString():string
+    {
+        return "OK";
     }
 }

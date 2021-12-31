@@ -10,8 +10,8 @@ use Lucinda\Query\Clause\Set;
  */
 class InsertSelect extends DefaultInsertSelect
 {
-    protected $isIgnore=false;
-    protected $onDuplicateKeyUpdate;
+    protected bool $isIgnore=false;
+    protected ?Set $onDuplicateKeyUpdate = null;
 
     /**
      * Sets statement as IGNORE, ignoring foreign key errors and duplicates
@@ -40,7 +40,7 @@ class InsertSelect extends DefaultInsertSelect
      * @return string SQL that results from conversion
      * @throws Exception When statement could not be compiled due to incomplete class fields.
      */
-    public function toString(): string
+    public function __toString(): string
     {
         if (!$this->columns || $this->columns->isEmpty()) {
             throw new Exception("running columns() method is required!");
@@ -49,8 +49,8 @@ class InsertSelect extends DefaultInsertSelect
             throw new Exception("running select() method is required!");
         }
 
-        return  "INSERT ".($this->isIgnore?"IGNORE":"")." INTO ".$this->table." (".$this->columns->toString().")"."\r\n".
-            $this->select->toString().
-            ($this->onDuplicateKeyUpdate && !$this->onDuplicateKeyUpdate->isEmpty()?"\r\n"."ON DUPLICATE KEY UPDATE ".$this->onDuplicateKeyUpdate->toString():"");
+        return  "INSERT ".($this->isIgnore?"IGNORE":"")." INTO ".$this->table." (".$this->columns.")"."\r\n".
+            $this->select.
+            ($this->onDuplicateKeyUpdate && !$this->onDuplicateKeyUpdate->isEmpty()?"\r\n"."ON DUPLICATE KEY UPDATE ".$this->onDuplicateKeyUpdate:"");
     }
 }

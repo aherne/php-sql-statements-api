@@ -17,6 +17,12 @@ class ReplaceTest
         
     public function toString()
     {
-        return new Result($this->object->toString()=="REPLACE INTO x (a, b) VALUES\r\n(1, 2)");
+        return new Result($this->object->__toString()=="REPLACE INTO x (a, b) VALUES\r\n(1, 2)");
     }
+
+    public function __toString():string
+    {
+        return "OK";
+    }
+
 }

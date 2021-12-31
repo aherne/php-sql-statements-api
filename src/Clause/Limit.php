@@ -1,15 +1,13 @@
 <?php
 namespace Lucinda\Query\Clause;
 
-use Lucinda\Query\Stringable;
-
 /**
  * Encapsulates SQL LIMIT clause
  */
-class Limit implements Stringable
+class Limit implements \Stringable
 {
-    protected $limit;
-    protected $offset;
+    protected int $limit;
+    protected int $offset;
     
     /**
      * Sets up clause directly from constructor.
@@ -28,7 +26,7 @@ class Limit implements Stringable
      *
      * @return string SQL that results from conversion
      */
-    public function toString(): string
+    public function __toString(): string
     {
         return $this->limit." OFFSET ".$this->offset;
     }

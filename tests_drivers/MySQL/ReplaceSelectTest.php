@@ -14,6 +14,12 @@ class ReplaceSelectTest
         $select = new Select("y");
         $select->fields(["c", "d"]);
         $this->object->select($select);
-        return new Result($this->object->toString()=="REPLACE INTO x (a, b)\r\nSELECT \r\nc, d\r\nFROM y");
+        return new Result($this->object->__toString()=="REPLACE INTO x (a, b)\r\nSELECT\r\nc, d\r\nFROM y");
     }
+
+    public function __toString():string
+    {
+        return "OK";
+    }
+
 }

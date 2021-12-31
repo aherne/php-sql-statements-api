@@ -12,7 +12,7 @@ class JoinTest
     {
         $join = new Join("x", "t1");
         $join->on(["a"=>"b"]);
-        return new Result($join->toString() == "INNER JOIN x AS t1 ON a = b");
+        return new Result($join->__toString() == "INNER JOIN x AS t1 ON a = b");
     }
         
 
@@ -22,6 +22,11 @@ class JoinTest
         $condition = $join->on([], Logical::_OR_);
         $condition->set("a", "b", Comparison::GREATER);
         $condition->set("c", "d", Comparison::DIFFERS);
-        return new Result($join->toString() == "LEFT OUTER JOIN x ON a > b OR c != d");
+        return new Result($join->__toString() == "LEFT OUTER JOIN x ON a > b OR c != d");
+    }
+
+    public function __toString():string
+    {
+        return "OK";
     }
 }

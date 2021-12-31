@@ -1,14 +1,12 @@
 <?php
 namespace Lucinda\Query\Clause;
 
-use Lucinda\Query\Stringable;
-
 /**
  * Encapsulates column lists clause
  */
-class Columns implements Stringable
+class Columns implements \Stringable
 {
-    protected $contents = [];
+    protected array $contents = [];
 
     /**
      * @param string[] $contents Sets list of columns directly
@@ -31,11 +29,21 @@ class Columns implements Stringable
     }
 
     /**
+     * Checks if clause is empty
+     *
+     * @return bool
+     */
+    public function isEmpty(): bool
+    {
+        return sizeof($this->contents) == 0;
+    }
+
+    /**
      * Compiles SQL clause based on data collected in class fields.
      *
      * @return string SQL that results from conversion
      */
-    public function toString(): string
+    public function __toString(): string
     {
         $output = "";
         if (!sizeof($this->contents)) {
@@ -47,15 +55,5 @@ class Columns implements Stringable
         }
 
         return substr($output, 0, -2);
-    }
-
-    /**
-     * Checks if clause is empty
-     *
-     * @return bool
-     */
-    public function isEmpty(): bool
-    {
-        return sizeof($this->contents) == 0;
     }
 }

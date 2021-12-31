@@ -30,6 +30,11 @@ class InsertTest
 
     public function toString()
     {
-        return new Result($this->object->toString()=="INSERT INTO x (a, b) VALUES\r\n(1, 2), (3, 4)");
+        return new Result($this->object->__toString()=="INSERT INTO x (a, b) VALUES\r\n(1, 2), (3, 4)");
+    }
+
+    public function __toString(): string
+    {
+        return "OK";
     }
 }

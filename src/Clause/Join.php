@@ -1,18 +1,18 @@
 <?php
 namespace Lucinda\Query\Clause;
 
-use Lucinda\Query\Stringable;
+
 use Lucinda\Query\Operator\Join as JoinOperator;
-use Lucinda\Query\Operator\Logical;
+use Lucinda\Query\Operator\Logical as LogicalOperator;
 
 /**
  * Encapsulates SQL JOIN clause
  */
-class Join implements Stringable
+class Join implements \Stringable
 {
-    protected $joinType;
-    protected $table;
-    protected $whereClause;
+    protected JoinOperator $joinType;
+    protected string $table;
+    protected ?Condition $whereClause = null;
 
     /**
      * Creates a join clause object
@@ -21,7 +21,7 @@ class Join implements Stringable
      * @param string $tableAlias Optional alias of table to join.
      * @param JoinOperator $joinType  Enum holding join operator that will be used in statement (default: INNER)
      */
-    public function __construct(string $tableName, string $tableAlias = "", string $joinType=JoinOperator::INNER)
+    public function __construct(string $tableName, string $tableAlias = "", JoinOperator $joinType=JoinOperator::INNER)
     {
         $this->table = $tableAlias?new Alias($tableName, $tableAlias):$tableName;
         $this->joinType = $joinType;
@@ -31,10 +31,10 @@ class Join implements Stringable
      * Activates ON clause consisting of simple conditions (using a single logical operator).
      *
      * @param string[string] $condition Sets condition group directly when conditions are all of equals type
-     * @param Logical $logicalOperator Enum holding operator that will link conditions in group (default: AND)
+     * @param LogicalOperator $logicalOperator Enum holding operator that will link conditions in group (default: AND)
      * @return Condition Condition to setup.
      */
-    public function on(array $condition = [], string $logicalOperator=Logical::_AND_): Condition
+    public function on(array $condition = [], LogicalOperator $logicalOperator=LogicalOperator::_AND_): Condition
     {
         $whereClause = new Condition($condition, $logicalOperator);
         $this->whereClause=$whereClause;
@@ -46,8 +46,8 @@ class Join implements Stringable
      *
      * @return string SQL that results from conversion
      */
-    public function toString(): string
+    public function __toString(): string
     {
-        return $this->joinType." ".$this->table.($this->whereClause && !$this->whereClause->isEmpty()?" ON ".$this->whereClause->toString():"");
+        return $this->joinType->value." ".$this->table.($this->whereClause && !$this->whereClause->isEmpty()?" ON ".$this->whereClause:"");
     }
 }

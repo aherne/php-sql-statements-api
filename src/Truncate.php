@@ -4,9 +4,9 @@ namespace Lucinda\Query;
 /**
  * Encapsulates SQL statement: TRUNCATE TABLE {TABLE}
  */
-class Truncate implements Stringable
+class Truncate implements \Stringable
 {
-    protected $table;
+    protected string $table;
 
     /**
      * Constructs a TRUNCATE statement based on table name
@@ -23,7 +23,7 @@ class Truncate implements Stringable
      *
      * @return string SQL that results from conversion
      */
-    public function toString(): string
+    public function __toString(): string
     {
         return "TRUNCATE TABLE ".$this->table;
     }

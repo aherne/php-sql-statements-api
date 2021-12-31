@@ -34,10 +34,12 @@ class InsertSelectTest
 
     public function toString()
     {
-        return new Result($this->object->toString()=="INSERT IGNORE INTO x (a, b)\r
-SELECT \r
-c, d\r
-FROM y\r
-ON DUPLICATE KEY UPDATE e = e + 1");
+        return new Result($this->object->__toString()=="INSERT IGNORE INTO x (a, b)\r\nSELECT\r\nc, d\r\nFROM y\r\nON DUPLICATE KEY UPDATE e = e + 1");
     }
+
+    public function __toString():string
+    {
+        return "OK";
+    }
+
 }

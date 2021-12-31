@@ -1,14 +1,12 @@
 <?php
 namespace Lucinda\Query\Vendor\MySQL\Operator;
 
-use Lucinda\Query\Operator\Comparison as DefaultComparison;
-
 /**
  * Enum encapsulating possible MySQL WHERE comparison operators, extending those in standard SQL
  */
-interface Comparison extends DefaultComparison
+enum Comparison: string
 {
     // regular expression comparison operators
-    const REGEXP = "REGEXP";
-    const NOT_REGEXP = "NOT REGEXP";
+    case REGEXP = "REGEXP";
+    case NOT_REGEXP = "NOT REGEXP";
 }

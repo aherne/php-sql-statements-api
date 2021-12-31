@@ -4,9 +4,9 @@ namespace Lucinda\Query\Operator;
 /**
  * Enum encapsulating possible SQL logical operators
  */
-interface Logical
+enum Logical: string
 {
-    const _AND_ = "AND";
-    const _OR_ = "OR";
-    const _NOT_ = "NOT";
+    case _AND_ = "AND";
+    case _OR_ = "OR";
+    case _NOT_ = "NOT";
 }

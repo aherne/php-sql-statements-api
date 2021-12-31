@@ -19,11 +19,10 @@ class ColumnsTest
         $this->object->add("b");
         return new Result(true);// tested by toString
     }
-        
 
     public function toString()
     {
-        return new Result($this->object->toString() == "a, b");
+        return new Result($this->object->__toString() == "a, b");
     }
         
 
@@ -31,4 +30,10 @@ class ColumnsTest
     {
         return new Result(!$this->object->isEmpty());
     }
+
+    public function __toString():string
+    {
+        return "OK";
+    }
+
 }

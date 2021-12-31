@@ -43,14 +43,14 @@ class SelectGroupTest
     }
         
 
-    public function __toString()
+    public function toString()
     {
         return new Result((string) $this->object=="(\r\nSELECT\r\nb, c\r\nFROM t1\r\n)\r\nUNION ALL\r\n(\r\nSELECT\r\nd, e\r\nFROM t2\r\n)\r\nORDER BY b ASC\r\nLIMIT 10 OFFSET 0");
     }
         
 
-    public function toString()
+    public function __toString():string
     {
-        return new Result($this->object->toString()=="(\r\nSELECT\r\nb, c\r\nFROM t1\r\n)\r\nUNION ALL\r\n(\r\nSELECT\r\nd, e\r\nFROM t2\r\n)\r\nORDER BY b ASC\r\nLIMIT 10 OFFSET 0");
+        return "OK";
     }
 }

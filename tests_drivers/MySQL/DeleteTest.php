@@ -28,7 +28,12 @@ class DeleteTest
 
     public function toString()
     {
-        return new Result($this->object->toString()=="DELETE IGNORE FROM q\r\nWHERE x = c");
+        return new Result($this->object->__toString()=="DELETE IGNORE FROM q\r\nWHERE x = c");
+    }
+
+    public function __toString():string
+    {
+        return "OK";
     }
 
 }

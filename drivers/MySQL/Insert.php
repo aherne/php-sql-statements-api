@@ -10,8 +10,8 @@ use Lucinda\Query\Exception;
  */
 class Insert extends DefaultInsert
 {
-    protected $isIgnore=false;
-    protected $onDuplicateKeyUpdate;
+    protected bool $isIgnore=false;
+    protected ?Set $onDuplicateKeyUpdate = null;
 
     /**
      * Sets statement as IGNORE, ignoring foreign key errors and duplicates
@@ -40,7 +40,7 @@ class Insert extends DefaultInsert
      * @return string SQL that results from conversion
      * @throws Exception When statement could not be compiled due to incomplete class fields.
      */
-    public function toString(): string
+    public function __toString(): string
     {
         if (!$this->columns) {
             throw new Exception("running columns() method is mandatory");
@@ -49,10 +49,10 @@ class Insert extends DefaultInsert
             throw new Exception("running values() is mandatory");
         }
 
-        $output = "INSERT ".($this->isIgnore?"IGNORE":"")." INTO ".$this->table." (".$this->columns->toString().") VALUES"."\r\n";
+        $output = "INSERT ".($this->isIgnore?"IGNORE":"")." INTO ".$this->table." (".$this->columns.") VALUES"."\r\n";
         foreach ($this->rows as $row) {
-            $output.=$row->toString().", ";
+            $output.=$row.", ";
         }
-        return substr($output, 0, -2).($this->onDuplicateKeyUpdate?"\r\n"."ON DUPLICATE KEY UPDATE ".$this->onDuplicateKeyUpdate->toString():"");
+        return substr($output, 0, -2).($this->onDuplicateKeyUpdate?"\r\n"."ON DUPLICATE KEY UPDATE ".$this->onDuplicateKeyUpdate:"");
     }
 }

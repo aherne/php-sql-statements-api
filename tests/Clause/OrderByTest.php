@@ -11,14 +11,14 @@ class OrderByTest
         $object = new OrderBy();
         $object->add("a", \Lucinda\Query\Operator\OrderBy::ASC);
         $object->add("b", \Lucinda\Query\Operator\OrderBy::DESC);
-        return new Result($object->toString() == "a ASC, b DESC");
+        return new Result($object->__toString() == "a ASC, b DESC");
     }
         
 
     public function toString()
     {
         $object = new OrderBy(["a", "b"]);
-        return new Result($object->toString() == "a ASC, b ASC");
+        return new Result($object->__toString() == "a ASC, b ASC");
     }
         
 
@@ -27,4 +27,10 @@ class OrderByTest
         $object = new OrderBy(["a", "b"]);
         return new Result(!$object->isEmpty());
     }
+
+    public function __toString():string
+    {
+        return "OK";
+    }
+
 }

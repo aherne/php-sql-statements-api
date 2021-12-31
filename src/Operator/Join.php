@@ -4,10 +4,10 @@ namespace Lucinda\Query\Operator;
 /**
  * Enum encapsulating possible SQL join types
  */
-interface Join
+enum Join: string
 {
-    const LEFT = "LEFT OUTER JOIN";
-    const RIGHT = "RIGHT OUTER JOIN";
-    const INNER = "INNER JOIN";
-    const CROSS = "CROSS JOIN";
+    case LEFT = "LEFT OUTER JOIN";
+    case RIGHT = "RIGHT OUTER JOIN";
+    case INNER = "INNER JOIN";
+    case CROSS = "CROSS JOIN";
 }

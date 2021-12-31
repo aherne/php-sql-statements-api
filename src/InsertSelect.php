@@ -6,11 +6,11 @@ use Lucinda\Query\Clause\Columns;
 /**
  * Encapsulates SQL statement: INSERT INTO {TABLE} ({COLUMNS}) {SELECT}
  */
-class InsertSelect implements Stringable
+class InsertSelect implements \Stringable
 {
-    protected $columns;
-    protected $select;
-    protected $table;
+    protected ?Columns $columns = null;
+    protected ?\Stringable $select = null;
+    protected string $table;
 
     /**
      * Constructs a INSERT INTO ... SELECT statement based on table name
@@ -38,9 +38,9 @@ class InsertSelect implements Stringable
     /**
      * Sets rows to insert based on a SELECT statement
      *
-     * @param Stringable $select Instance of Select or SelectGroup.
+     * @param \Stringable $select Instance of Select or SelectGroup.
      */
-    public function select(Stringable $select): void
+    public function select(\Stringable $select): void
     {
         $this->select=$select;
     }
@@ -51,7 +51,7 @@ class InsertSelect implements Stringable
      * @return string SQL that results from conversion
      * @throws Exception When statement could not be compiled due to incomplete class fields.
      */
-    public function toString(): string
+    public function __toString(): string
     {
         if (!$this->columns || $this->columns->isEmpty()) {
             throw new Exception("running columns() method is required!");
@@ -60,7 +60,7 @@ class InsertSelect implements Stringable
             throw new Exception("running select() method is required!");
         }
 
-        return  "INSERT INTO ".$this->table." (".$this->columns->toString().")"."\r\n".
-                $this->select->toString();
+        return  "INSERT INTO ".$this->table." (".$this->columns.")"."\r\n".
+                $this->select;
     }
 }

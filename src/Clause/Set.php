@@ -1,14 +1,15 @@
 <?php
 namespace Lucinda\Query\Clause;
 
-use Lucinda\Query\Stringable;
+use Lucinda\Query\Select;
+use Lucinda\Query\SelectGroup;
 
 /**
  * Encapsulates SQL SET clause
  */
-class Set implements Stringable
+class Set implements \Stringable
 {
-    protected $contents = [];
+    protected array $contents = [];
 
     /**
      * @param string[string] $contents Sets condition group directly by column name and value
@@ -22,27 +23,13 @@ class Set implements Stringable
      * Sets a value of column by name.
      *
      * @param string $columnName Name of column to set
-     * @param mixed $value Value of column set
+     * @param int|string|float|Select|SelectGroup $value Value of column set
      * @return Set
      */
-    public function set(string $columnName, $value): Set
+    public function set(string $columnName, int|string|float|Select|SelectGroup $value): Set
     {
         $this->contents[$columnName]=$value;
         return $this;
-    }
-
-    /**
-     * Compiles SQL clause based on data collected in class fields.
-     *
-     * @return string SQL that results from conversion
-     */
-    public function toString(): string
-    {
-        $output = "";
-        foreach ($this->contents as $key=>$value) {
-            $output .= $key." = ".$value.", ";
-        }
-        return substr($output, 0, -2);
     }
 
     /**
@@ -53,5 +40,19 @@ class Set implements Stringable
     public function isEmpty(): bool
     {
         return sizeof($this->contents) == 0;
+    }
+
+    /**
+     * Compiles SQL clause based on data collected in class fields.
+     *
+     * @return string SQL that results from conversion
+     */
+    public function __toString(): string
+    {
+        $output = "";
+        foreach ($this->contents as $key=>$value) {
+            $output .= $key." = ".(is_object($value)?"(".$value.")":$value).", ";
+        }
+        return substr($output, 0, -2);
     }
 }

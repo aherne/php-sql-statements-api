@@ -42,4 +42,9 @@ class SelectTest
         $this->object->fields(["x", "y"]);
         return new Result("SELECT STRAIGHT_JOIN SQL_CALC_FOUND_ROWS\r\nx, y\r\nFROM q WHERE c=d");
     }
+
+    public function __toString():string
+    {
+        return "OK";
+    }
 }

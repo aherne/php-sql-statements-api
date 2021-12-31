@@ -4,8 +4,8 @@ namespace Lucinda\Query\Operator;
 /**
  * Enum encapsulating possible SQL order by types
  */
-interface OrderBy
+enum OrderBy: string
 {
-    const ASC = "ASC";
-    const DESC = "DESC";
+    case ASC = "ASC";
+    case DESC = "DESC";
 }

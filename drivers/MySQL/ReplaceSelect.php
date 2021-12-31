@@ -14,7 +14,7 @@ class ReplaceSelect extends \Lucinda\Query\InsertSelect
      * @return string SQL that results from conversion
      * @throws Exception When statement could not be compiled due to incomplete class fields.
      */
-    public function toString(): string
+    public function __toString(): string
     {
         if (!$this->columns || $this->columns->isEmpty()) {
             throw new Exception("running columns() method is required!");
@@ -23,7 +23,7 @@ class ReplaceSelect extends \Lucinda\Query\InsertSelect
             throw new Exception("running select() method is required!");
         }
 
-        return  "REPLACE INTO ".$this->table." (".$this->columns->toString().")"."\r\n".
-            $this->select->toString();
+        return  "REPLACE INTO ".$this->table." (".$this->columns.")"."\r\n".
+            $this->select;
     }
 }

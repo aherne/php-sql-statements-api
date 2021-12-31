@@ -2,17 +2,17 @@
 namespace Lucinda\Query;
 
 use Lucinda\Query\Clause\Set;
-use Lucinda\Query\Operator\Logical;
+use Lucinda\Query\Operator\Logical AS LogicalOperator;
 use Lucinda\Query\Clause\Condition;
 
 /**
  * Encapsulates SQL statement: UPDATE {TABLE} SET {SET} WHERE {CONDITION}
  */
-class Update implements Stringable
+class Update implements \Stringable
 {
-    protected $set;
-    protected $where;
-    protected $table;
+    protected ?Set $set = null;
+    protected ?Condition $where = null;
+    protected string $table;
 
     /**
      * Constructs a UPDATE statement based on table name
@@ -41,10 +41,10 @@ class Update implements Stringable
      * Sets up WHERE clause.
      *
      * @param string[string] $condition Sets condition group directly when conditions are all of equals type
-     * @param Logical $logicalOperator Enum holding operator that will link conditions in group (default: AND)
+     * @param LogicalOperator $logicalOperator Enum holding operator that will link conditions in group (default: AND)
      * @return Condition Object to set further conditions on.
      */
-    public function where(array $condition = [], string $logicalOperator=Logical::_AND_): Condition
+    public function where(array $condition = [], LogicalOperator $logicalOperator=LogicalOperator::_AND_): Condition
     {
         $where = new Condition($condition, $logicalOperator);
         $this->where=$where;
@@ -57,14 +57,14 @@ class Update implements Stringable
      * @return string SQL that results from conversion
      * @throws Exception When statement could not be compiled due to incomplete class fields.
      */
-    public function toString(): string
+    public function __toString(): string
     {
         if (!$this->set || $this->set->isEmpty()) {
             throw new Exception("running set() method is required");
         }
 
         return	"UPDATE ".$this->table.
-            "\r\n"."SET ".$this->set->toString().
-            ($this->where && !$this->where->isEmpty()?"\r\n"."WHERE ".$this->where->toString():"");
+            "\r\n"."SET ".$this->set.
+            ($this->where && !$this->where->isEmpty()?"\r\n"."WHERE ".$this->where:"");
     }
 }

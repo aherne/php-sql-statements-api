@@ -23,12 +23,17 @@ class FieldsTest
 
     public function toString()
     {
-        return new Result($this->object->toString()=="a AS b, c");
+        return new Result($this->object->__toString()=="a AS b, c");
     }
         
 
     public function isEmpty()
     {
         return new Result(!$this->object->isEmpty());
+    }
+
+    public function __toString():string
+    {
+        return "OK";
     }
 }

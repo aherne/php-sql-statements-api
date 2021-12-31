@@ -8,10 +8,10 @@ use Lucinda\Query\Exception;
 /**
  * Encapsulates MySQL statement: REPLACE INTO {TABLE} SET {SET}
  */
-class ReplaceSet implements Stringable
+class ReplaceSet implements \Stringable
 {
-    protected $table;
-    protected $set;
+    protected string $table;
+    protected ?Set $set = null;
 
     /**
      * Constructs a REPLACE INTO ... SET statement based on table name
@@ -42,13 +42,13 @@ class ReplaceSet implements Stringable
      * @return string SQL that results from conversion
      * @throws Exception When statement could not be compiled due to incomplete class fields.
      */
-    public function toString(): string
+    public function __toString(): string
     {
         if (!$this->set || $this->set->isEmpty()) {
             throw new Exception("running set() method is mandatory");
         }
 
         return "REPLACE INTO ".$this->table." SET"."\r\n".
-            $this->set->toString();
+            $this->set;
     }
 }

@@ -36,6 +36,12 @@ class InsertSetTest
 
     public function toString()
     {
-        return new Result($this->object->toString()=="INSERT IGNORE INTO x SET\r\na = b\r\nON DUPLICATE KEY UPDATE e = e + 1");
+        return new Result($this->object->__toString()=="INSERT IGNORE INTO x SET\r\na = b\r\nON DUPLICATE KEY UPDATE e = e + 1");
     }
+
+    public function __toString():string
+    {
+        return "OK";
+    }
+
 }

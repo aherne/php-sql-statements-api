@@ -7,10 +7,10 @@ use Lucinda\Query\Operator\Logical;
 /**
  * Encapsulates SQL statement: DELETE FROM {TABLE} WHERE {CONDITION}
  */
-class Delete implements Stringable
+class Delete implements \Stringable
 {
-    protected $where;
-    protected $table;
+    protected ?Condition $where = null;
+    protected string $table;
 
     /**
      * Constructs a DELETE statement based on table name
@@ -29,10 +29,10 @@ class Delete implements Stringable
      * @param Logical $logicalOperator Enum holding operator that will link conditions in group (default: AND)
      * @return Condition Object to set further conditions on.
      */
-    public function where(array $condition=[], string $logicalOperator=Logical::_AND_): Condition
+    public function where(array $condition=[], Logical $logicalOperator=Logical::_AND_): Condition
     {
         $where = new Condition($condition, $logicalOperator);
-        $this->where=$where;
+        $this->where = $where;
         return $where;
     }
 
@@ -41,9 +41,9 @@ class Delete implements Stringable
      *
      * @return string SQL that results from conversion
      */
-    public function toString(): string
+    public function __toString(): string
     {
         return "DELETE FROM ".$this->table.
-            ($this->where && !$this->where->isEmpty()?"\r\n"."WHERE ".$this->where->toString():"");
+            ($this->where && !$this->where->isEmpty()?"\r\n"."WHERE ".$this->where:"");
     }
 }

@@ -5,7 +5,7 @@ use Lucinda\Query\Clause\Alias;
 use Lucinda\Query\Clause\Fields;
 use Lucinda\Query\Clause\Join;
 use Lucinda\Query\Operator\Join as JoinOperator;
-use Lucinda\Query\Operator\Logical;
+use Lucinda\Query\Operator\Logical as LogicalOperator;
 use Lucinda\Query\Clause\Condition;
 use Lucinda\Query\Clause\OrderBy;
 use Lucinda\Query\Clause\Limit;
@@ -24,17 +24,17 @@ use Lucinda\Query\Clause\Columns;
  * ORDER BY {ORDER_BY}
  * LIMIT {LIMIT}
  */
-class Select implements Stringable
+class Select implements \Stringable
 {
-    protected $isDistinct=false;
-    protected $columns;
-    protected $joins=[];
-    protected $where;
-    protected $groupBy;
-    protected $having;
-    protected $orderBy;
-    protected $limit;
-    protected $table;
+    protected bool $isDistinct = false;
+    protected ?Fields $columns = null;
+    protected array $joins = [];
+    protected ?Condition $where = null;
+    protected ?Columns $groupBy = null;
+    protected ?Condition $having = null;
+    protected ?OrderBy $orderBy = null;
+    protected ?Limit $limit = null;
+    protected string $table;
 
     /**
      * Constructs a SELECT statement based on table name and optional alias
@@ -128,10 +128,10 @@ class Select implements Stringable
      * Sets up WHERE clause.
      *
      * @param string[string] $condition Sets condition group directly when conditions are all of equals type
-     * @param Logical $logicalOperator Enum holding operator that will link conditions in group (default: AND)
+     * @param LogicalOperator $logicalOperator Enum holding operator that will link conditions in group (default: AND)
      * @return Condition Object to set further conditions on.
      */
-    public function where(array $condition=[], string $logicalOperator=Logical::_AND_): Condition
+    public function where(array $condition=[], LogicalOperator $logicalOperator=LogicalOperator::_AND_): Condition
     {
         $where = new Condition($condition, $logicalOperator);
         $this->where=$where;
@@ -155,10 +155,10 @@ class Select implements Stringable
      * Sets up HAVING clause.
      *
      * @param string[string] $condition Sets condition group directly when conditions are all of equals type
-     * @param Logical $logicalOperator Enum holding operator that will link conditions in group (default: AND)
+     * @param LogicalOperator $logicalOperator Enum holding operator that will link conditions in group (default: AND)
      * @return Condition Object to set further conditions on.
      */
-    public function having(array $condition=[], string $logicalOperator=Logical::_AND_): Condition
+    public function having(array $condition=[], LogicalOperator $logicalOperator=LogicalOperator::_AND_): Condition
     {
         $where = new Condition($condition, $logicalOperator);
         $this->having=$where;
@@ -190,37 +190,27 @@ class Select implements Stringable
     }
 
     /**
-     * Converts object to SQL statement.
-     *
-     * @return string
-     */
-    public function __toString(): string
-    {
-        return $this->toString();
-    }
-
-    /**
      * Compiles SQL statement based on data collected in class fields.
      *
      * @return string SQL that results from conversion
      */
-    public function toString(): string
+    public function __toString(): string
     {
         $output =
                 "SELECT".($this->isDistinct?" DISTINCT":"").
-                "\r\n".($this->columns?$this->columns->toString():"*").
+                "\r\n".($this->columns?$this->columns:"*").
                 "\r\n"."FROM ".$this->table;
         if (sizeof($this->joins)>0) {
             foreach ($this->joins as $join) {
-                $output .= "\r\n".$join->toString();
+                $output .= "\r\n".$join;
             }
         }
         $output .=
-                ($this->where && !$this->where->isEmpty()?"\r\nWHERE ".$this->where->toString():"").
-                ($this->groupBy && !$this->groupBy->isEmpty()?"\r\nGROUP BY ".$this->groupBy->toString():"").
-                ($this->having && !$this->having->isEmpty()?"\r\nHAVING ".$this->having->toString():"").
-                ($this->orderBy && !$this->orderBy->isEmpty()?"\r\nORDER BY ".$this->orderBy->toString():"").
-                ($this->limit?"\r\nLIMIT ".$this->limit->toString():"");
+                ($this->where && !$this->where->isEmpty()?"\r\nWHERE ".$this->where:"").
+                ($this->groupBy && !$this->groupBy->isEmpty()?"\r\nGROUP BY ".$this->groupBy:"").
+                ($this->having && !$this->having->isEmpty()?"\r\nHAVING ".$this->having:"").
+                ($this->orderBy && !$this->orderBy->isEmpty()?"\r\nORDER BY ".$this->orderBy:"").
+                ($this->limit?"\r\nLIMIT ".$this->limit:"");
         return $output;
     }
 }

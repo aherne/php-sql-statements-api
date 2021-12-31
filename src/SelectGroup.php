@@ -1,7 +1,7 @@
 <?php
 namespace Lucinda\Query;
 
-use Lucinda\Query\Operator\Set;
+use Lucinda\Query\Operator\Set AS SetOperator;
 use Lucinda\Query\Clause\OrderBy;
 use Lucinda\Query\Clause\Limit;
 
@@ -14,19 +14,19 @@ use Lucinda\Query\Clause\Limit;
  * ORDER BY {ORDER_BY}
  * LIMIT {LIMIT}
  */
-class SelectGroup implements Stringable
+class SelectGroup implements \Stringable
 {
-    protected $operator;
-    protected $orderBy;
-    protected $limit;
-    protected $contents=[];
+    protected SetOperator $operator;
+    protected ?OrderBy $orderBy = null;
+    protected ?Limit $limit = null;
+    protected array $contents=[];
 
     /**
      * Constructs a SELECT ... OPERATOR ... SELECT statement based on Set OPERATOR
      * 
-     * @param Set $operator Enum holding operator that will link SELECT statements in group (default: UNION)
+     * @param SetOperator $operator Enum holding operator that will link SELECT statements in group (default: UNION)
      */
-    public function __construct(string $operator = Set::UNION)
+    public function __construct(SetOperator $operator = SetOperator::UNION)
     {
         $this->operator = $operator;
     }
@@ -34,9 +34,9 @@ class SelectGroup implements Stringable
     /**
      * Adds select statement to group
      *
-     * @param Stringable $select Instance of Select or SelectGroup
+     * @param Select|SelectGroup $select Instance of Select or SelectGroup
      */
-    public function addSelect(Stringable $select): void
+    public function addSelect(Select|SelectGroup $select): void
     {
         $this->contents[] = $select;
     }
@@ -66,32 +66,23 @@ class SelectGroup implements Stringable
     }
 
     /**
-     * Converts object to SQL statement.
-     *
-     * @return string
-     */
-    public function __toString(): string
-    {
-        return $this->toString();
-    }
-
-    /**
      * Compiles SQL statement based on data collected in class fields.
      *
      * @return string SQL that results from conversion
+     * @throws Exception
      */
-    public function toString(): string
+    public function __toString(): string
     {
         if (empty($this->contents)) {
             throw new Exception("running addSelect() method is mandatory");
         }
         $output="";
         foreach ($this->contents as $objValue) {
-            $output.="(\r\n".$objValue->toString()."\r\n)"."\r\n".$this->operator."\r\n";
+            $output.="(\r\n".$objValue."\r\n)"."\r\n".$this->operator->value."\r\n";
         }
-        $output = substr($output, 0, -strlen($this->operator)-2);
+        $output = substr($output, 0, -strlen($this->operator->value)-2);
         return $output.
-                ($this->orderBy && !$this->orderBy->isEmpty()?"ORDER BY ".$this->orderBy->toString()."\r\n":"").
-                ($this->limit?"LIMIT ".$this->limit->toString():"");
+                ($this->orderBy && !$this->orderBy->isEmpty()?"ORDER BY ".$this->orderBy."\r\n":"").
+                ($this->limit?"LIMIT ".$this->limit:"");
     }
 }

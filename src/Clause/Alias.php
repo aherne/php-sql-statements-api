@@ -1,15 +1,13 @@
 <?php
 namespace Lucinda\Query\Clause;
 
-use Lucinda\Query\Stringable;
-
 /**
  * Encapsulates SQL clause: AS.
  */
-class Alias implements Stringable
+class Alias implements \Stringable
 {
-    protected $fieldName;
-    protected $fieldAlias;
+    protected string $fieldName;
+    protected string $fieldAlias;
     
     /**
      * Sets up an alias clause.
@@ -22,23 +20,13 @@ class Alias implements Stringable
         $this->fieldName = $fieldName;
         $this->fieldAlias = $fieldAlias;
     }
-    
-    /**
-     * Converts object to SQL statement.
-     *
-     * @return string SQL that results from conversion
-     */
-    public function __toString(): string
-    {
-        return $this->toString();
-    }
 
     /**
      * Compiles SQL clause based on data collected in class fields.
      *
      * @return string SQL that results from conversion
      */
-    public function toString(): string
+    public function __toString(): string
     {
         return $this->fieldName." AS ".$this->fieldAlias;
     }

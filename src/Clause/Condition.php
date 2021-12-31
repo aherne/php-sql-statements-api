@@ -1,28 +1,29 @@
 <?php
 namespace Lucinda\Query\Clause;
 
-use Lucinda\Query\Stringable;
 use Lucinda\Query\Select;
 use Lucinda\Query\SelectGroup;
-use Lucinda\Query\Operator\Logical;
-use Lucinda\Query\Operator\Comparison;
+use Lucinda\Query\Operator\Logical AS LogicalOperator;
+use Lucinda\Query\Operator\Comparison AS ComparisonOperator;
 
 /**
  * Encapsulates SQL WHERE/ON clauses that use a single logical operator
  */
-class Condition implements Stringable
+class Condition implements \Stringable
 {
-    protected $currentLogical;
-    protected $contents = [];
+    protected LogicalOperator $currentLogical;
+    protected array $contents = [];
 
     /**
+     * Constructor
+     *
      * @param string[string] $condition Sets condition group directly when conditions are all of equals type
-     * @param Logical $logicalOperator Enum holding operator that will link conditions in group (default: AND)
+     * @param LogicalOperator $logicalOperator Enum holding operator that will link conditions in group (default: AND)
      */
-    public function __construct(array $condition=[], string $logicalOperator = Logical::_AND_)
+    public function __construct(array $condition=[], LogicalOperator $logicalOperator = LogicalOperator::_AND_)
     {
         foreach ($condition as $key=>$value) {
-            $this->set($key, $value, Comparison::EQUALS);
+            $this->set($key, $value, ComparisonOperator::EQUALS);
         }
         $this->currentLogical = $logicalOperator;
     }
@@ -31,11 +32,11 @@ class Condition implements Stringable
      * Adds a field vs value comparison condition.
      *
      * @param string $columnName Name of column/field.
-     * @param mixed $value Value of column/field for row.
-     * @param Comparison $comparisonOperator Enum holding logical operator that will be used in condition (default: =)
+     * @param int|string|float|Select|SelectGroup $value Value of column/field for row.
+     * @param ComparisonOperator $comparisonOperator Enum holding logical operator that will be used in condition (default: =)
      * @return Condition
      */
-    public function set(string $columnName, $value, string $comparisonOperator=Comparison::EQUALS): Condition
+    public function set(string $columnName, int|string|float|Select|SelectGroup $value, ComparisonOperator $comparisonOperator=ComparisonOperator::EQUALS): Condition
     {
         $clause = [];
         $clause["KEY"]=$columnName;
@@ -50,14 +51,14 @@ class Condition implements Stringable
      *
      * @param string $columnName Name of column/field.
      * @param string[]|Select|SelectGroup $values List of possible values for column/field in row or a Select/SelectGroup statement.
-     * @param boolean $isTrue Whether or not condition is IN or NOT IN
+     * @param boolean $isTrue Whether condition is IN or NOT IN
      * @return Condition
      */
-    public function setIn(string $columnName, $values, bool $isTrue=true): Condition
+    public function setIn(string $columnName, array|Select|SelectGroup $values, bool $isTrue=true): Condition
     {
         $clause = [];
         $clause["KEY"]=$columnName;
-        $clause["COMPARATOR"]=($isTrue?Comparison::IN:Comparison::NOT_IN);
+        $clause["COMPARATOR"]=($isTrue?ComparisonOperator::IN:ComparisonOperator::NOT_IN);
         $clause["VALUE"]=$values;
         $this->contents[]=$clause;
         return $this;
@@ -67,14 +68,14 @@ class Condition implements Stringable
      * Adds a "NULL/NOT NULL" condition.
      *
      * @param string $columnName Name of column/field.
-     * @param boolean $isTrue Whether or not condition is NULL or NOT NULL
+     * @param boolean $isTrue Whether condition is NULL or NOT NULL
      * @return Condition
      */
     public function setIsNull(string $columnName, bool $isTrue=true): Condition
     {
         $clause = [];
         $clause["KEY"]=$columnName;
-        $clause["COMPARATOR"]=($isTrue?Comparison::IS_NULL:Comparison::IS_NOT_NULL);
+        $clause["COMPARATOR"]=($isTrue?ComparisonOperator::IS_NULL:ComparisonOperator::IS_NOT_NULL);
         $this->contents[]=$clause;
         return $this;
     }
@@ -91,7 +92,7 @@ class Condition implements Stringable
     {
         $clause = [];
         $clause["KEY"]=$columnName;
-        $clause["COMPARATOR"]=($isTrue?Comparison::LIKE:Comparison::NOT_LIKE);
+        $clause["COMPARATOR"]=($isTrue?ComparisonOperator::LIKE:ComparisonOperator::NOT_LIKE);
         $clause["VALUE"]=$pattern;
         $this->contents[]=$clause;
         return $this;
@@ -101,16 +102,16 @@ class Condition implements Stringable
      * Sets up a "BETWEEN/NOT BETWEEN" condition.
      *
      * @param string $columnName Name of column/field.
-     * @param mixed $valueLeft Minimal value of column/field in row
-     * @param mixed $valueRight Maximal value of column/field in row
-     * @param boolean $isTrue Whether or not condition is BETWEEN or NOT BETWEEN
+     * @param int|string|float $valueLeft Minimal value of column/field in row
+     * @param int|string|float $valueRight Maximal value of column/field in row
+     * @param boolean $isTrue Whether condition is BETWEEN or NOT BETWEEN
      * @return Condition
      */
-    public function setBetween(string $columnName, $valueLeft, $valueRight, bool $isTrue=true): Condition
+    public function setBetween(string $columnName, int|string|float $valueLeft, int|string|float $valueRight, bool $isTrue=true): Condition
     {
         $clause = [];
         $clause["KEY"]=$columnName;
-        $clause["COMPARATOR"]=($isTrue?Comparison::BETWEEN:Comparison::NOT_BETWEEN);
+        $clause["COMPARATOR"]=($isTrue?ComparisonOperator::BETWEEN:ComparisonOperator::NOT_BETWEEN);
         $clause["VALUE_LEFT"]=$valueLeft;
         $clause["VALUE_RIGHT"]=$valueRight;
         $this->contents[]=$clause;
@@ -130,45 +131,6 @@ class Condition implements Stringable
     }
 
     /**
-     * Compiles SQL clause based on data collected in class fields.
-     *
-     * @return string SQL that results from conversion
-     */
-    public function toString(): string
-    {
-        $output = "";
-        if ($this->currentLogical==Logical::_NOT_) {
-            $output="NOT (";
-        }
-        foreach ($this->contents as $values) {
-            // create condition
-            if ($values instanceof Condition) {
-                $output .= "(".$values->toString().")";
-            } elseif ($values["COMPARATOR"] == Comparison::IS_NULL || $values["COMPARATOR"] == Comparison::IS_NOT_NULL) {
-                $output .= $values["KEY"]." ".$values["COMPARATOR"];
-            } elseif ($values["COMPARATOR"] == Comparison::BETWEEN || $values["COMPARATOR"] == Comparison::NOT_BETWEEN) {
-                $output .= $values["KEY"]." ".$values["COMPARATOR"]." ".$values["VALUE_LEFT"]." AND ".$values["VALUE_RIGHT"];
-            } elseif ($values["COMPARATOR"] == Comparison::IN || $values["COMPARATOR"] == Comparison::NOT_IN) {
-                $tmp = $values["VALUE"];
-                if (is_array($tmp)) {
-                    $valuesText = "";
-                    foreach ($tmp as $string) {
-                        $valuesText .= $string.", ";
-                    }
-                    $output .= $values["KEY"]." ".$values["COMPARATOR"]." (".substr($valuesText, 0, -2).")";
-                } else {
-                    $output .= $values["KEY"]." ".$values["COMPARATOR"]." (".$tmp.")";
-                }
-            } else {
-                $output .= $values["KEY"]." ".$values["COMPARATOR"]." ".$values["VALUE"];
-            }
-            
-            $output .=" ".($this->currentLogical==Logical::_NOT_?Logical::_AND_:$this->currentLogical)." ";
-        }
-        return substr($output, 0, -2-strlen($this->currentLogical==Logical::_NOT_?Logical::_AND_:$this->currentLogical)).($this->currentLogical==Logical::_NOT_?")":"");
-    }
-
-    /**
      * Checks if clause is empty
      *
      * @return bool
@@ -176,5 +138,49 @@ class Condition implements Stringable
     public function isEmpty(): bool
     {
         return sizeof($this->contents) == 0;
+    }
+
+    /**
+     * Compiles SQL clause based on data collected in class fields.
+     *
+     * @return string SQL that results from conversion
+     */
+    public function __toString(): string
+    {
+        $output = "";
+        if ($this->currentLogical==LogicalOperator::_NOT_) {
+            $output="NOT (";
+        }
+        foreach ($this->contents as $values) {
+            // create condition
+            if ($values instanceof Condition) {
+                $output .= "(".$values.")";
+            } elseif ($values["COMPARATOR"] == ComparisonOperator::IS_NULL || $values["COMPARATOR"] == ComparisonOperator::IS_NOT_NULL) {
+                $output .= $values["KEY"]." ".$values["COMPARATOR"]->value;
+            } elseif ($values["COMPARATOR"] == ComparisonOperator::BETWEEN || $values["COMPARATOR"] == ComparisonOperator::NOT_BETWEEN) {
+                $output .= $values["KEY"]." ".$values["COMPARATOR"]->value." ".$values["VALUE_LEFT"]." AND ".$values["VALUE_RIGHT"];
+            } elseif ($values["COMPARATOR"] == ComparisonOperator::IN || $values["COMPARATOR"] == ComparisonOperator::NOT_IN) {
+                $tmp = $values["VALUE"];
+                if (is_array($tmp)) {
+                    $valuesText = "";
+                    foreach ($tmp as $string) {
+                        $valuesText .= $string.", ";
+                    }
+                    $output .= $values["KEY"]." ".$values["COMPARATOR"]->value." (".substr($valuesText, 0, -2).")";
+                } else {
+                    $output .= $values["KEY"]." ".$values["COMPARATOR"]->value." (".$tmp.")";
+                }
+            } else {
+                $output .= $values["KEY"]." ".
+                    (is_string($values["COMPARATOR"])?$values["COMPARATOR"]:$values["COMPARATOR"]->value)." ".
+                    (is_object($values["VALUE"])?"(".$values["VALUE"].")":$values["VALUE"]);
+            }
+            
+            $output .=" ".($this->currentLogical==LogicalOperator::_NOT_?LogicalOperator::_AND_->value:$this->currentLogical->value)." ";
+        }
+        return substr($output,
+                0,
+                -2-strlen($this->currentLogical==LogicalOperator::_NOT_?LogicalOperator::_AND_->value:$this->currentLogical->value)).
+            ($this->currentLogical==LogicalOperator::_NOT_?")":"");
     }
 }
