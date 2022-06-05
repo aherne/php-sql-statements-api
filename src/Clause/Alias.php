@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Query\Clause;
 
 /**
@@ -8,11 +9,11 @@ class Alias implements \Stringable
 {
     protected string $fieldName;
     protected string $fieldAlias;
-    
+
     /**
      * Sets up an alias clause.
      *
-     * @param string $fieldName Column/table name
+     * @param string $fieldName  Column/table name
      * @param string $fieldAlias Column/table alias
      */
     public function __construct(string $fieldName, string $fieldAlias)

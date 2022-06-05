@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Query\Vendor\MySQL;
 
 use Lucinda\Query\Exception;
@@ -17,7 +18,7 @@ class InsertSet implements \Stringable
 
     /**
      * Constructs a INSERT INTO ... SET statement based on table name
-     * 
+     *
      * @param string $table Name of table to insert into (including schema)
      */
     public function __construct(string $table)
@@ -36,7 +37,7 @@ class InsertSet implements \Stringable
     /**
      * Sets up SET clause.
      *
-     * @param string[string] $contents Sets condition group directly by column name and value
+     * @param  array<string,string> $contents Sets condition group directly by column name and value
      * @return Set Object to write further set clauses on.
      */
     public function set(array $contents = []): Set
@@ -49,7 +50,7 @@ class InsertSet implements \Stringable
     /**
      * Sets up ON DUPLICATE KEY UPDATE clause.
      *
-     * @param string[string] $contents Sets condition group directly by column name and value
+     * @param  array<string,string> $contents Sets condition group directly by column name and value
      * @return Set Object to write further set clauses on.
      */
     public function onDuplicateKeyUpdate(array $contents = []): Set
@@ -71,8 +72,10 @@ class InsertSet implements \Stringable
             throw new Exception("running set() method is mandatory");
         }
 
-        return "INSERT ".($this->isIgnore?"IGNORE":"")." INTO ".$this->table." SET"."\r\n".
-            $this->set.
-            ($this->onDuplicateKeyUpdate && !$this->onDuplicateKeyUpdate->isEmpty()?"\r\n"."ON DUPLICATE KEY UPDATE ".$this->onDuplicateKeyUpdate:"");
+        $output = "INSERT ".($this->isIgnore ? "IGNORE" : "")." INTO ".$this->table." SET"."\r\n".$this->set;
+        if ($this->onDuplicateKeyUpdate && !$this->onDuplicateKeyUpdate->isEmpty()) {
+            $output .= "\r\n"."ON DUPLICATE KEY UPDATE ".$this->onDuplicateKeyUpdate;
+        }
+        return $output;
     }
 }

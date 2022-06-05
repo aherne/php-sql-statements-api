@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Query\Vendor\MySQL;
 
 use Lucinda\Query\Exception;
@@ -24,7 +25,7 @@ class InsertSelect extends DefaultInsertSelect
     /**
      * Sets up ON DUPLICATE KEY UPDATE clause.
      *
-     * @param string[string] $contents Sets condition group directly by column name and value
+     * @param  array<string,string> $contents Sets condition group directly by column name and value
      * @return Set Object to write further set clauses on.
      */
     public function onDuplicateKeyUpdate(array $contents = []): Set
@@ -42,15 +43,11 @@ class InsertSelect extends DefaultInsertSelect
      */
     public function __toString(): string
     {
-        if (!$this->columns || $this->columns->isEmpty()) {
-            throw new Exception("running columns() method is required!");
+        $ignore = ($this->isIgnore ? " IGNORE" : "");
+        $output = "INSERT".$ignore." INTO ".$this->table." (".$this->getColumns().")"."\r\n".$this->getSelect();
+        if ($this->onDuplicateKeyUpdate && !$this->onDuplicateKeyUpdate->isEmpty()) {
+            $output .= "\r\n"."ON DUPLICATE KEY UPDATE ".$this->onDuplicateKeyUpdate;
         }
-        if (!$this->select) {
-            throw new Exception("running select() method is required!");
-        }
-
-        return  "INSERT ".($this->isIgnore?"IGNORE":"")." INTO ".$this->table." (".$this->columns.")"."\r\n".
-            $this->select.
-            ($this->onDuplicateKeyUpdate && !$this->onDuplicateKeyUpdate->isEmpty()?"\r\n"."ON DUPLICATE KEY UPDATE ".$this->onDuplicateKeyUpdate:"");
+        return $output;
     }
 }

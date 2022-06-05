@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Query\Vendor\MySQL;
 
 use Lucinda\Query\Exception;
@@ -16,17 +17,6 @@ class Replace extends \Lucinda\Query\Insert
      */
     public function __toString(): string
     {
-        if (!$this->columns || $this->columns->isEmpty()) {
-            throw new Exception("running columns() method is mandatory");
-        }
-        if (empty($this->rows)) {
-            throw new Exception("running values() is mandatory");
-        }
-
-        $output = "REPLACE INTO ".$this->table." (".$this->columns.") VALUES"."\r\n";
-        foreach ($this->rows as $row) {
-            $output.=$row.", ";
-        }
-        return substr($output, 0, -2);
+        return "REPLACE INTO ".$this->table." (".$this->getColumns().") VALUES\r\n".$this->getRows();
     }
 }

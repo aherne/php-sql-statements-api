@@ -1,4 +1,5 @@
 <?php
+
 namespace Test\Lucinda\Query\Clause;
 
 use Lucinda\Query\Clause\Join;
@@ -14,7 +15,7 @@ class JoinTest
         $join->on(["a"=>"b"]);
         return new Result($join->__toString() == "INNER JOIN x AS t1 ON a = b");
     }
-        
+
 
     public function toString()
     {
@@ -25,7 +26,7 @@ class JoinTest
         return new Result($join->__toString() == "LEFT OUTER JOIN x ON a > b OR c != d");
     }
 
-    public function __toString():string
+    public function __toString(): string
     {
         return "OK";
     }

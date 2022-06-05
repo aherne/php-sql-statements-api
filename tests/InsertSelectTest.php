@@ -1,4 +1,5 @@
 <?php
+
 namespace Test\Lucinda\Query;
 
 use Lucinda\Query\InsertSelect;
@@ -8,7 +9,7 @@ use Lucinda\UnitTest\Result;
 class InsertSelectTest
 {
     private $object;
-    
+
     public function __construct()
     {
         $this->object = new InsertSelect("x");
@@ -19,7 +20,7 @@ class InsertSelectTest
         $this->object->columns(["a", "b"]);
         return new Result(true); // tested by toString
     }
-        
+
 
     public function select()
     {
@@ -39,5 +40,4 @@ class InsertSelectTest
     {
         return "OK";
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Query\Vendor\MySQL;
 
 use Lucinda\Query\Stringable;
@@ -15,7 +16,7 @@ class ReplaceSet implements \Stringable
 
     /**
      * Constructs a REPLACE INTO ... SET statement based on table name
-     * 
+     *
      * @param string $table Name of table to replace into (including schema)
      */
     public function __construct(string $table)
@@ -26,7 +27,7 @@ class ReplaceSet implements \Stringable
     /**
      * Sets up SET clause.
      *
-     * @param string[string] $contents Sets condition group directly by column name and value
+     * @param  array<string,string> $contents Sets condition group directly by column name and value
      * @return Set Object to write further set clauses on.
      */
     public function set(array $contents = []): Set

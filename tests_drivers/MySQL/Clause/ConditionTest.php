@@ -1,4 +1,5 @@
 <?php
+
 namespace Test\Lucinda\Query\Vendor\MySQL\Clause;
 
 use Lucinda\Query\Vendor\MySQL\Clause\Condition;
@@ -13,12 +14,11 @@ class ConditionTest
         $object->setRegexp("e", "'.*'");
         return new Result($object->__toString()=="q = w AND e REGEXP '.*'");
     }
-    
+
     public function setMatchAgainst()
     {
         $object = new Condition();
         $object->setMatchAgainst(["test"], "'me'");
         return new Result($object->__toString()=="MATCH(test) AGAINST ('me' IN NATURAL LANGUAGE MODE)");
-    }        
-
+    }
 }

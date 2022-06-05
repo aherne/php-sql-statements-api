@@ -1,4 +1,5 @@
 <?php
+
 namespace Test\Lucinda\Query\Vendor\MySQL;
 
 use Lucinda\Query\Vendor\MySQL\ReplaceSelect;
@@ -17,9 +18,8 @@ class ReplaceSelectTest
         return new Result($this->object->__toString()=="REPLACE INTO x (a, b)\r\nSELECT\r\nc, d\r\nFROM y");
     }
 
-    public function __toString():string
+    public function __toString(): string
     {
         return "OK";
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Test\Lucinda\Query;
 
 use Lucinda\Query\Delete;
@@ -7,7 +8,7 @@ use Lucinda\UnitTest\Result;
 class DeleteTest
 {
     private $object;
-    
+
     public function __construct()
     {
         $this->object = new Delete("x");
@@ -18,7 +19,7 @@ class DeleteTest
         $this->object->where(["a"=>"b", "c"=>"d"]);
         return new Result(true); // tested by toString
     }
-        
+
 
     public function toString()
     {
@@ -29,6 +30,4 @@ class DeleteTest
     {
         return "OK";
     }
-        
-
 }

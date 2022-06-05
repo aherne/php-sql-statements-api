@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Query\Vendor\MySQL;
 
 use Lucinda\Query\Exception;
@@ -16,14 +17,6 @@ class ReplaceSelect extends \Lucinda\Query\InsertSelect
      */
     public function __toString(): string
     {
-        if (!$this->columns || $this->columns->isEmpty()) {
-            throw new Exception("running columns() method is required!");
-        }
-        if (!$this->select) {
-            throw new Exception("running select() method is required!");
-        }
-
-        return  "REPLACE INTO ".$this->table." (".$this->columns.")"."\r\n".
-            $this->select;
+        return "REPLACE INTO ".$this->table." (".$this->getColumns().")"."\r\n".$this->getSelect();
     }
 }

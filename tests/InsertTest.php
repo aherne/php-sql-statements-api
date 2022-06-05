@@ -1,4 +1,5 @@
 <?php
+
 namespace Test\Lucinda\Query;
 
 use Lucinda\Query\Insert;
@@ -7,7 +8,7 @@ use Lucinda\UnitTest\Result;
 class InsertTest
 {
     private $object;
-    
+
     public function __construct()
     {
         $this->object = new Insert("x");
@@ -18,7 +19,7 @@ class InsertTest
         $this->object->columns(["a", "b"]);
         return new Result(true); // tested by toString
     }
-        
+
 
     public function values()
     {
@@ -26,7 +27,7 @@ class InsertTest
         $this->object->values([3, 4]);
         return new Result(true); // tested by toString
     }
-        
+
 
     public function toString()
     {

@@ -1,4 +1,5 @@
 <?php
+
 namespace Test\Lucinda\Query\Clause;
 
 use Lucinda\Query\Clause\Condition;
@@ -14,7 +15,7 @@ class ConditionTest
         $object->set("a", "b");
         return new Result($object->__toString()=="a = b");
     }
-        
+
 
     public function setIn()
     {
@@ -22,7 +23,7 @@ class ConditionTest
         $object->setIn("a", ["b", "c"]);
         return new Result($object->__toString()=="a IN (b, c)");
     }
-        
+
 
     public function setIsNull()
     {
@@ -30,7 +31,7 @@ class ConditionTest
         $object->setIsNull("a", false);
         return new Result($object->__toString()=="a IS NOT NULL");
     }
-        
+
 
     public function setLike()
     {
@@ -38,7 +39,7 @@ class ConditionTest
         $object->setLike("a", "'%b%'");
         return new Result($object->__toString()=="a LIKE '%b%'");
     }
-        
+
 
     public function setBetween()
     {
@@ -46,7 +47,7 @@ class ConditionTest
         $object->setBetween("a", "c", "d");
         return new Result($object->__toString()=="a BETWEEN c AND d");
     }
-        
+
 
     public function setGroup()
     {
@@ -58,7 +59,7 @@ class ConditionTest
         $object->setGroup($subcondition);
         return new Result($object->__toString()=="a = b OR (c = d AND e = f)");
     }
-        
+
 
     public function toString()
     {
@@ -71,7 +72,7 @@ class ConditionTest
         $object->setGroup($subcondition);
         return new Result($object->__toString()=="a >= b AND c = d AND (e = f OR g = h)");
     }
-        
+
 
     public function isEmpty()
     {
@@ -80,10 +81,8 @@ class ConditionTest
         return new Result(!$object->isEmpty());
     }
 
-    public function __toString():string
+    public function __toString(): string
     {
         return "OK";
     }
-        
-
 }

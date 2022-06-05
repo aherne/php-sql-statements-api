@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Query\Clause;
 
 use Lucinda\Query\Operator\OrderBy as OrderByOperator;
@@ -8,6 +9,9 @@ use Lucinda\Query\Operator\OrderBy as OrderByOperator;
  */
 class OrderBy implements \Stringable
 {
+    /**
+     * @var array<string,OrderByOperator>
+     */
     protected array $contents = [];
 
     /**
@@ -25,8 +29,8 @@ class OrderBy implements \Stringable
     /**
      * Adds order by clause.
      *
-     * @param string $columnName Name of column/field to order by with.
-     * @param OrderByOperator $operator Enum encapsulating order by direction (default: ASC)
+     * @param  string          $columnName Name of column/field to order by with.
+     * @param  OrderByOperator $operator   Enum encapsulating order by direction (default: ASC)
      * @return OrderBy Object to set further clauses on.
      */
     public function add(string $columnName, OrderByOperator $operator = OrderByOperator::ASC): OrderBy

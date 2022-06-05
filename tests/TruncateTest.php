@@ -1,4 +1,5 @@
 <?php
+
 namespace Test\Lucinda\Query;
 
 use Lucinda\Query\Truncate;
@@ -12,9 +13,8 @@ class TruncateTest
         return new Result($object->__toString()=="TRUNCATE TABLE a");
     }
 
-    public function __toString():string
+    public function __toString(): string
     {
         return "OK";
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Query\Clause;
 
 /**
@@ -8,11 +9,11 @@ class Limit implements \Stringable
 {
     protected int $limit;
     protected int $offset;
-    
+
     /**
      * Sets up clause directly from constructor.
      *
-     * @param integer $limit Sets how many rows SELECT will return.
+     * @param integer $limit  Sets how many rows SELECT will return.
      * @param integer $offset Optionally sets offset to start limiting with.
      */
     public function __construct(int $limit, int $offset=0)

@@ -1,4 +1,5 @@
 <?php
+
 namespace Test\Lucinda\Query\Clause;
 
 use Lucinda\Query\Clause\Limit;
@@ -12,7 +13,7 @@ class LimitTest
         return new Result($limit->__toString()=="10 OFFSET 1");
     }
 
-    public function __toString():string
+    public function __toString(): string
     {
         return "OK";
     }

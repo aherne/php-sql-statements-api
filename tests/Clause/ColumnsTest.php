@@ -1,4 +1,5 @@
 <?php
+
 namespace Test\Lucinda\Query\Clause;
 
 use Lucinda\Query\Clause\Columns;
@@ -7,7 +8,7 @@ use Lucinda\UnitTest\Result;
 class ColumnsTest
 {
     private $object;
-    
+
     public function __construct()
     {
         $this->object = new Columns();
@@ -24,16 +25,15 @@ class ColumnsTest
     {
         return new Result($this->object->__toString() == "a, b");
     }
-        
+
 
     public function isEmpty()
     {
         return new Result(!$this->object->isEmpty());
     }
 
-    public function __toString():string
+    public function __toString(): string
     {
         return "OK";
     }
-
 }

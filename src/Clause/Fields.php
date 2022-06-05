@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Query\Clause;
 
 /**
@@ -6,6 +7,9 @@ namespace Lucinda\Query\Clause;
  */
 class Fields implements \Stringable
 {
+    /**
+     * @var string[]
+     */
     protected array $contents = [];
 
     /**
@@ -21,13 +25,13 @@ class Fields implements \Stringable
     /**
      * Adds column to list.
      *
-     * @param string $columnName Column name
-     * @param string $columnAlias Optional column alias
+     * @param  string $columnName  Column name
+     * @param  string $columnAlias Optional column alias
      * @return Fields
      */
     public function add(string $columnName, string $columnAlias = ""): Fields
     {
-        $this->contents[]=($columnAlias?new Alias($columnName, $columnAlias):$columnName);
+        $this->contents[]=($columnAlias ? new Alias($columnName, $columnAlias) : $columnName);
         return $this;
     }
 
@@ -52,11 +56,11 @@ class Fields implements \Stringable
         if (!sizeof($this->contents)) {
             return $output;
         }
-        
+
         foreach ($this->contents as $value) {
             $output .= $value.", ";
         }
-        
+
         return substr($output, 0, -2);
     }
 }

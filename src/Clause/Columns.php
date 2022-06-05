@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Query\Clause;
 
 /**
@@ -6,6 +7,9 @@ namespace Lucinda\Query\Clause;
  */
 class Columns implements \Stringable
 {
+    /**
+     * @var string[]
+     */
     protected array $contents = [];
 
     /**
@@ -19,7 +23,7 @@ class Columns implements \Stringable
     /**
      * Adds column to list.
      *
-     * @param string $columnName Name of column to add
+     * @param  string $columnName Name of column to add
      * @return Columns Object to set further columns on.
      */
     public function add(string $columnName): Columns

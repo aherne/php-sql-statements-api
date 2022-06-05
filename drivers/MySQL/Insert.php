@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Query\Vendor\MySQL;
 
 use Lucinda\Query\Insert as DefaultInsert;
@@ -6,7 +7,8 @@ use Lucinda\Query\Clause\Set;
 use Lucinda\Query\Exception;
 
 /**
- * Encapsulates MySQL statement: INSERT {IGNORE} INTO {TABLE} ({COLUMNS}) VALUES ({ROW}), ... ON DUPLICATE KEY UPDATE {UPDATES}
+ * Encapsulates MySQL statement: INSERT {IGNORE} INTO {TABLE} ({COLUMNS}) VALUES ({ROW}), ...
+ * ON DUPLICATE KEY UPDATE {UPDATES}
  */
 class Insert extends DefaultInsert
 {
@@ -24,7 +26,7 @@ class Insert extends DefaultInsert
     /**
      * Sets up ON DUPLICATE KEY UPDATE clause.
      *
-     * @param string[string] $contents Sets condition group directly by column name and value
+     * @param  array<string,string> $contents Sets condition group directly by column name and value
      * @return Set Object to write further set clauses on.
      */
     public function onDuplicateKeyUpdate(array $contents = []): Set
@@ -42,17 +44,11 @@ class Insert extends DefaultInsert
      */
     public function __toString(): string
     {
-        if (!$this->columns) {
-            throw new Exception("running columns() method is mandatory");
+        $ignore = ($this->isIgnore ? " IGNORE" : "");
+        $output = "INSERT".$ignore." INTO ".$this->table." (".$this->getColumns().") VALUES\r\n".$this->getRows();
+        if ($this->onDuplicateKeyUpdate && !$this->onDuplicateKeyUpdate->isEmpty()) {
+            $output .= "\r\n"."ON DUPLICATE KEY UPDATE ".$this->onDuplicateKeyUpdate;
         }
-        if (!$this->rows) {
-            throw new Exception("running values() is mandatory");
-        }
-
-        $output = "INSERT ".($this->isIgnore?"IGNORE":"")." INTO ".$this->table." (".$this->columns.") VALUES"."\r\n";
-        foreach ($this->rows as $row) {
-            $output.=$row.", ";
-        }
-        return substr($output, 0, -2).($this->onDuplicateKeyUpdate?"\r\n"."ON DUPLICATE KEY UPDATE ".$this->onDuplicateKeyUpdate:"");
+        return $output;
     }
 }

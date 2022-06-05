@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Query;
 
 use Lucinda\Query\Clause\Columns;
@@ -14,7 +15,7 @@ class InsertSelect implements \Stringable
 
     /**
      * Constructs a INSERT INTO ... SELECT statement based on table name
-     * 
+     *
      * @param string $table Name of table to insert into (including schema)
      */
     public function __construct(string $table)
@@ -25,7 +26,7 @@ class InsertSelect implements \Stringable
     /**
      * Sets columns that will be inserted into.
      *
-     * @param string[] $columns Sets list of columns directly
+     * @param  string[] $columns Sets list of columns directly
      * @return Columns Objects to add further columns on.
      */
     public function columns(array $columns = []): Columns
@@ -53,14 +54,34 @@ class InsertSelect implements \Stringable
      */
     public function __toString(): string
     {
+        return  "INSERT INTO ".$this->table." (".$this->getColumns().")"."\r\n".$this->getSelect();
+    }
+
+    /**
+     * Converts columns to string
+     *
+     * @return string
+     * @throws Exception
+     */
+    protected function getColumns(): string
+    {
         if (!$this->columns || $this->columns->isEmpty()) {
             throw new Exception("running columns() method is required!");
         }
+        return (string) $this->columns;
+    }
+
+    /**
+     * Converts select to string
+     *
+     * @return string
+     * @throws Exception
+     */
+    protected function getSelect(): string
+    {
         if (!$this->select) {
             throw new Exception("running select() method is required!");
         }
-
-        return  "INSERT INTO ".$this->table." (".$this->columns.")"."\r\n".
-                $this->select;
+        return (string) $this->select;
     }
 }

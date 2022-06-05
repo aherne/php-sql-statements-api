@@ -1,7 +1,8 @@
 <?php
+
 namespace Lucinda\Query;
 
-use Lucinda\Query\Operator\Set AS SetOperator;
+use Lucinda\Query\Operator\Set as SetOperator;
 use Lucinda\Query\Clause\OrderBy;
 use Lucinda\Query\Clause\Limit;
 
@@ -19,11 +20,14 @@ class SelectGroup implements \Stringable
     protected SetOperator $operator;
     protected ?OrderBy $orderBy = null;
     protected ?Limit $limit = null;
+    /**
+     * @var array<int,Select|SelectGroup>
+     */
     protected array $contents=[];
 
     /**
      * Constructs a SELECT ... OPERATOR ... SELECT statement based on Set OPERATOR
-     * 
+     *
      * @param SetOperator $operator Enum holding operator that will link SELECT statements in group (default: UNION)
      */
     public function __construct(SetOperator $operator = SetOperator::UNION)
@@ -44,7 +48,7 @@ class SelectGroup implements \Stringable
     /**
      * Sets up ORDER BY clause
      *
-     * @param string[] $fields Sets list of columns to order by directly in ASC mode
+     * @param  string[] $fields Sets list of columns to order by directly in ASC mode
      * @return OrderBy Object to set further clauses on.
      */
     public function orderBy(array $fields = []): OrderBy
@@ -57,7 +61,7 @@ class SelectGroup implements \Stringable
     /**
      * Sets a LIMIT clause
      *
-     * @param integer $limit Sets how many rows SELECT will return.
+     * @param integer $limit  Sets how many rows SELECT will return.
      * @param integer $offset Optionally sets offset to start limiting with.
      */
     public function limit(int $limit, int $offset=0): void
@@ -82,7 +86,7 @@ class SelectGroup implements \Stringable
         }
         $output = substr($output, 0, -strlen($this->operator->value)-2);
         return $output.
-                ($this->orderBy && !$this->orderBy->isEmpty()?"ORDER BY ".$this->orderBy."\r\n":"").
-                ($this->limit?"LIMIT ".$this->limit:"");
+                ($this->orderBy && !$this->orderBy->isEmpty() ? "ORDER BY ".$this->orderBy."\r\n" : "").
+                ($this->limit ? "LIMIT ".$this->limit : "");
     }
 }

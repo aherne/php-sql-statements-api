@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Query;
 
 use Lucinda\Query\Clause\Condition;
@@ -14,7 +15,7 @@ class Delete implements \Stringable
 
     /**
      * Constructs a DELETE statement based on table name
-     * 
+     *
      * @param string $table Name of table to delete from (including schema)
      */
     public function __construct(string $table)
@@ -25,8 +26,8 @@ class Delete implements \Stringable
     /**
      * Sets up WHERE clause.
      *
-     * @param string[string] $condition Sets condition group directly when conditions are all of equals type
-     * @param Logical $logicalOperator Enum holding operator that will link conditions in group (default: AND)
+     * @param  array<string,string> $condition       Sets condition group directly when conditions are all of equals type
+     * @param  Logical              $logicalOperator Enum holding operator that will link conditions in group (default: AND)
      * @return Condition Object to set further conditions on.
      */
     public function where(array $condition=[], Logical $logicalOperator=Logical::_AND_): Condition
@@ -43,7 +44,16 @@ class Delete implements \Stringable
      */
     public function __toString(): string
     {
-        return "DELETE FROM ".$this->table.
-            ($this->where && !$this->where->isEmpty()?"\r\n"."WHERE ".$this->where:"");
+        return "DELETE FROM ".$this->table.$this->getWhere();
+    }
+
+    /**
+     * Converts WHERE clause set by user (if any) to string
+     *
+     * @return string
+     */
+    protected function getWhere(): string
+    {
+        return ($this->where && !$this->where->isEmpty() ? "\r\nWHERE ".$this->where : "");
     }
 }

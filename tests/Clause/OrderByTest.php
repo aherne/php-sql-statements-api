@@ -1,4 +1,5 @@
 <?php
+
 namespace Test\Lucinda\Query\Clause;
 
 use Lucinda\Query\Clause\OrderBy;
@@ -13,14 +14,14 @@ class OrderByTest
         $object->add("b", \Lucinda\Query\Operator\OrderBy::DESC);
         return new Result($object->__toString() == "a ASC, b DESC");
     }
-        
+
 
     public function toString()
     {
         $object = new OrderBy(["a", "b"]);
         return new Result($object->__toString() == "a ASC, b ASC");
     }
-        
+
 
     public function isEmpty()
     {
@@ -28,9 +29,8 @@ class OrderByTest
         return new Result(!$object->isEmpty());
     }
 
-    public function __toString():string
+    public function __toString(): string
     {
         return "OK";
     }
-
 }

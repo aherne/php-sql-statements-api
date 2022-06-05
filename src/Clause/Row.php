@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Query\Clause;
 
 /**
@@ -6,6 +7,9 @@ namespace Lucinda\Query\Clause;
  */
 class Row implements \Stringable
 {
+    /**
+     * @var string[]
+     */
     protected array $contents = [];
 
     /**

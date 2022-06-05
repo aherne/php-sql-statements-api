@@ -1,9 +1,11 @@
 <?php
+
 namespace Lucinda\Query\Vendor\MySQL;
 
 use Lucinda\Query\Select as DefaultSelect;
 use Lucinda\Query\Clause\Condition;
 use Lucinda\Query\Operator\Logical as LogicalOperator;
+use Lucinda\Query\Vendor\MySQL\Clause\Condition as MySQLCondition;
 
 /**
  * Encapsulates MySQL statement:
@@ -47,43 +49,29 @@ class Select extends DefaultSelect
     {
         return "SELECT FOUND_ROWS()";
     }
-    
+
     /**
      * {@inheritDoc}
+     *
      * @see \Lucinda\Query\Select::where()
      */
     public function where(array $condition=[], LogicalOperator $logicalOperator=LogicalOperator::_AND_): Condition
     {
-        $where = new \Lucinda\Query\Vendor\MySQL\Clause\Condition($condition, $logicalOperator);
+        $where = new MySQLCondition($condition, $logicalOperator);
         $this->where=$where;
         return $where;
     }
 
     /**
-     * Compiles SQL statement based on data collected in class fields.
+     * {@inheritDoc}
      *
-     * @return string SQL that results from conversion
+     * @see \Lucinda\Query\Select::getOptions()
      */
-    public function toString(): string
+    protected function getOptions(): string
     {
-        $output =
-            "SELECT ".
-            ($this->isDistinct?"DISTINCT ":"").
-            ($this->straightJoin?"STRAIGHT_JOIN ":"").
-            ($this->calcFoundRows?"SQL_CALC_FOUND_ROWS ":"").
-            "\r\n".($this->columns?$this->columns:"*").
-            "\r\n"."FROM ".$this->table;
-        if (sizeof($this->joins)>0) {
-            foreach ($this->joins as $join) {
-                $output .= "\r\n".$join;
-            }
-        }
-        $output .=
-            ($this->where && !$this->where->isEmpty()?"\r\nWHERE ".$this->where:"").
-            ($this->groupBy && !$this->groupBy->isEmpty()?"\r\nGROUP BY ".$this->groupBy:"").
-            ($this->having && !$this->having->isEmpty()?"\r\nHAVING ".$this->having:"").
-            ($this->orderBy && !$this->orderBy->isEmpty()?"\r\nORDER BY ".$this->orderBy:"").
-            ($this->limit?"\r\nLIMIT ".$this->limit:"");
-        return $output;
+        return
+            ($this->isDistinct ? " DISTINCT" : "").
+            ($this->straightJoin ? " STRAIGHT_JOIN" : "").
+            ($this->calcFoundRows ? " SQL_CALC_FOUND_ROWS" : "");
     }
 }

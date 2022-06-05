@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Query\Clause;
 
 use Lucinda\Query\Select;
@@ -9,10 +10,13 @@ use Lucinda\Query\SelectGroup;
  */
 class Set implements \Stringable
 {
+    /**
+     * @var array<string,mixed>
+     */
     protected array $contents = [];
 
     /**
-     * @param string[string] $contents Sets condition group directly by column name and value
+     * @param array<string,string> $contents Sets condition group directly by column name and value
      */
     public function __construct(array $contents = [])
     {
@@ -22,8 +26,8 @@ class Set implements \Stringable
     /**
      * Sets a value of column by name.
      *
-     * @param string $columnName Name of column to set
-     * @param int|string|float|Select|SelectGroup $value Value of column set
+     * @param  string                              $columnName Name of column to set
+     * @param  int|string|float|Select|SelectGroup $value      Value of column set
      * @return Set
      */
     public function set(string $columnName, int|string|float|Select|SelectGroup $value): Set
@@ -51,7 +55,7 @@ class Set implements \Stringable
     {
         $output = "";
         foreach ($this->contents as $key=>$value) {
-            $output .= $key." = ".(is_object($value)?"(".$value.")":$value).", ";
+            $output .= $key." = ".(is_object($value) ? "(".$value.")" : $value).", ";
         }
         return substr($output, 0, -2);
     }

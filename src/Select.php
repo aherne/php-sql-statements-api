@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Query;
 
 use Lucinda\Query\Clause\Alias;
@@ -28,6 +29,9 @@ class Select implements \Stringable
 {
     protected bool $isDistinct = false;
     protected ?Fields $columns = null;
+    /**
+     * @var Join[]
+     */
     protected array $joins = [];
     protected ?Condition $where = null;
     protected ?Columns $groupBy = null;
@@ -38,13 +42,13 @@ class Select implements \Stringable
 
     /**
      * Constructs a SELECT statement based on table name and optional alias
-     * 
+     *
      * @param string $table Name of table to select from (including schema)
      * @param string $alias Optional alias to identify table with
      */
     public function __construct(string $table, string $alias="")
     {
-        $this->table = ($alias?new Alias($table, $alias):$table);
+        $this->table = ($alias ? new Alias($table, $alias) : $table);
     }
 
     /**
@@ -58,7 +62,7 @@ class Select implements \Stringable
     /**
      * Sets fields or columns to select
      *
-     * @param string[] $columns Sets list of column names directly
+     * @param  string[] $columns Sets list of column names directly
      * @return Fields Object to set further fields on.
      */
     public function fields(array $columns = []): Fields
@@ -71,8 +75,8 @@ class Select implements \Stringable
     /**
      * Adds a LEFT JOIN statement
      *
-     * @param string $tableName Name of table to join with
-     * @param string $tableAlias Optional alias of table to join with
+     * @param  string $tableName  Name of table to join with
+     * @param  string $tableAlias Optional alias of table to join with
      * @return Join Object to set join conditions on.
      */
     public function joinLeft(string $tableName, string $tableAlias = ""): Join
@@ -85,8 +89,8 @@ class Select implements \Stringable
     /**
      * Adds a RIGHT JOIN statement
      *
-     * @param string $tableName Name of table to join with
-     * @param string $tableAlias Optional alias of table to join with
+     * @param  string $tableName  Name of table to join with
+     * @param  string $tableAlias Optional alias of table to join with
      * @return Join Object to set join conditions on.
      */
     public function joinRight(string $tableName, string $tableAlias = ""): Join
@@ -99,8 +103,8 @@ class Select implements \Stringable
     /**
      * Adds a INNER JOIN statement
      *
-     * @param string $tableName Name of table to join with
-     * @param string $tableAlias Optional alias of table to join with
+     * @param  string $tableName  Name of table to join with
+     * @param  string $tableAlias Optional alias of table to join with
      * @return Join Object to set join conditions on.
      */
     public function joinInner(string $tableName, string $tableAlias = ""): Join
@@ -113,8 +117,8 @@ class Select implements \Stringable
     /**
      * Adds a CROSS JOIN statement
      *
-     * @param string $tableName Name of table to join with
-     * @param string $tableAlias Optional alias of table to join with
+     * @param  string $tableName  Name of table to join with
+     * @param  string $tableAlias Optional alias of table to join with
      * @return Join Object to set join conditions on.
      */
     public function joinCross(string $tableName, string $tableAlias = ""): Join
@@ -127,8 +131,8 @@ class Select implements \Stringable
     /**
      * Sets up WHERE clause.
      *
-     * @param string[string] $condition Sets condition group directly when conditions are all of equals type
-     * @param LogicalOperator $logicalOperator Enum holding operator that will link conditions in group (default: AND)
+     * @param  array<string,string> $condition       Sets condition group directly when conditions are all of equals type
+     * @param  LogicalOperator      $logicalOperator Enum holding operator that will link conditions in group (default: AND)
      * @return Condition Object to set further conditions on.
      */
     public function where(array $condition=[], LogicalOperator $logicalOperator=LogicalOperator::_AND_): Condition
@@ -141,7 +145,7 @@ class Select implements \Stringable
     /**
      * Sets up GROUP BY statement
      *
-     * @param string[] $columns Sets list of column names directly
+     * @param  string[] $columns Sets list of column names directly
      * @return Columns Object to set further fields on.
      */
     public function groupBy(array $columns = []): Columns
@@ -154,8 +158,8 @@ class Select implements \Stringable
     /**
      * Sets up HAVING clause.
      *
-     * @param string[string] $condition Sets condition group directly when conditions are all of equals type
-     * @param LogicalOperator $logicalOperator Enum holding operator that will link conditions in group (default: AND)
+     * @param  array<string,string> $condition       Sets condition group directly when conditions are all of equals type
+     * @param  LogicalOperator      $logicalOperator Enum holding operator that will link conditions in group (default: AND)
      * @return Condition Object to set further conditions on.
      */
     public function having(array $condition=[], LogicalOperator $logicalOperator=LogicalOperator::_AND_): Condition
@@ -168,7 +172,7 @@ class Select implements \Stringable
     /**
      * Sets up ORDER BY clause
      *
-     * @param string[] $fields Sets list of columns to order by directly in ASC mode
+     * @param  string[] $fields Sets list of columns to order by directly in ASC mode
      * @return OrderBy Object to set further clauses on.
      */
     public function orderBy(array $fields = []): OrderBy
@@ -181,7 +185,7 @@ class Select implements \Stringable
     /**
      * Sets a LIMIT clause
      *
-     * @param integer $limit Sets how many rows SELECT will return.
+     * @param integer $limit  Sets how many rows SELECT will return.
      * @param integer $offset Optionally sets offset to start limiting with.
      */
     public function limit(int $limit, int $offset=0): void
@@ -196,21 +200,99 @@ class Select implements \Stringable
      */
     public function __toString(): string
     {
-        $output =
-                "SELECT".($this->isDistinct?" DISTINCT":"").
-                "\r\n".($this->columns?$this->columns:"*").
-                "\r\n"."FROM ".$this->table;
+        $output = "SELECT".$this->getOptions()."\r\n".$this->getColumns()."\r\n"."FROM ".$this->table;
+        $output .= $this->getJoins();
+        $output .= $this->getWhere();
+        $output .= $this->getGroupBy();
+        $output .= $this->getHaving();
+        $output .= $this->getOrderBy();
+        $output .= $this->getLimit();
+        return $output;
+    }
+
+    /**
+     * Gets select options (eg: DISTINCT) set by user
+     *
+     * @return string
+     */
+    protected function getOptions(): string
+    {
+        return ($this->isDistinct ? " DISTINCT" : "");
+    }
+
+    /**
+     * Gets select fields set by user
+     *
+     * @return string
+     */
+    protected function getColumns(): string
+    {
+        return ($this->columns ? $this->columns : "*");
+    }
+
+    /**
+     * Converts JOINs set by user to string
+     *
+     * @return string
+     */
+    protected function getJoins(): string
+    {
+        $output = "";
         if (sizeof($this->joins)>0) {
             foreach ($this->joins as $join) {
                 $output .= "\r\n".$join;
             }
         }
-        $output .=
-                ($this->where && !$this->where->isEmpty()?"\r\nWHERE ".$this->where:"").
-                ($this->groupBy && !$this->groupBy->isEmpty()?"\r\nGROUP BY ".$this->groupBy:"").
-                ($this->having && !$this->having->isEmpty()?"\r\nHAVING ".$this->having:"").
-                ($this->orderBy && !$this->orderBy->isEmpty()?"\r\nORDER BY ".$this->orderBy:"").
-                ($this->limit?"\r\nLIMIT ".$this->limit:"");
         return $output;
+    }
+
+    /**
+     * Converts WHERE clause set by user (if any) to string
+     *
+     * @return string
+     */
+    protected function getWhere(): string
+    {
+        return ($this->where && !$this->where->isEmpty() ? "\r\nWHERE ".$this->where : "");
+    }
+
+    /**
+     * Converts GROUP BY clause set by user (if any) to string
+     *
+     * @return string
+     */
+    protected function getGroupBy(): string
+    {
+        return ($this->groupBy && !$this->groupBy->isEmpty() ? "\r\nGROUP BY ".$this->groupBy : "");
+    }
+
+    /**
+     * Converts HAVING clause set by user (if any) to string
+     *
+     * @return string
+     */
+    protected function getHaving(): string
+    {
+        return ($this->having && !$this->having->isEmpty() ? "\r\nHAVING ".$this->having : "");
+    }
+
+    /**
+     * Converts ORDER BY clause set by user (if any) to string
+     *
+     * @return string
+     */
+    protected function getOrderBy(): string
+    {
+        return ($this->orderBy && !$this->orderBy->isEmpty() ? "\r\nORDER BY ".$this->orderBy : "");
+    }
+
+    /**
+     * Converts LIMIT clause set by user (if any) to string
+     *
+     * @return string
+     */
+    protected function getLimit(): string
+    {
+        return ($this->limit ? "\r\nLIMIT ".$this->limit : "");
     }
 }

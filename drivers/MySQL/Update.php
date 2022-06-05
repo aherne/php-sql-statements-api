@@ -1,10 +1,12 @@
 <?php
+
 namespace Lucinda\Query\Vendor\MySQL;
 
 use Lucinda\Query\Exception;
 use Lucinda\Query\Update as DefaultUpdate;
 use Lucinda\Query\Clause\Condition;
-use Lucinda\Query\Operator\Logical AS LogicalOperator;
+use Lucinda\Query\Operator\Logical as LogicalOperator;
+use Lucinda\Query\Vendor\MySQL\Clause\Condition as MySQLCondition;
 
 /**
  * Encapsulates MySQL statement: UPDATE {IGNORE} {TABLE} SET {SET} WHERE {CONDITION}
@@ -20,14 +22,15 @@ class Update extends DefaultUpdate
     {
         $this->isIgnore = true;
     }
-    
+
     /**
      * {@inheritDoc}
+     *
      * @see \Lucinda\Query\Update::where()
      */
     public function where(array $condition=[], LogicalOperator $logicalOperator=LogicalOperator::_AND_): Condition
     {
-        $where = new \Lucinda\Query\Vendor\MySQL\Clause\Condition($condition, $logicalOperator);
+        $where = new MySQLCondition($condition, $logicalOperator);
         $this->where=$where;
         return $where;
     }
@@ -40,12 +43,6 @@ class Update extends DefaultUpdate
      */
     public function __toString(): string
     {
-        if (!$this->set || $this->set->isEmpty()) {
-            throw new Exception("running set() method is required");
-        }
-
-        return "UPDATE ".($this->isIgnore?"IGNORE ":"").$this->table.
-            "\r\n"."SET ".$this->set.
-            ($this->where && !$this->where->isEmpty()?"\r\n"."WHERE ".$this->where:"");
+        return "UPDATE".($this->isIgnore ? " IGNORE" : "")." ".$this->table.$this->getSet().$this->getWhere();
     }
 }
