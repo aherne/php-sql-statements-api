@@ -160,34 +160,46 @@ class Condition implements \Stringable
     {
         $output = ($this->currentLogical==LogicalOperator::_NOT_ ? "NOT (" : "");
         $clauseOperator = $this->getOperator();
+        $this->compile($output, $clauseOperator);
+        $output = substr($output, 0, -2-strlen($clauseOperator));
+        return $output.($this->currentLogical==LogicalOperator::_NOT_ ? ")" : "");
+    }
+
+    /**
+     * Compiles condition based on clauses set
+     *
+     * @param string $output
+     * @param string $clauseOperator
+     * @return void
+     */
+    private function compile(string &$output, string $clauseOperator): void
+    {
         foreach ($this->contents as $values) {
             // create condition
             if ($values instanceof Condition) {
                 $output .= "(".$values.")";
             } else {
                 switch ($values["COMPARATOR"]) {
-                case ComparisonOperator::IS_NULL:
-                case ComparisonOperator::IS_NOT_NULL:
-                    $output .= $this->getIsNull($values);
-                    break;
-                case ComparisonOperator::BETWEEN:
-                case ComparisonOperator::NOT_BETWEEN:
-                    $output .= $this->getBetween($values);
-                    break;
-                case ComparisonOperator::IN:
-                case ComparisonOperator::NOT_IN:
-                    $output .= $this->getIn($values);
-                    break;
-                default:
-                    $output .= $this->getSimple($values);
-                    break;
+                    case ComparisonOperator::IS_NULL:
+                    case ComparisonOperator::IS_NOT_NULL:
+                        $output .= $this->getIsNull($values);
+                        break;
+                    case ComparisonOperator::BETWEEN:
+                    case ComparisonOperator::NOT_BETWEEN:
+                        $output .= $this->getBetween($values);
+                        break;
+                    case ComparisonOperator::IN:
+                    case ComparisonOperator::NOT_IN:
+                        $output .= $this->getIn($values);
+                        break;
+                    default:
+                        $output .= $this->getSimple($values);
+                        break;
                 }
             }
 
             $output .=" ".$clauseOperator." ";
         }
-        $output = substr($output, 0, -2-strlen($clauseOperator));
-        return $output.($this->currentLogical==LogicalOperator::_NOT_ ? ")" : "");
     }
 
     /**
@@ -235,7 +247,7 @@ class Condition implements \Stringable
     /**
      * Converts simple (COLUMN OPERATOR VALUE) clause to SQL
      *
-     * @param  array $values
+     * @param  array<string,mixed> $values
      * @return string
      */
     private function getSimple(array $values): string
