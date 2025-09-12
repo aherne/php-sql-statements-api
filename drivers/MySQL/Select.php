@@ -67,6 +67,7 @@ class Select extends DefaultSelect
     public function toString(): string
     {
         $output =
+            ($this->with?$this->with->toString()."\r\n":"").
             "SELECT ".($this->isDistinct?"DISTINCT ":"").($this->straightJoin?"STRAIGHT_JOIN ":"").($this->calcFoundRows?"SQL_CALC_FOUND_ROWS ":"").
             "\r\n".($this->columns?$this->columns->toString():"*").
             "\r\n"."FROM ".$this->table;
@@ -79,6 +80,7 @@ class Select extends DefaultSelect
             ($this->where && !$this->where->isEmpty()?"\r\nWHERE ".$this->where->toString():"").
             ($this->groupBy && !$this->groupBy->isEmpty()?"\r\nGROUP BY ".$this->groupBy->toString():"").
             ($this->having && !$this->having->isEmpty()?"\r\nHAVING ".$this->having->toString():"").
+            ($this->window && !$this->window->isEmpty()?"\r\nWINDOW ".$this->window->toString():"").
             ($this->orderBy && !$this->orderBy->isEmpty()?"\r\nORDER BY ".$this->orderBy->toString():"").
             ($this->limit?"\r\nLIMIT ".$this->limit->toString():"");
         return $output;

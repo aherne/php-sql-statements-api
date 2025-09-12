@@ -2,6 +2,7 @@
 namespace Lucinda\Query\Vendor\MySQL\Clause;
 
 use Lucinda\Query\Clause\Condition as DefaultCondition;
+use Lucinda\Query\Stringable;
 use Lucinda\Query\Vendor\MySQL\Operator\Comparison as MySQLComparisonOperator;
 use Lucinda\Query\Vendor\MySQL\Operator\FulltextSearchType;
 use Lucinda\Query\Vendor\MySQL\Operator\MatchType;
@@ -14,15 +15,15 @@ class Condition extends DefaultCondition
     /**
      * Sets up a "REGEXP/NOT REGEXP" condition.
      *
-     * @param string $columnName Name of column/field.
+     * @param string|Stringable $columnDefinition Definition of column/field (name or expression)
      * @param string $pattern Value of REGEX pattern to match
      * @param boolean $isTrue Whether or not condition is REGEXP or NOT REGEXP
      * @return Condition
      */
-    public function setRegexp(string $columnName, string $pattern, bool $isTrue=true): DefaultCondition
+    public function setRegexp($columnDefinition, string $pattern, bool $isTrue=true): DefaultCondition
     {
         $clause = [];
-        $clause["KEY"]=$columnName;
+        $clause["KEY"]=$this->validateArgument($columnDefinition);
         $clause["COMPARATOR"]=($isTrue?MySQLComparisonOperator::REGEXP:MySQLComparisonOperator::NOT_REGEXP);
         $clause["VALUE"]=$pattern;
         $this->contents[]=$clause;

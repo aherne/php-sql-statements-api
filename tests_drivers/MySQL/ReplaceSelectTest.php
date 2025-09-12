@@ -9,11 +9,11 @@ class ReplaceSelectTest
 {
     public function toString()
     {
-        $this->object = new ReplaceSelect("x");
-        $this->object->columns(["a", "b"]);
+        $object = new ReplaceSelect("x");
+        $object->columns(["a", "b"]);
         $select = new Select("y");
         $select->fields(["c", "d"]);
-        $this->object->select($select);
-        return new Result($this->object->toString()=="REPLACE INTO x (a, b)\r\nSELECT \r\nc, d\r\nFROM y");
+        $object->select($select);
+        return new Result($object->toString()=="REPLACE INTO x (a, b)\r\nSELECT \r\nc, d\r\nFROM y");
     }
 }

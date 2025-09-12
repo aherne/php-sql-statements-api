@@ -34,7 +34,7 @@ class SelectGroup implements Stringable
     /**
      * Adds select statement to group
      *
-     * @param Stringable $select Instance of Select or SelectGroup
+     * @param Select|SelectGroup $select Instance of Select or SelectGroup
      */
     public function addSelect(Stringable $select): void
     {

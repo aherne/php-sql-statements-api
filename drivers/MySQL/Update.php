@@ -44,8 +44,13 @@ class Update extends DefaultUpdate
             throw new Exception("running set() method is required");
         }
 
-        return "UPDATE ".($this->isIgnore?"IGNORE ":"").$this->table.
+        $output = "";
+        if ($this->with) {
+            $output = $this->with->toString()."\r\n";
+        }
+        $output .="UPDATE ".($this->isIgnore?"IGNORE ":"").$this->table.
             "\r\n"."SET ".$this->set->toString().
             ($this->where && !$this->where->isEmpty()?"\r\n"."WHERE ".$this->where->toString():"");
+        return $output;
     }
 }

@@ -4,6 +4,8 @@ namespace Lucinda\Query;
 use Lucinda\Query\Clause\Alias;
 use Lucinda\Query\Clause\Fields;
 use Lucinda\Query\Clause\Join;
+use Lucinda\Query\Clause\Window;
+use Lucinda\Query\Clause\With;
 use Lucinda\Query\Operator\Join as JoinOperator;
 use Lucinda\Query\Operator\Logical;
 use Lucinda\Query\Clause\Condition;
@@ -26,6 +28,8 @@ use Lucinda\Query\Clause\Columns;
  */
 class Select implements Stringable
 {
+    protected $with;
+    protected $window;
     protected $isDistinct=false;
     protected $columns;
     protected $joins=[];
@@ -38,13 +42,15 @@ class Select implements Stringable
 
     /**
      * Constructs a SELECT statement based on table name and optional alias
-     * 
-     * @param string $table Name of table to select from (including schema)
-     * @param string $alias Optional alias to identify table with
+     *
+     * @param string|Select|SelectGroup $tableDefinition Name of table to select from (including schema) or derived table expression
+     * @param string $tableAlias Optional alias to identify table with
+     * @throws Exception
      */
-    public function __construct(string $table, string $alias="")
+    public function __construct($tableDefinition, string $tableAlias="")
     {
-        $this->table = ($alias?new Alias($table, $alias):$table);
+        $finalTable = $this->validateTable($tableDefinition, $tableAlias);
+        $this->table = ($tableAlias?new Alias($finalTable, $tableAlias):$finalTable);
     }
 
     /**
@@ -53,6 +59,26 @@ class Select implements Stringable
     public function distinct(): void
     {
         $this->isDistinct=true;
+    }
+
+    public function window(): Window
+    {
+        $window = new Window();
+        $this->window = $window;
+        return $window;
+    }
+
+    /**
+     * Sets a WITH common table expressions (CTE) clause
+     *
+     * @param bool $isRecursive
+     * @return With Object to set WITH clauses on.
+     */
+    public function with(bool $isRecursive = false): With
+    {
+        $with = new With($isRecursive);
+        $this->with = $with;
+        return $with;
     }
 
     /**
@@ -71,13 +97,15 @@ class Select implements Stringable
     /**
      * Adds a LEFT JOIN statement
      *
-     * @param string $tableName Name of table to join with
+     * @param string|Select|SelectGroup $tableDefinition Name of table to join with
      * @param string $tableAlias Optional alias of table to join with
      * @return Join Object to set join conditions on.
+     * @throws Exception
      */
-    public function joinLeft(string $tableName, string $tableAlias = ""): Join
+    public function joinLeft($tableDefinition, string $tableAlias = ""): Join
     {
-        $join = new Join($tableName, $tableAlias, JoinOperator::LEFT);
+        $finalTable = $this->validateTable($tableDefinition, $tableAlias);
+        $join = new Join($finalTable, $tableAlias, JoinOperator::LEFT);
         $this->joins[]=$join;
         return $join;
     }
@@ -85,13 +113,15 @@ class Select implements Stringable
     /**
      * Adds a RIGHT JOIN statement
      *
-     * @param string $tableName Name of table to join with
+     * @param string|Select|SelectGroup $tableDefinition Definition (name or statement) of table to join with
      * @param string $tableAlias Optional alias of table to join with
      * @return Join Object to set join conditions on.
+     * @throws Exception
      */
-    public function joinRight(string $tableName, string $tableAlias = ""): Join
+    public function joinRight($tableDefinition, string $tableAlias = ""): Join
     {
-        $join = new Join($tableName, $tableAlias, JoinOperator::RIGHT);
+        $finalTable = $this->validateTable($tableDefinition, $tableAlias);
+        $join = new Join($finalTable, $tableAlias, JoinOperator::RIGHT);
         $this->joins[]=$join;
         return $join;
     }
@@ -99,13 +129,15 @@ class Select implements Stringable
     /**
      * Adds a INNER JOIN statement
      *
-     * @param string $tableName Name of table to join with
+     * @param string|Select|SelectGroup $tableDefinition Definition (name or statement) of table to join with
      * @param string $tableAlias Optional alias of table to join with
      * @return Join Object to set join conditions on.
+     * @throws Exception
      */
-    public function joinInner(string $tableName, string $tableAlias = ""): Join
+    public function joinInner($tableDefinition, string $tableAlias = ""): Join
     {
-        $join = new Join($tableName, $tableAlias, JoinOperator::INNER);
+        $finalTable = $this->validateTable($tableDefinition, $tableAlias);
+        $join = new Join($finalTable, $tableAlias, JoinOperator::INNER);
         $this->joins[]=$join;
         return $join;
     }
@@ -113,13 +145,15 @@ class Select implements Stringable
     /**
      * Adds a CROSS JOIN statement
      *
-     * @param string $tableName Name of table to join with
+     * @param string|Select|SelectGroup $tableDefinition Definition (name or statement) of table to join with
      * @param string $tableAlias Optional alias of table to join with
      * @return Join Object to set join conditions on.
+     * @throws Exception
      */
-    public function joinCross(string $tableName, string $tableAlias = ""): Join
+    public function joinCross($tableDefinition, string $tableAlias = ""): Join
     {
-        $join = new Join($tableName, $tableAlias, JoinOperator::CROSS);
+        $finalTable = $this->validateTable($tableDefinition, $tableAlias);
+        $join = new Join($finalTable, $tableAlias, JoinOperator::CROSS);
         $this->joins[]=$join;
         return $join;
     }
@@ -207,6 +241,7 @@ class Select implements Stringable
     public function toString(): string
     {
         $output =
+                ($this->with?$this->with->toString()."\r\n":"").
                 "SELECT".($this->isDistinct?" DISTINCT":"").
                 "\r\n".($this->columns?$this->columns->toString():"*").
                 "\r\n"."FROM ".$this->table;
@@ -219,8 +254,31 @@ class Select implements Stringable
                 ($this->where && !$this->where->isEmpty()?"\r\nWHERE ".$this->where->toString():"").
                 ($this->groupBy && !$this->groupBy->isEmpty()?"\r\nGROUP BY ".$this->groupBy->toString():"").
                 ($this->having && !$this->having->isEmpty()?"\r\nHAVING ".$this->having->toString():"").
+                ($this->window && !$this->window->isEmpty()?"\r\nWINDOW ".$this->window->toString():"").
                 ($this->orderBy && !$this->orderBy->isEmpty()?"\r\nORDER BY ".$this->orderBy->toString():"").
                 ($this->limit?"\r\nLIMIT ".$this->limit->toString():"");
         return $output;
+    }
+
+    /**
+     * Validates table definition, returning table name or derived table expression.
+     *
+     * @param string|Select|SelectGroup $table
+     * @param string $alias
+     * @return string
+     * @throws Exception
+     */
+    private function validateTable($table, string $alias=""): string
+    {
+        if (is_string($table)) {
+            return $table;
+        } elseif ($table instanceof Select || $table instanceof SelectGroup) {
+            if (!$alias) {
+                throw new Exception("Derived table must have an alias");
+            }
+            return "(\n".$table->toString()."\r)";
+        } else {
+            throw new Exception("Table name must be string or be a Select / SelectGroup object");
+        }
     }
 }

@@ -38,7 +38,12 @@ class Delete extends DefaultDelete
      */
     public function toString(): string
     {
-        return "DELETE ".($this->isIgnore?"IGNORE":"")." FROM ".$this->table.
+        $output = "";
+        if ($this->with) {
+            $output = $this->with->toString()."\r\n";
+        }
+        $output .= "DELETE ".($this->isIgnore?"IGNORE":"")." FROM ".$this->table.
             ($this->where && !$this->where->isEmpty()?"\r\n"."WHERE ".$this->where->toString():"");
+        return $output;
     }
 }

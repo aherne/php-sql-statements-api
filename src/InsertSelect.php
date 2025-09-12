@@ -2,12 +2,14 @@
 namespace Lucinda\Query;
 
 use Lucinda\Query\Clause\Columns;
+use Lucinda\Query\Clause\With;
 
 /**
  * Encapsulates SQL statement: INSERT INTO {TABLE} ({COLUMNS}) {SELECT}
  */
 class InsertSelect implements Stringable
 {
+    protected $with;
     protected $columns;
     protected $select;
     protected $table;
@@ -20,6 +22,19 @@ class InsertSelect implements Stringable
     public function __construct(string $table)
     {
         $this->table = $table;
+    }
+
+    /**
+     * Sets a WITH common table expressions (CTE) clause
+     *
+     * @param bool $isRecursive
+     * @return With Object to set WITH clauses on.
+     */
+    public function with(bool $isRecursive = false): With
+    {
+        $with = new With($isRecursive);
+        $this->with = $with;
+        return $with;
     }
 
     /**
@@ -60,7 +75,12 @@ class InsertSelect implements Stringable
             throw new Exception("running select() method is required!");
         }
 
-        return  "INSERT INTO ".$this->table." (".$this->columns->toString().")"."\r\n".
+        $output = "";
+        if ($this->with) {
+            $output = $this->with->toString()."\r\n";
+        }
+        $output .=  "INSERT INTO ".$this->table." (".$this->columns->toString().")"."\r\n".
                 $this->select->toString();
+        return $output;
     }
 }

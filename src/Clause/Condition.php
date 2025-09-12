@@ -1,6 +1,7 @@
 <?php
 namespace Lucinda\Query\Clause;
 
+use Lucinda\Query\Exception;
 use Lucinda\Query\Stringable;
 use Lucinda\Query\Select;
 use Lucinda\Query\SelectGroup;
@@ -30,17 +31,17 @@ class Condition implements Stringable
     /**
      * Adds a field vs value comparison condition.
      *
-     * @param string $columnName Name of column/field.
+     * @param string|Stringable $columnDefinition Definition of column/field (name or expression)
      * @param mixed $value Value of column/field for row.
      * @param Comparison $comparisonOperator Enum holding logical operator that will be used in condition (default: =)
      * @return Condition
      */
-    public function set(string $columnName, $value, string $comparisonOperator=Comparison::EQUALS): Condition
+    public function set($columnDefinition, $value, string $comparisonOperator=Comparison::EQUALS): Condition
     {
         $clause = [];
-        $clause["KEY"]=$columnName;
+        $clause["KEY"]=$this->validateArgument($columnDefinition);
         $clause["COMPARATOR"]=$comparisonOperator;
-        $clause["VALUE"]=$value;
+        $clause["VALUE"]=$this->validateArgument($value);
         $this->contents[]=$clause;
         return $this;
     }
@@ -48,17 +49,17 @@ class Condition implements Stringable
     /**
      * Adds an "IN/NOT IN" condition.
      *
-     * @param string $columnName Name of column/field.
+     * @param string|Stringable $columnDefinition Definition of column/field (name or expression)
      * @param string[]|Select|SelectGroup $values List of possible values for column/field in row or a Select/SelectGroup statement.
      * @param boolean $isTrue Whether or not condition is IN or NOT IN
      * @return Condition
      */
-    public function setIn(string $columnName, $values, bool $isTrue=true): Condition
+    public function setIn($columnDefinition, $values, bool $isTrue=true): Condition
     {
         $clause = [];
-        $clause["KEY"]=$columnName;
+        $clause["KEY"]=$this->validateArgument($columnDefinition);
         $clause["COMPARATOR"]=($isTrue?Comparison::IN:Comparison::NOT_IN);
-        $clause["VALUE"]=$values;
+        $clause["VALUE"]=$this->validateArgument($values);
         $this->contents[]=$clause;
         return $this;
     }
@@ -66,14 +67,14 @@ class Condition implements Stringable
     /**
      * Adds a "NULL/NOT NULL" condition.
      *
-     * @param string $columnName Name of column/field.
+     * @param string|Stringable $columnDefinition Definition of column/field (name or expression)
      * @param boolean $isTrue Whether or not condition is NULL or NOT NULL
      * @return Condition
      */
-    public function setIsNull(string $columnName, bool $isTrue=true): Condition
+    public function setIsNull($columnDefinition, bool $isTrue=true): Condition
     {
         $clause = [];
-        $clause["KEY"]=$columnName;
+        $clause["KEY"]=$this->validateArgument($columnDefinition);
         $clause["COMPARATOR"]=($isTrue?Comparison::IS_NULL:Comparison::IS_NOT_NULL);
         $this->contents[]=$clause;
         return $this;
@@ -82,15 +83,15 @@ class Condition implements Stringable
     /**
      * Sets up a "LIKE/NOT LIKE" condition.
      *
-     * @param string $columnName Name of column/field.
+     * @param string|Stringable $columnDefinition Definition of column/field (name or expression)
      * @param string $pattern Value of pattern to match
      * @param boolean $isTrue Whether or not condition is LIKE or NOT LIKE
      * @return Condition
      */
-    public function setLike(string $columnName, string $pattern, bool $isTrue=true): Condition
+    public function setLike($columnDefinition, string $pattern, bool $isTrue=true): Condition
     {
         $clause = [];
-        $clause["KEY"]=$columnName;
+        $clause["KEY"]=$this->validateArgument($columnDefinition);
         $clause["COMPARATOR"]=($isTrue?Comparison::LIKE:Comparison::NOT_LIKE);
         $clause["VALUE"]=$pattern;
         $this->contents[]=$clause;
@@ -100,19 +101,19 @@ class Condition implements Stringable
     /**
      * Sets up a "BETWEEN/NOT BETWEEN" condition.
      *
-     * @param string $columnName Name of column/field.
+     * @param string|Stringable $columnDefinition Definition of column/field (name or expression)
      * @param mixed $valueLeft Minimal value of column/field in row
      * @param mixed $valueRight Maximal value of column/field in row
      * @param boolean $isTrue Whether or not condition is BETWEEN or NOT BETWEEN
      * @return Condition
      */
-    public function setBetween(string $columnName, $valueLeft, $valueRight, bool $isTrue=true): Condition
+    public function setBetween($columnDefinition, $valueLeft, $valueRight, bool $isTrue=true): Condition
     {
         $clause = [];
-        $clause["KEY"]=$columnName;
+        $clause["KEY"]=$this->validateArgument($columnDefinition);
         $clause["COMPARATOR"]=($isTrue?Comparison::BETWEEN:Comparison::NOT_BETWEEN);
-        $clause["VALUE_LEFT"]=$valueLeft;
-        $clause["VALUE_RIGHT"]=$valueRight;
+        $clause["VALUE_LEFT"]=$this->validateArgument($valueLeft);
+        $clause["VALUE_RIGHT"]=$this->validateArgument($valueRight);
         $this->contents[]=$clause;
         return $this;
     }
@@ -151,13 +152,9 @@ class Condition implements Stringable
             } elseif ($values["COMPARATOR"] == Comparison::IN || $values["COMPARATOR"] == Comparison::NOT_IN) {
                 $tmp = $values["VALUE"];
                 if (is_array($tmp)) {
-                    $valuesText = "";
-                    foreach ($tmp as $string) {
-                        $valuesText .= $string.", ";
-                    }
-                    $output .= $values["KEY"]." ".$values["COMPARATOR"]." (".substr($valuesText, 0, -2).")";
+                    $output .= $values["KEY"]." ".$values["COMPARATOR"]." (".substr(implode(", ", $tmp), 0, -2).")";
                 } else {
-                    $output .= $values["KEY"]." ".$values["COMPARATOR"]." (".$tmp.")";
+                    $output .= $values["KEY"]." ".$values["COMPARATOR"]." ".$tmp;
                 }
             } else {
                 $output .= $values["KEY"]." ".$values["COMPARATOR"]." ".$values["VALUE"];
@@ -176,5 +173,23 @@ class Condition implements Stringable
     public function isEmpty(): bool
     {
         return sizeof($this->contents) == 0;
+    }
+
+    /**
+     * Validates argument to be used in condition (column definition or value)
+     *
+     * @param $columnDefinition
+     * @return string
+     * @throws Exception
+     */
+    protected function validateArgument($columnDefinition): string
+    {
+        if ($columnDefinition instanceof Stringable) {
+            return "(".$columnDefinition->toString().")";
+        } else if (is_array($columnDefinition)) {
+            return "(".implode(", ", $columnDefinition).")";
+        } else {
+            return $columnDefinition;
+        }
     }
 }

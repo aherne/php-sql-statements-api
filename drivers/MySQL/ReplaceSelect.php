@@ -23,7 +23,12 @@ class ReplaceSelect extends \Lucinda\Query\InsertSelect
             throw new Exception("running select() method is required!");
         }
 
-        return  "REPLACE INTO ".$this->table." (".$this->columns->toString().")"."\r\n".
+        $output = "";
+        if ($this->with) {
+            $output = $this->with->toString()."\r\n";
+        }
+        $output .= "REPLACE INTO ".$this->table." (".$this->columns->toString().")"."\r\n".
             $this->select->toString();
+        return $output;
     }
 }

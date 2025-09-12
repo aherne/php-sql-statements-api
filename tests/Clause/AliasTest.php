@@ -13,13 +13,13 @@ class AliasTest
         $this->object = new Alias("a", "b");
     }
     
-    public function __toString()
-    {
-        return new Result(((string) $this->object) == "a AS b");
-    }
-
     public function toString()
     {
         return new Result($this->object->toString() == "a AS b");
     }
+    public function __toString()
+    {
+        return $this->object->toString();
+    }
+
 }

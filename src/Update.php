@@ -2,6 +2,7 @@
 namespace Lucinda\Query;
 
 use Lucinda\Query\Clause\Set;
+use Lucinda\Query\Clause\With;
 use Lucinda\Query\Operator\Logical;
 use Lucinda\Query\Clause\Condition;
 
@@ -10,6 +11,7 @@ use Lucinda\Query\Clause\Condition;
  */
 class Update implements Stringable
 {
+    protected $with;
     protected $set;
     protected $where;
     protected $table;
@@ -22,6 +24,19 @@ class Update implements Stringable
     public function __construct(string $table)
     {
         $this->table = $table;
+    }
+
+    /**
+     * Sets a WITH common table expressions (CTE) clause
+     *
+     * @param bool $isRecursive
+     * @return With Object to set WITH clauses on.
+     */
+    public function with(bool $isRecursive = false): With
+    {
+        $with = new With($isRecursive);
+        $this->with = $with;
+        return $with;
     }
 
     /**
@@ -63,8 +78,13 @@ class Update implements Stringable
             throw new Exception("running set() method is required");
         }
 
-        return	"UPDATE ".$this->table.
+        $output = "";
+        if ($this->with) {
+            $output = $this->with->toString()."\r\n";
+        }
+        $output .= "UPDATE ".$this->table.
             "\r\n"."SET ".$this->set->toString().
             ($this->where && !$this->where->isEmpty()?"\r\n"."WHERE ".$this->where->toString():"");
+        return $output;
     }
 }

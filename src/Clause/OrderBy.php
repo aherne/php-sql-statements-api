@@ -26,13 +26,14 @@ class OrderBy implements Stringable
     /**
      * Adds order by clause.
      *
-     * @param string $columnName Name of column/field to order by with.
+     * @param string|Stringable $columnDefinition Column definition (name or expression)
      * @param OrderByOperator $operator Enum encapsulating order by direction (default: ASC)
      * @return OrderBy Object to set further clauses on.
      */
-    public function add(string $columnName, string $operator = OrderByOperator::ASC): OrderBy
+    public function add($columnDefinition, string $operator = OrderByOperator::ASC): OrderBy
     {
-        $this->contents[$columnName] = $operator;
+        $column = ($columnDefinition instanceof Stringable?"(".$columnDefinition->toString().")":$columnDefinition);
+        $this->contents[$column] = $operator;
         return $this;
     }
 
