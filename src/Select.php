@@ -31,6 +31,7 @@ class Select implements Stringable
     protected $with;
     protected $window;
     protected $isDistinct=false;
+    protected $groupByRollup=false;
     protected $columns;
     protected $joins=[];
     protected $where;
@@ -176,12 +177,14 @@ class Select implements Stringable
      * Sets up GROUP BY statement
      *
      * @param string[] $columns Sets list of column names directly
+     * @param bool $withRollup Whether to add ROLLUP modifier
      * @return Columns Object to set further fields on.
      */
-    public function groupBy(array $columns = []): Columns
+    public function groupBy(array $columns = [], bool $withRollup = false): Columns
     {
         $columns = new Columns($columns);
         $this->groupBy = $columns;
+        $this->groupByRollup = $withRollup;
         return $columns;
     }
 
@@ -252,7 +255,7 @@ class Select implements Stringable
         }
         $output .=
                 ($this->where && !$this->where->isEmpty()?"\r\nWHERE ".$this->where->toString():"").
-                ($this->groupBy && !$this->groupBy->isEmpty()?"\r\nGROUP BY ".$this->groupBy->toString():"").
+                ($this->groupBy && !$this->groupBy->isEmpty()?"\r\nGROUP BY ".$this->groupBy->toString().($this->groupByRollup?" WITH ROLLUP":""):"").
                 ($this->having && !$this->having->isEmpty()?"\r\nHAVING ".$this->having->toString():"").
                 ($this->window && !$this->window->isEmpty()?"\r\nWINDOW ".$this->window->toString():"").
                 ($this->orderBy && !$this->orderBy->isEmpty()?"\r\nORDER BY ".$this->orderBy->toString():"").
