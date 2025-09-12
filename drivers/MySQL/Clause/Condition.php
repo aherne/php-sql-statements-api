@@ -23,7 +23,7 @@ class Condition extends DefaultCondition
     public function setRegexp($columnDefinition, string $pattern, bool $isTrue=true): DefaultCondition
     {
         $clause = [];
-        $clause["KEY"]=$this->validateArgument($columnDefinition);
+        $clause["KEY"]=$this->validator->validateCondition($columnDefinition);
         $clause["COMPARATOR"]=($isTrue?MySQLComparisonOperator::REGEXP:MySQLComparisonOperator::NOT_REGEXP);
         $clause["VALUE"]=$pattern;
         $this->contents[]=$clause;

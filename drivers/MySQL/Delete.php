@@ -1,8 +1,11 @@
 <?php
 namespace Lucinda\Query\Vendor\MySQL;
 
+use Lucinda\Query\Clause\Join;
 use Lucinda\Query\Delete as DefaultDelete;
 use Lucinda\Query\Clause\Condition;
+use Lucinda\Query\Exception;
+use Lucinda\Query\Operator\Join as JoinOperator;
 use Lucinda\Query\Operator\Logical;
 
 /**
@@ -10,6 +13,7 @@ use Lucinda\Query\Operator\Logical;
  */
 class Delete extends DefaultDelete
 {
+    private $joins=[];
     protected $isIgnore=false;
 
     /**
@@ -18,6 +22,62 @@ class Delete extends DefaultDelete
     public function ignore(): void
     {
         $this->isIgnore = true;
+    }
+
+    /**
+     * Adds a LEFT JOIN statement
+     *
+     * @param string $tableName Name of table to join with (including schema)
+     * @return Join Object to set join conditions on.
+     * @throws Exception
+     */
+    public function joinLeft(string $tableName): Join
+    {
+        $join = new Join($tableName, "", JoinOperator::LEFT);
+        $this->joins[]=$join;
+        return $join;
+    }
+
+    /**
+     * Adds a RIGHT JOIN statement
+     *
+     * @param string $tableName Name of table to join with (including schema)
+     * @return Join Object to set join conditions on.
+     * @throws Exception
+     */
+    public function joinRight(string $tableName): Join
+    {
+        $join = new Join($tableName, "", JoinOperator::RIGHT);
+        $this->joins[]=$join;
+        return $join;
+    }
+
+    /**
+     * Adds a INNER JOIN statement
+     *
+     * @param string $tableName Name of table to join with (including schema)
+     * @return Join Object to set join conditions on.
+     * @throws Exception
+     */
+    public function joinInner(string $tableName): Join
+    {
+        $join = new Join($tableName, "", JoinOperator::INNER);
+        $this->joins[]=$join;
+        return $join;
+    }
+
+    /**
+     * Adds a CROSS JOIN statement
+     *
+     * @param string $tableName Name of table to join with (including schema)
+     * @return Join Object to set join conditions on.
+     * @throws Exception
+     */
+    public function joinCross(string $tableName): Join
+    {
+        $join = new Join($tableName, "", JoinOperator::CROSS);
+        $this->joins[]=$join;
+        return $join;
     }
     
     /**
@@ -42,8 +102,13 @@ class Delete extends DefaultDelete
         if ($this->with) {
             $output = $this->with->toString()."\r\n";
         }
-        $output .= "DELETE ".($this->isIgnore?"IGNORE":"")." FROM ".$this->table.
-            ($this->where && !$this->where->isEmpty()?"\r\n"."WHERE ".$this->where->toString():"");
+        $output .= "DELETE ".($this->isIgnore?"IGNORE":"")." FROM ".$this->table;
+        if (sizeof($this->joins)>0) {
+            foreach ($this->joins as $join) {
+                $output .= "\r\n".$join->toString();
+            }
+        }
+        $output .= ($this->where && !$this->where->isEmpty()?"\r\n"."WHERE ".$this->where->toString():"");
         return $output;
     }
 }

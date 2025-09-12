@@ -4,6 +4,7 @@ namespace Lucinda\Query\Clause;
 use Lucinda\Query\Clause\Window\Over;
 use Lucinda\Query\Exception;
 use Lucinda\Query\Stringable;
+use Lucinda\Query\Validator;
 
 /**
  * Encapsulates SQL select fields clause.
@@ -11,6 +12,10 @@ use Lucinda\Query\Stringable;
 class Fields implements Stringable
 {
     protected $contents = [];
+    /**
+     * @var Validator
+     */
+    private $validator;
 
     /**
      * Class constructor.
@@ -19,6 +24,7 @@ class Fields implements Stringable
      */
     public function __construct(array $contents = [])
     {
+        $this->validator = new Validator();
         $this->contents = $contents;
     }
 
@@ -31,14 +37,7 @@ class Fields implements Stringable
      */
     public function add($columnDefinition, string $columnAlias = ""): Fields
     {
-        if ($columnDefinition instanceof Stringable) {
-            if (!$columnAlias) {
-                throw new Exception("When using expressions as fields, alias is mandatory");
-            }
-            $this->contents[] = new Alias("(".$columnDefinition->toString().")", $columnAlias);
-        } else {
-            $this->contents[]=($columnAlias?new Alias($columnDefinition, $columnAlias):$columnDefinition);
-        }
+        $this->contents[]=$this->validator->validateSelectField($columnDefinition, $columnAlias);
         return $this;
     }
 

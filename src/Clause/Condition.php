@@ -7,6 +7,7 @@ use Lucinda\Query\Select;
 use Lucinda\Query\SelectGroup;
 use Lucinda\Query\Operator\Logical;
 use Lucinda\Query\Operator\Comparison;
+use Lucinda\Query\Validator;
 
 /**
  * Encapsulates SQL WHERE/ON clauses that use a single logical operator
@@ -15,6 +16,10 @@ class Condition implements Stringable
 {
     protected $currentLogical;
     protected $contents = [];
+    /**
+     * @var Validator
+     */
+    protected $validator;
 
     /**
      * @param string[string] $condition Sets condition group directly when conditions are all of equals type
@@ -22,6 +27,7 @@ class Condition implements Stringable
      */
     public function __construct(array $condition=[], string $logicalOperator = Logical::_AND_)
     {
+        $this->validator = new Validator();
         foreach ($condition as $key=>$value) {
             $this->set($key, $value, Comparison::EQUALS);
         }
@@ -39,9 +45,9 @@ class Condition implements Stringable
     public function set($columnDefinition, $value, string $comparisonOperator=Comparison::EQUALS): Condition
     {
         $clause = [];
-        $clause["KEY"]=$this->validateArgument($columnDefinition);
+        $clause["KEY"]=$this->validator->validateCondition($columnDefinition);
         $clause["COMPARATOR"]=$comparisonOperator;
-        $clause["VALUE"]=$this->validateArgument($value);
+        $clause["VALUE"]=$this->validator->validateCondition($value);
         $this->contents[]=$clause;
         return $this;
     }
@@ -57,9 +63,9 @@ class Condition implements Stringable
     public function setIn($columnDefinition, $values, bool $isTrue=true): Condition
     {
         $clause = [];
-        $clause["KEY"]=$this->validateArgument($columnDefinition);
+        $clause["KEY"]=$this->validator->validateCondition($columnDefinition);
         $clause["COMPARATOR"]=($isTrue?Comparison::IN:Comparison::NOT_IN);
-        $clause["VALUE"]=$this->validateArgument($values);
+        $clause["VALUE"]=$this->validator->validateCondition($values);
         $this->contents[]=$clause;
         return $this;
     }
@@ -74,7 +80,7 @@ class Condition implements Stringable
     public function setIsNull($columnDefinition, bool $isTrue=true): Condition
     {
         $clause = [];
-        $clause["KEY"]=$this->validateArgument($columnDefinition);
+        $clause["KEY"]=$this->validator->validateCondition($columnDefinition);
         $clause["COMPARATOR"]=($isTrue?Comparison::IS_NULL:Comparison::IS_NOT_NULL);
         $this->contents[]=$clause;
         return $this;
@@ -91,7 +97,7 @@ class Condition implements Stringable
     public function setLike($columnDefinition, string $pattern, bool $isTrue=true): Condition
     {
         $clause = [];
-        $clause["KEY"]=$this->validateArgument($columnDefinition);
+        $clause["KEY"]=$this->validator->validateCondition($columnDefinition);
         $clause["COMPARATOR"]=($isTrue?Comparison::LIKE:Comparison::NOT_LIKE);
         $clause["VALUE"]=$pattern;
         $this->contents[]=$clause;
@@ -110,10 +116,10 @@ class Condition implements Stringable
     public function setBetween($columnDefinition, $valueLeft, $valueRight, bool $isTrue=true): Condition
     {
         $clause = [];
-        $clause["KEY"]=$this->validateArgument($columnDefinition);
+        $clause["KEY"]=$this->validator->validateCondition($columnDefinition);
         $clause["COMPARATOR"]=($isTrue?Comparison::BETWEEN:Comparison::NOT_BETWEEN);
-        $clause["VALUE_LEFT"]=$this->validateArgument($valueLeft);
-        $clause["VALUE_RIGHT"]=$this->validateArgument($valueRight);
+        $clause["VALUE_LEFT"]=$this->validator->validateCondition($valueLeft);
+        $clause["VALUE_RIGHT"]=$this->validator->validateCondition($valueRight);
         $this->contents[]=$clause;
         return $this;
     }
@@ -173,23 +179,5 @@ class Condition implements Stringable
     public function isEmpty(): bool
     {
         return sizeof($this->contents) == 0;
-    }
-
-    /**
-     * Validates argument to be used in condition (column definition or value)
-     *
-     * @param $columnDefinition
-     * @return string
-     * @throws Exception
-     */
-    protected function validateArgument($columnDefinition): string
-    {
-        if ($columnDefinition instanceof Stringable) {
-            return "(".$columnDefinition->toString().")";
-        } else if (is_array($columnDefinition)) {
-            return "(".implode(", ", $columnDefinition).")";
-        } else {
-            return $columnDefinition;
-        }
     }
 }

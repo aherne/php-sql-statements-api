@@ -1,7 +1,9 @@
 <?php
 namespace Lucinda\Query\Vendor\MySQL;
 
+use Lucinda\Query\Clause\Join;
 use Lucinda\Query\Exception;
+use Lucinda\Query\Operator\Join as JoinOperator;
 use Lucinda\Query\Update as DefaultUpdate;
 use Lucinda\Query\Clause\Condition;
 use Lucinda\Query\Operator\Logical;
@@ -11,7 +13,9 @@ use Lucinda\Query\Operator\Logical;
  */
 class Update extends DefaultUpdate
 {
+    private $joins=[];
     protected $isIgnore=false;
+
 
     /**
      * Sets statement as IGNORE, ignoring foreign key errors and duplicates
@@ -33,6 +37,62 @@ class Update extends DefaultUpdate
     }
 
     /**
+     * Adds a LEFT JOIN statement
+     *
+     * @param string $tableName Name of table to join with (including schema)
+     * @return Join Object to set join conditions on.
+     * @throws Exception
+     */
+    public function joinLeft(string $tableName): Join
+    {
+        $join = new Join($tableName, "", JoinOperator::LEFT);
+        $this->joins[]=$join;
+        return $join;
+    }
+
+    /**
+     * Adds a RIGHT JOIN statement
+     *
+     * @param string $tableName Name of table to join with (including schema)
+     * @return Join Object to set join conditions on.
+     * @throws Exception
+     */
+    public function joinRight(string $tableName): Join
+    {
+        $join = new Join($tableName, "", JoinOperator::RIGHT);
+        $this->joins[]=$join;
+        return $join;
+    }
+
+    /**
+     * Adds a INNER JOIN statement
+     *
+     * @param string $tableName Name of table to join with (including schema)
+     * @return Join Object to set join conditions on.
+     * @throws Exception
+     */
+    public function joinInner(string $tableName): Join
+    {
+        $join = new Join($tableName, "", JoinOperator::INNER);
+        $this->joins[]=$join;
+        return $join;
+    }
+
+    /**
+     * Adds a CROSS JOIN statement
+     *
+     * @param string $tableName Name of table to join with (including schema)
+     * @return Join Object to set join conditions on.
+     * @throws Exception
+     */
+    public function joinCross(string $tableName): Join
+    {
+        $join = new Join($tableName, "", JoinOperator::CROSS);
+        $this->joins[]=$join;
+        return $join;
+    }
+
+    /**
      * Compiles SQL statement based on data collected in class fields.
      *
      * @return string SQL that results from conversion
@@ -48,8 +108,13 @@ class Update extends DefaultUpdate
         if ($this->with) {
             $output = $this->with->toString()."\r\n";
         }
-        $output .="UPDATE ".($this->isIgnore?"IGNORE ":"").$this->table.
-            "\r\n"."SET ".$this->set->toString().
+        $output .="UPDATE ".($this->isIgnore?"IGNORE ":"").$this->table;
+        if (sizeof($this->joins)>0) {
+            foreach ($this->joins as $join) {
+                $output .= "\r\n".$join->toString();
+            }
+        }
+        $output .= "\r\n"."SET ".$this->set->toString().
             ($this->where && !$this->where->isEmpty()?"\r\n"."WHERE ".$this->where->toString():"");
         return $output;
     }

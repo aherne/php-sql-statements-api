@@ -40,6 +40,7 @@ class Select implements Stringable
     protected $orderBy;
     protected $limit;
     protected $table;
+    protected $validator;
 
     /**
      * Constructs a SELECT statement based on table name and optional alias
@@ -50,7 +51,8 @@ class Select implements Stringable
      */
     public function __construct($tableDefinition, string $tableAlias="")
     {
-        $finalTable = $this->validateTable($tableDefinition, $tableAlias);
+        $this->validator = new Validator();
+        $finalTable = $this->validator->validateTable($tableDefinition, $tableAlias);
         $this->table = ($tableAlias?new Alias($finalTable, $tableAlias):$finalTable);
     }
 
@@ -105,7 +107,7 @@ class Select implements Stringable
      */
     public function joinLeft($tableDefinition, string $tableAlias = ""): Join
     {
-        $finalTable = $this->validateTable($tableDefinition, $tableAlias);
+        $finalTable = $this->validator->validateTable($tableDefinition, $tableAlias);
         $join = new Join($finalTable, $tableAlias, JoinOperator::LEFT);
         $this->joins[]=$join;
         return $join;
@@ -121,7 +123,7 @@ class Select implements Stringable
      */
     public function joinRight($tableDefinition, string $tableAlias = ""): Join
     {
-        $finalTable = $this->validateTable($tableDefinition, $tableAlias);
+        $finalTable = $this->validator->validateTable($tableDefinition, $tableAlias);
         $join = new Join($finalTable, $tableAlias, JoinOperator::RIGHT);
         $this->joins[]=$join;
         return $join;
@@ -137,7 +139,7 @@ class Select implements Stringable
      */
     public function joinInner($tableDefinition, string $tableAlias = ""): Join
     {
-        $finalTable = $this->validateTable($tableDefinition, $tableAlias);
+        $finalTable = $this->validator->validateTable($tableDefinition, $tableAlias);
         $join = new Join($finalTable, $tableAlias, JoinOperator::INNER);
         $this->joins[]=$join;
         return $join;
@@ -153,7 +155,7 @@ class Select implements Stringable
      */
     public function joinCross($tableDefinition, string $tableAlias = ""): Join
     {
-        $finalTable = $this->validateTable($tableDefinition, $tableAlias);
+        $finalTable = $this->validator->validateTable($tableDefinition, $tableAlias);
         $join = new Join($finalTable, $tableAlias, JoinOperator::CROSS);
         $this->joins[]=$join;
         return $join;
@@ -261,27 +263,5 @@ class Select implements Stringable
                 ($this->orderBy && !$this->orderBy->isEmpty()?"\r\nORDER BY ".$this->orderBy->toString():"").
                 ($this->limit?"\r\nLIMIT ".$this->limit->toString():"");
         return $output;
-    }
-
-    /**
-     * Validates table definition, returning table name or derived table expression.
-     *
-     * @param string|Select|SelectGroup $table
-     * @param string $alias
-     * @return string
-     * @throws Exception
-     */
-    private function validateTable($table, string $alias=""): string
-    {
-        if (is_string($table)) {
-            return $table;
-        } elseif ($table instanceof Select || $table instanceof SelectGroup) {
-            if (!$alias) {
-                throw new Exception("Derived table must have an alias");
-            }
-            return "(\n".$table->toString()."\r)";
-        } else {
-            throw new Exception("Table name must be string or be a Select / SelectGroup object");
-        }
     }
 }

@@ -3,6 +3,7 @@ namespace Lucinda\Query\Clause;
 
 use Lucinda\Query\Stringable;
 use Lucinda\Query\Operator\OrderBy as OrderByOperator;
+use Lucinda\Query\Validator;
 
 /**
  * Encapsulates SQL ORDER BY clause
@@ -10,6 +11,10 @@ use Lucinda\Query\Operator\OrderBy as OrderByOperator;
 class OrderBy implements Stringable
 {
     protected $contents = [];
+    /**
+     * @var Validator
+     */
+    private $validator;
 
     /**
      * Class constructor.
@@ -18,6 +23,7 @@ class OrderBy implements Stringable
      */
     public function __construct(array $fields = [])
     {
+        $this->validator = new Validator();
         foreach ($fields as $field) {
             $this->contents[$field] = OrderByOperator::ASC;
         }
@@ -32,8 +38,7 @@ class OrderBy implements Stringable
      */
     public function add($columnDefinition, string $operator = OrderByOperator::ASC): OrderBy
     {
-        $column = ($columnDefinition instanceof Stringable?"(".$columnDefinition->toString().")":$columnDefinition);
-        $this->contents[$column] = $operator;
+        $this->contents[$this->validator->validateOrderByField($columnDefinition)] = $operator;
         return $this;
     }
 
