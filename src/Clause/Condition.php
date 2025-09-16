@@ -6,6 +6,8 @@ use Lucinda\Query\Select;
 use Lucinda\Query\SelectGroup;
 use Lucinda\Query\Operator\Logical as LogicalOperator;
 use Lucinda\Query\Operator\Comparison as ComparisonOperator;
+use Lucinda\Query\Stringable;
+use Lucinda\Query\Validator;
 
 /**
  * Encapsulates SQL WHERE/ON clauses that use a single logical operator
@@ -17,6 +19,7 @@ class Condition implements \Stringable
      * @var array<int,mixed>
      */
     protected array $contents = [];
+    protected Validator $validator;
 
     /**
      * Constructor
@@ -26,6 +29,7 @@ class Condition implements \Stringable
      */
     public function __construct(array $condition=[], LogicalOperator $logicalOperator = LogicalOperator::_AND_)
     {
+        $this->validator = new Validator();
         foreach ($condition as $key=>$value) {
             $this->set($key, $value, ComparisonOperator::EQUALS);
         }
@@ -35,20 +39,20 @@ class Condition implements \Stringable
     /**
      * Adds a field vs value comparison condition.
      *
-     * @param  string                              $columnName         Name of column/field.
+     * @param  string|\Stringable                  $columnDefinition        Definition of column/field (name or expression)
      * @param  int|string|float|Select|SelectGroup $value              Value of column/field for row.
      * @param  ComparisonOperator                  $comparisonOperator Enum holding logical operator that will be used in condition (default: =)
      * @return Condition
      */
     public function set(
-        string $columnName,
+        string|\Stringable $columnDefinition,
         int|string|float|Select|SelectGroup $value,
         ComparisonOperator $comparisonOperator=ComparisonOperator::EQUALS
     ): Condition {
         $clause = [];
-        $clause["KEY"]=$columnName;
+        $clause["KEY"]=$this->validator->validateCondition($columnDefinition);
         $clause["COMPARATOR"]=$comparisonOperator;
-        $clause["VALUE"]=$value;
+        $clause["VALUE"]=$this->validator->validateCondition($value);
         $this->contents[]=$clause;
         return $this;
     }
@@ -56,17 +60,17 @@ class Condition implements \Stringable
     /**
      * Adds an "IN/NOT IN" condition.
      *
-     * @param  string                      $columnName Name of column/field.
+     * @param  string|\Stringable          $columnDefinition Definition of column/field (name or expression)
      * @param  string[]|Select|SelectGroup $values     List of possible values for column/field in row or a Select/SelectGroup statement.
      * @param  boolean                     $isTrue     Whether condition is IN or NOT IN
      * @return Condition
      */
-    public function setIn(string $columnName, array|Select|SelectGroup $values, bool $isTrue=true): Condition
+    public function setIn(string|\Stringable $columnDefinition, array|Select|SelectGroup $values, bool $isTrue=true): Condition
     {
         $clause = [];
-        $clause["KEY"]=$columnName;
+        $clause["KEY"]=$this->validator->validateCondition($columnDefinition);
         $clause["COMPARATOR"]=($isTrue ? ComparisonOperator::IN : ComparisonOperator::NOT_IN);
-        $clause["VALUE"]=$values;
+        $clause["VALUE"]=$this->validator->validateCondition($values);
         $this->contents[]=$clause;
         return $this;
     }
@@ -74,14 +78,14 @@ class Condition implements \Stringable
     /**
      * Adds a "NULL/NOT NULL" condition.
      *
-     * @param  string  $columnName Name of column/field.
+     * @param  string|\Stringable  $columnDefinition Definition of column/field (name or expression)
      * @param  boolean $isTrue     Whether condition is NULL or NOT NULL
      * @return Condition
      */
-    public function setIsNull(string $columnName, bool $isTrue=true): Condition
+    public function setIsNull(string|\Stringable $columnDefinition, bool $isTrue=true): Condition
     {
         $clause = [];
-        $clause["KEY"]=$columnName;
+        $clause["KEY"]=$this->validator->validateCondition($columnDefinition);
         $clause["COMPARATOR"]=($isTrue ? ComparisonOperator::IS_NULL : ComparisonOperator::IS_NOT_NULL);
         $this->contents[]=$clause;
         return $this;
@@ -90,15 +94,15 @@ class Condition implements \Stringable
     /**
      * Sets up a "LIKE/NOT LIKE" condition.
      *
-     * @param  string  $columnName Name of column/field.
+     * @param  string|\Stringable  $columnDefinition Definition of column/field (name or expression)
      * @param  string  $pattern    Value of pattern to match
      * @param  boolean $isTrue     Whether or not condition is LIKE or NOT LIKE
      * @return Condition
      */
-    public function setLike(string $columnName, string $pattern, bool $isTrue=true): Condition
+    public function setLike(string|\Stringable $columnDefinition, string $pattern, bool $isTrue=true): Condition
     {
         $clause = [];
-        $clause["KEY"]=$columnName;
+        $clause["KEY"]=$this->validator->validateCondition($columnDefinition);
         $clause["COMPARATOR"]=($isTrue ? ComparisonOperator::LIKE : ComparisonOperator::NOT_LIKE);
         $clause["VALUE"]=$pattern;
         $this->contents[]=$clause;
@@ -108,23 +112,23 @@ class Condition implements \Stringable
     /**
      * Sets up a "BETWEEN/NOT BETWEEN" condition.
      *
-     * @param  string           $columnName Name of column/field.
+     * @param  string|\Stringable $columnDefinition Name of column/field.
      * @param  int|string|float $valueLeft  Minimal value of column/field in row
      * @param  int|string|float $valueRight Maximal value of column/field in row
      * @param  boolean          $isTrue     Whether condition is BETWEEN or NOT BETWEEN
      * @return Condition
      */
     public function setBetween(
-        string $columnName,
+        string|\Stringable $columnDefinition,
         int|string|float $valueLeft,
         int|string|float $valueRight,
         bool $isTrue=true
     ): Condition {
         $clause = [];
-        $clause["KEY"]=$columnName;
+        $clause["KEY"]=$this->validator->validateCondition($columnDefinition);
         $clause["COMPARATOR"]=($isTrue ? ComparisonOperator::BETWEEN : ComparisonOperator::NOT_BETWEEN);
-        $clause["VALUE_LEFT"]=$valueLeft;
-        $clause["VALUE_RIGHT"]=$valueRight;
+        $clause["VALUE_LEFT"]=$this->validator->validateCondition($valueLeft);
+        $clause["VALUE_RIGHT"]=$this->validator->validateCondition($valueRight);
         $this->contents[]=$clause;
         return $this;
     }
@@ -188,10 +192,6 @@ class Condition implements \Stringable
                     case ComparisonOperator::NOT_BETWEEN:
                         $output .= $this->getBetween($values);
                         break;
-                    case ComparisonOperator::IN:
-                    case ComparisonOperator::NOT_IN:
-                        $output .= $this->getIn($values);
-                        break;
                     default:
                         $output .= $this->getSimple($values);
                         break;
@@ -225,26 +225,6 @@ class Condition implements \Stringable
     }
 
     /**
-     * Converts (NOT) IN clause to SQL
-     *
-     * @param  array<string,mixed> $values
-     * @return string
-     */
-    private function getIn(array $values): string
-    {
-        $tmp = $values["VALUE"];
-        if (is_array($tmp)) {
-            $valuesText = "";
-            foreach ($tmp as $string) {
-                $valuesText .= $string.", ";
-            }
-            return $values["KEY"]." ".$values["COMPARATOR"]->value." (".substr($valuesText, 0, -2).")";
-        } else {
-            return $values["KEY"]." ".$values["COMPARATOR"]->value." (".$tmp.")";
-        }
-    }
-
-    /**
      * Converts simple (COLUMN OPERATOR VALUE) clause to SQL
      *
      * @param  array<string,mixed> $values
@@ -252,10 +232,7 @@ class Condition implements \Stringable
      */
     private function getSimple(array $values): string
     {
-        $left = $values["KEY"];
-        $middle = (is_string($values["COMPARATOR"]) ? $values["COMPARATOR"] : $values["COMPARATOR"]->value);
-        $right = (is_object($values["VALUE"]) ? "(".$values["VALUE"].")" : $values["VALUE"]);
-        return $left." ".$middle." ".$right;
+        return $values["KEY"]." ".$values["COMPARATOR"]->value." ".$values["VALUE"];
     }
 
     /**

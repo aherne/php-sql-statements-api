@@ -43,8 +43,12 @@ class InsertSelect extends DefaultInsertSelect
      */
     public function __toString(): string
     {
+        $output = "";
+        if ($this->with) {
+            $output = $this->with."\r\n";
+        }
         $ignore = ($this->isIgnore ? " IGNORE" : "");
-        $output = "INSERT".$ignore." INTO ".$this->table." (".$this->getColumns().")"."\r\n".$this->getSelect();
+        $output .= "INSERT".$ignore." INTO ".$this->table." (".$this->columns.")"."\r\n".$this->select;
         if ($this->onDuplicateKeyUpdate && !$this->onDuplicateKeyUpdate->isEmpty()) {
             $output .= "\r\n"."ON DUPLICATE KEY UPDATE ".$this->onDuplicateKeyUpdate;
         }

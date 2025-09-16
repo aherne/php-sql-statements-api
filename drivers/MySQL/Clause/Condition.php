@@ -14,15 +14,15 @@ class Condition extends DefaultCondition
     /**
      * Sets up a "REGEXP/NOT REGEXP" condition.
      *
-     * @param  string  $columnName Name of column/field.
+     * @param string|\Stringable $columnDefinition Definition of column/field (name or expression)
      * @param  string  $pattern    Value of REGEX pattern to match
      * @param  boolean $isTrue     Whether condition is REGEXP or NOT REGEXP
      * @return Condition
      */
-    public function setRegexp(string $columnName, string $pattern, bool $isTrue=true): DefaultCondition
+    public function setRegexp(string|\Stringable $columnDefinition, string $pattern, bool $isTrue=true): DefaultCondition
     {
         $clause = [];
-        $clause["KEY"]=$columnName;
+        $clause["KEY"]=$this->validator->validateCondition($columnDefinition);
         $clause["COMPARATOR"]=($isTrue ? MySQLComparisonOperator::REGEXP : MySQLComparisonOperator::NOT_REGEXP);
         $clause["VALUE"]=$pattern;
         $this->contents[]=$clause;
@@ -44,7 +44,7 @@ class Condition extends DefaultCondition
     ): DefaultCondition {
         $clause = [];
         $clause["KEY"] = "MATCH(".implode(",", $columnNames).")";
-        $clause["COMPARATOR"] = "AGAINST";
+        $clause["COMPARATOR"] = MySQLComparisonOperator::AGAINST;
         $clause["VALUE"] = "(".$pattern." ".$type->value.")";
         $this->contents[]=$clause;
         return $this;

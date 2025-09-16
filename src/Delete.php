@@ -3,6 +3,7 @@
 namespace Lucinda\Query;
 
 use Lucinda\Query\Clause\Condition;
+use Lucinda\Query\Clause\With;
 use Lucinda\Query\Operator\Logical;
 
 /**
@@ -10,6 +11,7 @@ use Lucinda\Query\Operator\Logical;
  */
 class Delete implements \Stringable
 {
+    protected ?With $with = null;
     protected ?Condition $where = null;
     protected string $table;
 
@@ -21,6 +23,19 @@ class Delete implements \Stringable
     public function __construct(string $table)
     {
         $this->table = $table;
+    }
+
+    /**
+     * Sets a WITH common table expressions (CTE) clause
+     *
+     * @param bool $isRecursive
+     * @return With Object to set WITH clauses on.
+     */
+    public function with(bool $isRecursive = false): With
+    {
+        $with = new With($isRecursive);
+        $this->with = $with;
+        return $with;
     }
 
     /**
@@ -44,16 +59,12 @@ class Delete implements \Stringable
      */
     public function __toString(): string
     {
-        return "DELETE FROM ".$this->table.$this->getWhere();
-    }
-
-    /**
-     * Converts WHERE clause set by user (if any) to string
-     *
-     * @return string
-     */
-    protected function getWhere(): string
-    {
-        return ($this->where && !$this->where->isEmpty() ? "\r\nWHERE ".$this->where : "");
+        $output = "";
+        if ($this->with) {
+            $output = $this->with."\r\n";
+        }
+        $output .= "DELETE FROM ".$this->table.
+            ($this->where && !$this->where->isEmpty()?"\r\n"."WHERE ".$this->where:"");
+        return $output;
     }
 }

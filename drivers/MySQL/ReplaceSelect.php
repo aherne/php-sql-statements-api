@@ -17,6 +17,11 @@ class ReplaceSelect extends \Lucinda\Query\InsertSelect
      */
     public function __toString(): string
     {
-        return "REPLACE INTO ".$this->table." (".$this->getColumns().")"."\r\n".$this->getSelect();
+        $output = "";
+        if ($this->with) {
+            $output = $this->with."\r\n";
+        }
+        $output .= "REPLACE INTO ".$this->table." (".$this->columns.")"."\r\n".$this->select;
+        return $output;
     }
 }

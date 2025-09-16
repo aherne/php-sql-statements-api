@@ -5,6 +5,8 @@ namespace Lucinda\Query;
 use Lucinda\Query\Clause\Alias;
 use Lucinda\Query\Clause\Fields;
 use Lucinda\Query\Clause\Join;
+use Lucinda\Query\Clause\Window;
+use Lucinda\Query\Clause\With;
 use Lucinda\Query\Operator\Join as JoinOperator;
 use Lucinda\Query\Operator\Logical as LogicalOperator;
 use Lucinda\Query\Clause\Condition;
@@ -27,6 +29,10 @@ use Lucinda\Query\Clause\Columns;
  */
 class Select implements \Stringable
 {
+    protected Validator $validator;
+    protected ?With $with = null;
+    protected ?Window $window = null;
+    protected bool $groupByRollup=false;
     protected bool $isDistinct = false;
     protected ?Fields $columns = null;
     /**
@@ -43,12 +49,15 @@ class Select implements \Stringable
     /**
      * Constructs a SELECT statement based on table name and optional alias
      *
-     * @param string $table Name of table to select from (including schema)
-     * @param string $alias Optional alias to identify table with
+     * @param string|Select|SelectGroup $tableDefinition Name of table to select from (including schema) or derived table expression
+     * @param string $tableAlias Optional alias to identify table with
+     * @throws Exception
      */
-    public function __construct(string $table, string $alias="")
+    public function __construct(string|Select|SelectGroup $tableDefinition, string $tableAlias="")
     {
-        $this->table = ($alias ? new Alias($table, $alias) : $table);
+        $this->validator = new Validator();
+        $finalTable = $this->validator->validateTable($tableDefinition, $tableAlias);
+        $this->table = ($tableAlias?new Alias($finalTable, $tableAlias):$finalTable);
     }
 
     /**
@@ -57,6 +66,31 @@ class Select implements \Stringable
     public function distinct(): void
     {
         $this->isDistinct=true;
+    }
+
+    /**
+     * Sets a WINDOW clause
+     *
+     * @return Window Object to set WINDOW clauses on.
+     */
+    public function window(): Window
+    {
+        $window = new Window();
+        $this->window = $window;
+        return $window;
+    }
+
+    /**
+     * Sets a WITH common table expressions (CTE) clause
+     *
+     * @param bool $isRecursive
+     * @return With Object to set WITH clauses on.
+     */
+    public function with(bool $isRecursive = false): With
+    {
+        $with = new With($isRecursive);
+        $this->with = $with;
+        return $with;
     }
 
     /**
@@ -75,13 +109,15 @@ class Select implements \Stringable
     /**
      * Adds a LEFT JOIN statement
      *
-     * @param  string $tableName  Name of table to join with
-     * @param  string $tableAlias Optional alias of table to join with
+     * @param string|Select|SelectGroup $tableDefinition Name of table to join with or derived table expression
+     * @param string $tableAlias Optional alias of table to join with
      * @return Join Object to set join conditions on.
+     * @throws Exception
      */
-    public function joinLeft(string $tableName, string $tableAlias = ""): Join
+    public function joinLeft(string|Select|SelectGroup $tableDefinition, string $tableAlias = ""): Join
     {
-        $join = new Join($tableName, $tableAlias, JoinOperator::LEFT);
+        $finalTable = $this->validator->validateTable($tableDefinition, $tableAlias);
+        $join = new Join($finalTable, $tableAlias, JoinOperator::LEFT);
         $this->joins[]=$join;
         return $join;
     }
@@ -89,13 +125,15 @@ class Select implements \Stringable
     /**
      * Adds a RIGHT JOIN statement
      *
-     * @param  string $tableName  Name of table to join with
-     * @param  string $tableAlias Optional alias of table to join with
+     * @param string|Select|SelectGroup $tableDefinition Name of table to join with or derived table expression
+     * @param string $tableAlias Optional alias of table to join with
      * @return Join Object to set join conditions on.
+     * @throws Exception
      */
-    public function joinRight(string $tableName, string $tableAlias = ""): Join
+    public function joinRight(string|Select|SelectGroup $tableDefinition, string $tableAlias = ""): Join
     {
-        $join = new Join($tableName, $tableAlias, JoinOperator::RIGHT);
+        $finalTable = $this->validator->validateTable($tableDefinition, $tableAlias);
+        $join = new Join($finalTable, $tableAlias, JoinOperator::RIGHT);
         $this->joins[]=$join;
         return $join;
     }
@@ -103,13 +141,15 @@ class Select implements \Stringable
     /**
      * Adds a INNER JOIN statement
      *
-     * @param  string $tableName  Name of table to join with
-     * @param  string $tableAlias Optional alias of table to join with
+     * @param string|Select|SelectGroup $tableDefinition Name of table to join with or derived table expression
+     * @param string $tableAlias Optional alias of table to join with
      * @return Join Object to set join conditions on.
+     * @throws Exception
      */
-    public function joinInner(string $tableName, string $tableAlias = ""): Join
+    public function joinInner(string|Select|SelectGroup $tableDefinition, string $tableAlias = ""): Join
     {
-        $join = new Join($tableName, $tableAlias, JoinOperator::INNER);
+        $finalTable = $this->validator->validateTable($tableDefinition, $tableAlias);
+        $join = new Join($finalTable, $tableAlias, JoinOperator::INNER);
         $this->joins[]=$join;
         return $join;
     }
@@ -117,13 +157,15 @@ class Select implements \Stringable
     /**
      * Adds a CROSS JOIN statement
      *
-     * @param  string $tableName  Name of table to join with
-     * @param  string $tableAlias Optional alias of table to join with
+     * @param string|Select|SelectGroup $tableDefinition Name of table to join with or derived table expression
+     * @param string $tableAlias Optional alias of table to join with
      * @return Join Object to set join conditions on.
+     * @throws Exception
      */
-    public function joinCross(string $tableName, string $tableAlias = ""): Join
+    public function joinCross(string|Select|SelectGroup $tableDefinition, string $tableAlias = ""): Join
     {
-        $join = new Join($tableName, $tableAlias, JoinOperator::CROSS);
+        $finalTable = $this->validator->validateTable($tableDefinition, $tableAlias);
+        $join = new Join($finalTable, $tableAlias, JoinOperator::CROSS);
         $this->joins[]=$join;
         return $join;
     }
@@ -200,11 +242,13 @@ class Select implements \Stringable
      */
     public function __toString(): string
     {
-        $output = "SELECT".$this->getOptions()."\r\n".$this->getColumns()."\r\n"."FROM ".$this->table;
+        $output = ($this->with?$this->with."\r\n":"");
+        $output .= "SELECT".$this->getOptions()."\r\n".$this->getColumns()."\r\n"."FROM ".$this->table;
         $output .= $this->getJoins();
         $output .= $this->getWhere();
         $output .= $this->getGroupBy();
         $output .= $this->getHaving();
+        $output .= ($this->window && !$this->window->isEmpty()?"\r\nWINDOW ".$this->window:"");
         $output .= $this->getOrderBy();
         $output .= $this->getLimit();
         return $output;

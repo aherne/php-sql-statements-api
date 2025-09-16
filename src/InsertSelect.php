@@ -3,12 +3,14 @@
 namespace Lucinda\Query;
 
 use Lucinda\Query\Clause\Columns;
+use Lucinda\Query\Clause\With;
 
 /**
  * Encapsulates SQL statement: INSERT INTO {TABLE} ({COLUMNS}) {SELECT}
  */
 class InsertSelect implements \Stringable
 {
+    protected ?With $with = null;
     protected ?Columns $columns = null;
     protected ?\Stringable $select = null;
     protected string $table;
@@ -21,6 +23,19 @@ class InsertSelect implements \Stringable
     public function __construct(string $table)
     {
         $this->table = $table;
+    }
+
+    /**
+     * Sets a WITH common table expressions (CTE) clause
+     *
+     * @param bool $isRecursive
+     * @return With Object to set WITH clauses on.
+     */
+    public function with(bool $isRecursive = false): With
+    {
+        $with = new With($isRecursive);
+        $this->with = $with;
+        return $with;
     }
 
     /**
@@ -54,34 +69,18 @@ class InsertSelect implements \Stringable
      */
     public function __toString(): string
     {
-        return  "INSERT INTO ".$this->table." (".$this->getColumns().")"."\r\n".$this->getSelect();
-    }
-
-    /**
-     * Converts columns to string
-     *
-     * @return string
-     * @throws Exception
-     */
-    protected function getColumns(): string
-    {
         if (!$this->columns || $this->columns->isEmpty()) {
             throw new Exception("running columns() method is required!");
         }
-        return (string) $this->columns;
-    }
-
-    /**
-     * Converts select to string
-     *
-     * @return string
-     * @throws Exception
-     */
-    protected function getSelect(): string
-    {
         if (!$this->select) {
             throw new Exception("running select() method is required!");
         }
-        return (string) $this->select;
+
+        $output = "";
+        if ($this->with) {
+            $output = $this->with."\r\n";
+        }
+        $output .=  "INSERT INTO ".$this->table." (".$this->columns.")"."\r\n".$this->select;
+        return $output;
     }
 }

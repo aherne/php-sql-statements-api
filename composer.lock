@@ -1,0 +1,118 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "8ec1958cf3c849ebc4d1c3528b619a4b",
+    "packages": [],
+    "packages-dev": [
+        {
+            "name": "lucinda/console",
+            "version": "v2.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/aherne/console.git",
+                "reference": "d89c9079b7791c38e66fddb78e648d6a3ab1cfc5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/aherne/console/zipball/d89c9079b7791c38e66fddb78e648d6a3ab1cfc5",
+                "reference": "d89c9079b7791c38e66fddb78e648d6a3ab1cfc5",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Lucinda\\Console\\": "src/",
+                    "Test\\Lucinda\\Console\\": "tests/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Lucian Popescu",
+                    "email": "lucian.gabriel.popescu@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Lucinda Console Table: API able to draw tables in UNIX consoles or windows command prompt",
+            "keywords": [
+                "command prompt",
+                "tables",
+                "unix console"
+            ],
+            "support": {
+                "issues": "https://github.com/aherne/console/issues",
+                "source": "https://github.com/aherne/console/tree/v2.0.5"
+            },
+            "time": "2022-12-25T17:58:22+00:00"
+        },
+        {
+            "name": "lucinda/unit-testing",
+            "version": "v2.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/aherne/unit-testing.git",
+                "reference": "731a048d5999dd23094d785bd4814f2740a7f6cc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/aherne/unit-testing/zipball/731a048d5999dd23094d785bd4814f2740a7f6cc",
+                "reference": "731a048d5999dd23094d785bd4814f2740a7f6cc",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-pdo": "*",
+                "ext-simplexml": "*",
+                "ext-tokenizer": "*",
+                "lucinda/console": "~2.0",
+                "php": "^8.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Lucinda\\UnitTest\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Lucian Popescu",
+                    "email": "lucian.gabriel.popescu@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Lightweight PHP8.1 library for unit testing with zero dependencies",
+            "homepage": "https://github.com/aherne/unit-testing",
+            "keywords": [
+                "unit testing"
+            ],
+            "support": {
+                "issues": "https://github.com/aherne/unit-testing/issues",
+                "source": "https://github.com/aherne/unit-testing/tree/v2.0.3"
+            },
+            "time": "2022-06-05T06:43:26+00:00"
+        }
+    ],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": "^8.1"
+    },
+    "platform-dev": [],
+    "plugin-api-version": "2.2.0"
+}

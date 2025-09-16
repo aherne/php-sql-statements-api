@@ -3,6 +3,7 @@
 namespace Lucinda\Query;
 
 use Lucinda\Query\Clause\Set;
+use Lucinda\Query\Clause\With;
 use Lucinda\Query\Operator\Logical as LogicalOperator;
 use Lucinda\Query\Clause\Condition;
 
@@ -11,6 +12,7 @@ use Lucinda\Query\Clause\Condition;
  */
 class Update implements \Stringable
 {
+    protected ?With $with = null;
     protected ?Set $set = null;
     protected ?Condition $where = null;
     protected string $table;
@@ -23,6 +25,19 @@ class Update implements \Stringable
     public function __construct(string $table)
     {
         $this->table = $table;
+    }
+
+    /**
+     * Sets a WITH common table expressions (CTE) clause
+     *
+     * @param bool $isRecursive
+     * @return With Object to set WITH clauses on.
+     */
+    public function with(bool $isRecursive = false): With
+    {
+        $with = new With($isRecursive);
+        $this->with = $with;
+        return $with;
     }
 
     /**
@@ -60,7 +75,8 @@ class Update implements \Stringable
      */
     public function __toString(): string
     {
-        return "UPDATE ".$this->table.$this->getSet().$this->getWhere();
+        $with = ($this->with? $this->with."\r\n" : "");
+        return $with."UPDATE ".$this->table.$this->getSet().$this->getWhere();
     }
 
     /**

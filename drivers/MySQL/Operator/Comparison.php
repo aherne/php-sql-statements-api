@@ -10,4 +10,6 @@ enum Comparison: string
     // regular expression comparison operators
     case REGEXP = "REGEXP";
     case NOT_REGEXP = "NOT REGEXP";
+    // against operator for fulltext search
+    case AGAINST = "AGAINST";
 }

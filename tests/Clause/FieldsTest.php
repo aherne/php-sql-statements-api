@@ -3,6 +3,8 @@
 namespace Test\Lucinda\Query\Clause;
 
 use Lucinda\Query\Clause\Fields;
+use Lucinda\Query\Clause\Window\Over;
+use Lucinda\Query\Clause\Window\PartitionBy;
 use Lucinda\UnitTest\Result;
 
 class FieldsTest
@@ -37,4 +39,15 @@ class FieldsTest
     {
         return "OK";
     }
+
+    public function over()
+    {
+        $fields = new Fields();
+        $fields->add("a", "b");
+        $fields->over("AVG(a)", "w1", "c");
+        $fields->over("SUM(b)",  new Over(new PartitionBy(["foo"])), "d");
+        return new Result($fields=="a AS b, AVG(a) OVER w1 AS c, SUM(b) OVER (PARTITION BY foo) AS d");
+    }
+        
+
 }
