@@ -31,7 +31,6 @@ class Delete extends DefaultDelete
      *
      * @param string $tableName Name of table to join with (including schema)
      * @return Join Object to set join conditions on.
-     * @throws Exception
      */
     public function joinLeft(string $tableName): Join
     {

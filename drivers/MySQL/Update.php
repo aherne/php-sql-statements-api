@@ -2,7 +2,9 @@
 
 namespace Lucinda\Query\Vendor\MySQL;
 
+use Lucinda\Query\Clause\Join;
 use Lucinda\Query\Exception;
+use Lucinda\Query\Operator\Join as JoinOperator;
 use Lucinda\Query\Update as DefaultUpdate;
 use Lucinda\Query\Clause\Condition;
 use Lucinda\Query\Operator\Logical as LogicalOperator;
@@ -14,6 +16,7 @@ use Lucinda\Query\Vendor\MySQL\Clause\Condition as MySQLCondition;
 class Update extends DefaultUpdate
 {
     protected bool $isIgnore=false;
+    protected array $joins=[];
 
     /**
      * Sets statement as IGNORE, ignoring foreign key errors and duplicates
@@ -21,6 +24,58 @@ class Update extends DefaultUpdate
     public function ignore(): void
     {
         $this->isIgnore = true;
+    }
+
+    /**
+     * Adds a LEFT JOIN statement
+     *
+     * @param string $tableName Name of table to join with (including schema)
+     * @return Join Object to set join conditions on.
+     */
+    public function joinLeft(string $tableName): Join
+    {
+        $join = new Join($tableName, "", JoinOperator::LEFT);
+        $this->joins[]=$join;
+        return $join;
+    }
+
+    /**
+     * Adds a RIGHT JOIN statement
+     *
+     * @param string $tableName Name of table to join with (including schema)
+     * @return Join Object to set join conditions on.
+     */
+    public function joinRight(string $tableName): Join
+    {
+        $join = new Join($tableName, "", JoinOperator::RIGHT);
+        $this->joins[]=$join;
+        return $join;
+    }
+
+    /**
+     * Adds a INNER JOIN statement
+     *
+     * @param string $tableName Name of table to join with (including schema)
+     * @return Join Object to set join conditions on.
+     */
+    public function joinInner(string $tableName): Join
+    {
+        $join = new Join($tableName, "", JoinOperator::INNER);
+        $this->joins[]=$join;
+        return $join;
+    }
+
+    /**
+     * Adds a CROSS JOIN statement
+     *
+     * @param string $tableName Name of table to join with (including schema)
+     * @return Join Object to set join conditions on.
+     */
+    public function joinCross(string $tableName): Join
+    {
+        $join = new Join($tableName, "", JoinOperator::CROSS);
+        $this->joins[]=$join;
+        return $join;
     }
 
     /**
@@ -43,6 +98,12 @@ class Update extends DefaultUpdate
      */
     public function __toString(): string
     {
-        return "UPDATE".($this->isIgnore ? " IGNORE" : "")." ".$this->table.$this->getSet().$this->getWhere();
+        $output =  ($this->with? $this->with."\r\n" : "")."UPDATE ".($this->isIgnore?"IGNORE":"")." ".$this->table;
+        if (sizeof($this->joins)>0) {
+            foreach ($this->joins as $join) {
+                $output .= "\r\n".$join;
+            }
+        }
+        return $output.$this->getSet().$this->getWhere();
     }
 }
