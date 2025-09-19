@@ -64,6 +64,11 @@ class Select implements Stringable
         $this->isDistinct=true;
     }
 
+    /**
+     * Sets a WINDOW clause
+     *
+     * @return Window Object to set WINDOW clauses on.
+     */
     public function window(): Window
     {
         $window = new Window();

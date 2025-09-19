@@ -62,6 +62,7 @@ class Condition implements Stringable
      */
     public function setIn($columnDefinition, $values, bool $isTrue=true): Condition
     {
+        $values = (is_array($values) || $values instanceof Select || $values instanceof SelectGroup ? $values : [$values]);
         $clause = [];
         $clause["KEY"]=$this->validator->validateCondition($columnDefinition);
         $clause["COMPARATOR"]=($isTrue?Comparison::IN:Comparison::NOT_IN);
