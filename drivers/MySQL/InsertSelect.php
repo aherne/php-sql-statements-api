@@ -9,7 +9,7 @@ use Lucinda\Query\Clause\Set;
 /**
  * Encapsulates MySQL statement: INSERT {IGNORE} INTO {TABLE} ({COLUMNS}) {SELECT} ON DUPLICATE KEY UPDATE {UPDATES}
  */
-class InsertSelect extends DefaultInsertSelect
+final class InsertSelect extends DefaultInsertSelect
 {
     protected bool $isIgnore=false;
     protected ?Set $onDuplicateKeyUpdate = null;

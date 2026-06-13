@@ -8,7 +8,7 @@ use Lucinda\Query\Validator;
 /**
  * Encapsulates SQL ORDER BY clause
  */
-class OrderBy implements \Stringable
+final class OrderBy implements \Stringable
 {
     /**
      * @var array<string,OrderByOperator>

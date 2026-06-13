@@ -9,7 +9,7 @@ use Lucinda\Query\Vendor\MySQL\Operator\MatchType;
 /**
  * Encapsulates MySQL WHERE/ON clauses that use a single logical operator, on top of SQL standard
  */
-class Condition extends DefaultCondition
+final class Condition extends DefaultCondition
 {
     /**
      * Sets up a "REGEXP/NOT REGEXP" condition.

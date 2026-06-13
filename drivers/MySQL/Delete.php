@@ -13,7 +13,7 @@ use Lucinda\Query\Vendor\MySQL\Clause\Condition as MySQLCondition;
 /**
  * Encapsulates MySQL statement: DELETE {IGNORE} FROM {TABLE} WHERE {CONDITION}
  */
-class Delete extends DefaultDelete
+final class Delete extends DefaultDelete
 {
     protected bool $isIgnore=false;
     protected array $joins=[];

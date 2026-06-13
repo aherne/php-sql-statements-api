@@ -8,7 +8,7 @@ use Lucinda\Query\Clause\OrderBy;
  * Encapsulates SQL statement: OVER (PARTITION BY {EXPRESSION} ORDER BY {EXPRESSION})
  * TODO: add ROWS/RANGE BETWEEN ... PRECEDING/FOLLOWING
  */
-class Over implements \Stringable
+final class Over implements \Stringable
 {
     private ?PartitionBy $partitionBy;
     private ?OrderBy $orderBy;

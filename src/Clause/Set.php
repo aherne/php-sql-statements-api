@@ -8,7 +8,7 @@ use Lucinda\Query\SelectGroup;
 /**
  * Encapsulates SQL SET clause
  */
-class Set implements \Stringable
+final class Set implements \Stringable
 {
     /**
      * @var array<string,mixed>

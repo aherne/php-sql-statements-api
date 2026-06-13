@@ -7,7 +7,7 @@ use Lucinda\Query\Clause\Alias;
 /**
  * Validates various parts of a query.
  */
-class Validator
+final class Validator
 {
 
     /**

@@ -9,7 +9,7 @@ use Lucinda\Query\Validator;
 /**
  * Encapsulates SQL select fields clause.
  */
-class Fields implements \Stringable
+final class Fields implements \Stringable
 {
     /**
      * @var string[]

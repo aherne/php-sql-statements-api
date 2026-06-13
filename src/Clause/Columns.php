@@ -5,7 +5,7 @@ namespace Lucinda\Query\Clause;
 /**
  * Encapsulates column lists clause
  */
-class Columns implements \Stringable
+final class Columns implements \Stringable
 {
     /**
      * @var string[]

@@ -5,7 +5,7 @@ namespace Lucinda\Query\Clause;
 /**
  * Encapsulates SQL clause: AS.
  */
-class Alias implements \Stringable
+final class Alias implements \Stringable
 {
     protected string $fieldName;
     protected string $fieldAlias;

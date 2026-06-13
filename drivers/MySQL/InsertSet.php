@@ -9,7 +9,7 @@ use Lucinda\Query\Clause\Set;
 /**
  * Encapsulates MySQL statement: INSERT {IGNORE} INTO {TABLE} SET {SET} ON DUPLICATE KEY UPDATE {UPDATES}
  */
-class InsertSet implements \Stringable
+final class InsertSet implements \Stringable
 {
     protected string $table;
     protected ?Set $set = null;

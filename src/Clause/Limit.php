@@ -5,7 +5,7 @@ namespace Lucinda\Query\Clause;
 /**
  * Encapsulates SQL LIMIT clause
  */
-class Limit implements \Stringable
+final class Limit implements \Stringable
 {
     protected int $limit;
     protected int $offset;

@@ -1,273 +1,260 @@
 # SQL Statements API
 
-Table of contents:
+Small PHP 8.1+ library for building SQL statements through composable objects.
 
-- [About](#about)
-- [Installation](#installation)
-- [Unit Tests](#unit-tests)
-- [Examples](#examples)
-- [Reference Guide](#reference-guide)
-
-## About 
-
-The purpose of this API is to automate generation of SQL statements (queries) based on SQL standards or their vendor-specific derivation. API is fully PSR-4 compliant, only requiring PHP7.1+ interpreter. To quickly see how it works, check:
-
-- **[installation](#installation)**: describes how to install API on your computer
-- **[unit tests](#unit-tests)**: API has 100% Unit Test coverage, using [UnitTest API](https://github.com/aherne/unit-testing) instead of PHPUnit for greater flexibility
-- **[examples](#examples)**: shows a example of API functionality
+The package focuses on query construction only. It does not open database connections,
+quote values, bind parameters, or execute SQL. Every statement and clause object is
+`\Stringable`, so it can be cast to a raw SQL string when ready.
 
 ## Installation
-
-To install this api, you only need to go to your project root then run this command from console:
 
 ```console
 composer require lucinda/queries
 ```
 
-Once you have it installed, you're able to generate queries. Each standard SQL statement corresponds to one or more classes:
+## Supported Statements
 
-- **SELECT**:
-    - [Lucinda\Query\Select](#class-select): encapsulates a single SELECT statement (eg: SELECT id FROM table)
-    - [Lucinda\Query\SelectGroup](#class-selectgroup): encapsulates a group of SELECT statements united by a SET operator (eg: (SELECT id from table1) UNION (SELECT id FROM table2))
-- **INSERT**:
-    - [Lucinda\Query\Insert](#class-insert): encapsulates an INSERT INTO ... VALUES statement (eg: INSERT INTO table (id, name) VALUES (1, 'asd'))
-    - [Lucinda\Query\InsertSelect](#class-insertselect): encapsulates an INSERT INTO ... SELECT statement (eg: INSERT INTO table (id, name) SELECT id, name FROM table2)
-- **UPDATE**:
-    - [Lucinda\Query\Update](#class-update): encapsulates an UPDATE statement (eg: UPDATE users SET name='Lucian' WHERE id=18)
-- **DELETE**:
-    - [Lucinda\Query\Delete](#class-delete): encapsulates a DELETE statement (eg: DELETE FROM users WHERE id=18)
-- **TRUNCATE**:
-    - [Lucinda\Query\Truncate](#class-truncate): encapsulates a TRUNCATE statement (eg: TRUNCATE TABLE users)
-    
-For each vendor implementing SQL standards, you can either use above or their vendor-specific derivations. MySQL vendor is already supported:
+Standard SQL classes live under `Lucinda\Query`:
 
-- **SELECT**:
-    - [Lucinda\Query\Vendor\MySQL\Select](#class-mysql-select): extends [Lucinda\Query\Select](#class-select) in order to support vendor-specific operations (eg: SQL_NO_CACHE)
-- **INSERT**:
-    - [Lucinda\Query\Vendor\MySQL\Insert](#class-mysql-insert): extends [Lucinda\Query\Insert](#class-insert) in order to support vendor-specific operations (eg: IGNORE)
-    - [Lucinda\Query\Vendor\MySQL\InsertSelect](#class-mysql-insertselect): extends [Lucinda\Query\InsertSelect](#class-insertselect) in order to support vendor-specific operations (eg: IGNORE)
-    - [Lucinda\Query\Vendor\MySQL\InsertSet](#class-mysql-insertset): encapsulates vendor-specific statement INSERT INTO ... SET statement (eg: INSERT INTO table (id, name) SET id=1, name='Lucian')
-- **REPLACE**:
-    - [Lucinda\Query\Vendor\MySQL\Replace](#class-mysql-replace): extends [Lucinda\Query\Insert](#class-insert) in order to support vendor-specific REPLACE INTO ... VALUES statement
-    - [Lucinda\Query\Vendor\MySQL\ReplaceSelect](#class-mysql-replaceselect): extends [Lucinda\Query\InsertSelect](#class-insertselect) in order to support vendor-specific REPLACE INTO ... SELECT statement
-    - [Lucinda\Query\Vendor\MySQL\ReplaceSet](#class-mysql-replaceset): encapsulates vendor-specific statement REPLACE INTO ... SET statement (eg: REPLACE INTO table (id, name) SET id=1, name='Lucian')
-- **UPDATE**
-    - [Lucinda\Query\Vendor\MySQL\Update](#class-mysql-update): extends [Lucinda\Query\Update](#class-update) in order to support vendor-specific operations (eg: IGNORE)
-- **DELETE**
-    - [Lucinda\Query\Vendor\MySQL\Delete](#class-mysql-delete): extends [Lucinda\Query\Delete](#class-delete) in order to support vendor-specific operations (eg: IGNORE)
- 
-Each of above, or clauses they individually call, implement **\Stringable** that converts them to a raw SQL statement. 
+| Statement | Class | Purpose |
+|-----------|-------|---------|
+| SELECT | `Lucinda\Query\Select` | Single SELECT statement |
+| SELECT groups | `Lucinda\Query\SelectGroup` | UNION, INTERSECT and EXCEPT groups |
+| INSERT VALUES | `Lucinda\Query\Insert` | `INSERT INTO ... VALUES` |
+| INSERT SELECT | `Lucinda\Query\InsertSelect` | `INSERT INTO ... SELECT` |
+| UPDATE | `Lucinda\Query\Update` | `UPDATE ... SET ... WHERE` |
+| DELETE | `Lucinda\Query\Delete` | `DELETE FROM ... WHERE` |
+| TRUNCATE | `Lucinda\Query\Truncate` | `TRUNCATE TABLE ...` |
 
-## Unit Tests
+Vendor-specific classes live under `Lucinda\Query\Vendor`:
 
-For tests and examples, check following files/folders in API sources:
+| Vendor | Namespace | Additions |
+|--------|-----------|-----------|
+| MySQL | `Lucinda\Query\Vendor\MySQL` | `IGNORE`, `REPLACE`, `INSERT ... SET`, `SQL_CALC_FOUND_ROWS`, `STRAIGHT_JOIN`, MySQL regexp/full-text conditions, `XOR` |
+| PostgreSQL | `Lucinda\Query\Vendor\PostgreSQL` | `RETURNING`, `ON CONFLICT`, `ILIKE`, PostgreSQL regexp operators, full-text `@@` |
+| SQLite | `Lucinda\Query\Vendor\SQLite` | `RETURNING`, `ON CONFLICT`, `INSERT OR ...`, `GLOB` |
 
-- [test.php](https://github.com/aherne/php-sql-statements-api/blob/master/test.php): runs unit tests in console
-- [unit-tests.xml](https://github.com/aherne/php-sql-statements-api/blob/master/unit-tests.xml): sets up unit tests
-- [tests](https://github.com/aherne/php-sql-statements-api/tree/master.0/tests): unit tests for classes from [src](https://github.com/aherne/php-sql-statements-api/tree/master.0/src) folder
-- [tests_drivers](https://github.com/aherne/php-sql-statements-api/tree/master.0/tests_drivers): unit tests for classes from [drivers](https://github.com/aherne/php-sql-statements-api/tree/master.0/drivers) folder
+Use the standard classes when the SQL is portable. Use a vendor namespace when the
+statement needs dialect-specific syntax.
 
 ## Examples
 
-To see examples how each classes are used, check unit tests in **[tests](https://github.com/aherne/php-sql-statements-api/tree/master.0/tests)** or **[tests_drivers](https://github.com/aherne/php-sql-statements-api/tree/master.0/tests_frivers)** folder! Simple example:
+### Standard SELECT
 
 ```php
-$statement = new \Lucinda\Query\Select("users", "t1");
-$statement->fields(["t3.name"]);
-$statement->joinInner("user_departments", "t2")->on(["t1.id"=>"t2.user_id"]);
-$statement->joinInner("departments", "t3")->on(["t2.department_id"=>"t3.id"]);
-$statement->where(["t1.id"=>":id"]);
-$statement->orderBy(["t3.name"]);
+use Lucinda\Query\Select;
+
+$query = new Select("users", "u");
+$query->fields(["d.name"]);
+$query->joinInner("user_departments", "ud")->on(["u.id" => "ud.user_id"]);
+$query->joinInner("departments", "d")->on(["ud.department_id" => "d.id"]);
+$query->where(["u.id" => ":id"]);
+$query->orderBy(["d.name"]);
+
+echo $query;
 ```
 
-Encapsulating:
+Output:
 
 ```sql
-SELECT t3.name
-FROM users AS t1
-INNER JOIN user_departments AS t2 ON t1.id = t2.user_id
-INNER JOIN departments AS t3 ON t2.department_id = t3.id
-WHERE t1.id = :id
-ORDER BY t3.name
+SELECT
+d.name
+FROM users AS u
+INNER JOIN user_departments AS ud ON u.id = ud.user_id
+INNER JOIN departments AS d ON ud.department_id = d.id
+WHERE u.id = :id
+ORDER BY d.name ASC
 ```
 
-## Reference Guide
+### MySQL INSERT With Duplicate-Key Update
 
-### Class Select
+```php
+use Lucinda\Query\Vendor\MySQL\Insert;
 
-[Lucinda\Query\Select](https://github.com/aherne/php-sql-statements-api/blob/master/src/Select.php) encapsulates a standard SELECT statement via following public methods:
+$query = new Insert("users");
+$query->ignore();
+$query->columns(["id", "name"]);
+$query->values([":id", ":name"]);
+$query->onDuplicateKeyUpdate(["name" => "VALUES(name)"]);
 
-| Method      | Arguments                                                                                                                                                                     | Returns                                                                                                                 | Description                                                          |
-|-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
-| __construct | string\|Select\|SelectGroup $tableDefinition string $alias=""                                                                                                                 | void                                                                                                                    | Constructs a SELECT statement based on table name and optional alias |
-| distinct    | void                                                                                                                                                                          | void                                                                                                                    | Sets statement as DISTINCT, filtering out repeating rows             |
-| fields      | array $columns = []                                                                                                                                                           | [Lucinda\Query\Clause\Fields](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Fields.php)       | Sets fields or columns to select                                     |
-| joinLeft    | string\|Select\|SelectGroup $tableDefinition, string $tableAlias = ""                                                                                                         | [Lucinda\Query\Clause\Join](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Join.php)           | Adds a LEFT JOIN statement                                           |
-| joinRight   | string\|Select\|SelectGroup $tableDefinition, string $tableAlias = ""                                                                                                         | [Lucinda\Query\Clause\Join](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Join.php)           | Adds a RIGHT JOIN statement                                          |
-| joinInner   | string\|Select\|SelectGroup $tableDefinition, string $tableAlias = ""                                                                                                         | [Lucinda\Query\Clause\Join](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Join.php)           | Adds a INNER JOIN statement                                          |
-| joinCross   | string\|Select\|SelectGroup $tableDefinition, string $tableAlias = ""                                                                                                         | [Lucinda\Query\Clause\Join](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Join.php)           | Adds a CROSS JOIN statement                                          |
-| where       | array $condition=[], string $logicalOperator = [Lucinda\Query\Operator\Logical](https://github.com/aherne/php-sql-statements-api/blob/master/src/Operator/Logical.php)::_AND_ | [Lucinda\Query\Clause\Condition](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Condition.php) | Sets up WHERE clause.                                                |
-| groupBy     | array $columns = [], bool $withRollup = false                                                                                                                                 | [Lucinda\Query\Clause\Columns](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Columns.php)     | Sets up GROUP BY statement                                           |
-| having      | array $condition=[], string $logicalOperator = [Lucinda\Query\Operator\Logical](https://github.com/aherne/php-sql-statements-api/blob/master/src/Operator/Logical.php)::_AND_ | [Lucinda\Query\Clause\Condition](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Condition.php) | Sets up HAVING clause.                                               |
-| orderBy     | array $fields = []                                                                                                                                                            | [Lucinda\Query\Clause\OrderBy](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/OrderBy.php)     | Sets up ORDER BY clause                                              |
-| limit       | int $limit, int $offset=0                                                                                                                                                     | void                                                                                                                    | Sets a LIMIT clause                                                  |
-| with        | bool $isRecursive = false                                                                                                                                                     | [Lucinda\Query\Clause\With](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/With.php)           | Sets a WITH statement                                                |
-| window      | void                                                                                                                                                                          | [Lucinda\Query\Clause\Window](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Window.php)       | Sets a WINDOW function statement                                     |
+echo $query;
+```
 
-### Class SelectGroup
+```sql
+INSERT IGNORE INTO users (id, name) VALUES
+(:id, :name)
+ON DUPLICATE KEY UPDATE name = VALUES(name)
+```
 
-[Lucinda\Query\SelectGroup](https://github.com/aherne/php-sql-statements-api/blob/master/src/SelectGroup.php) encapsulates a list of SELECT statements joined by a SET operator (eg: UNION) via following public methods:
+### PostgreSQL Upsert With RETURNING
 
-| Method      | Arguments                                                                                                                                 | Returns                                                                                                             | Description                                                                 |
-|-------------|-------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------|
-| __construct | string $operator = [Lucinda\Query\Operator\Set](https://github.com/aherne/php-sql-statements-api/blob/master/src/Operator/Set.php)::UNION | void                                                                                                                | Constructs a SELECT ... OPERATOR ... SELECT statement based on Set OPERATOR |
-| addSelect   | [Lucinda\Query\Select](https://github.com/aherne/php-sql-statements-api/blob/master/src/Select.php) $select                               | void                                                                                                                | Adds SELECT statement to group                                              |
-| addSelect   | [Lucinda\Query\SelectGroup](https://github.com/aherne/php-sql-statements-api/blob/master/src/SelectGroup.php) $select                     | void                                                                                                                | Adds SELECT ... OPERATOR ... SELECT statement to group                      |
-| orderBy     | array $fields = []                                                                                                                        | [Lucinda\Query\Clause\OrderBy](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/OrderBy.php) | Sets up ORDER BY clause                                                     |
-| limit       | int $limit, int $offset=0                                                                                                                 | void                                                                                                                | Sets a LIMIT clause                                                         |
+```php
+use Lucinda\Query\Vendor\PostgreSQL\Insert;
 
-### Class Insert
+$query = new Insert("users");
+$query->columns(["id", "name"]);
+$query->values([":id", ":name"]);
+$query->onConflictDoUpdate(["id"], ["name" => "EXCLUDED.name"]);
+$query->returning(["id", "name"]);
 
-[Lucinda\Query\Insert](https://github.com/aherne/php-sql-statements-api/blob/master/src/Insert.php) encapsulates a standard INSERT INTO VALUES statement via following public methods:
+echo $query;
+```
 
-| Method      | Arguments           | Returns                                                                                                             | Description                                                       |
-|-------------|---------------------|---------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------|
-| __construct | string $table       | void                                                                                                                | Constructs a INSERT INTO ... VALUES statement based on table name |
-| columns     | array $columns = [] | [Lucinda\Query\Clause\Columns](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Columns.php) | Sets columns that will be inserted into.                          |
-| values      | array $updates = [] | [Lucinda\Query\Clause\Row](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Row.php)         | Adds row to table via list of values to insert in columns         |
+```sql
+INSERT INTO users (id, name) VALUES
+(:id, :name)
+ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name
+RETURNING id, name
+```
 
-### Class InsertSelect
+### SQLite INSERT OR REPLACE
 
-[Lucinda\Query\InsertSelect](https://github.com/aherne/php-sql-statements-api/blob/master/src/InsertSelect.php) encapsulates a standard INSERT INTO SELECT statement via following public methods:
+```php
+use Lucinda\Query\Vendor\SQLite\Insert;
 
-| Method      | Arguments                                                                                                             | Returns                                                                                                             | Description                                                                   |
-|-------------|-----------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
-| __construct | string $table                                                                                                         | void                                                                                                                | Constructs a INSERT INTO ... SELECT statement based on table name             |
-| with        | bool $isRecursive = false                                                                                             | [Lucinda\Query\Clause\With](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/With.php)       | Sets a WITH statement                                                         |
-| columns     | array $columns = []                                                                                                   | [Lucinda\Query\Clause\Columns](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Columns.php) | Sets columns that will be inserted into.                                      |
-| select      | [Lucinda\Query\Select](https://github.com/aherne/php-sql-statements-api/blob/master/src/Select.php) $select           | void                                                                                                                | Sets rows to insert based on a SELECT statement                               |
-| select      | [Lucinda\Query\SelectGroup](https://github.com/aherne/php-sql-statements-api/blob/master/src/SelectGroup.php) $select | void                                                                                                                | Sets rows to insert based on a SELECT ... OPERATOR ... SELECT group statement |
+$query = new Insert("users");
+$query->orReplace();
+$query->columns(["id", "name"]);
+$query->values([":id", ":name"]);
+$query->returning(["id"]);
 
-### Class Update
+echo $query;
+```
 
-[Lucinda\Query\Update](https://github.com/aherne/php-sql-statements-api/blob/master/src/Update.php) encapsulates a standard UPDATE statement via following public methods:
+```sql
+INSERT OR REPLACE INTO users (id, name) VALUES
+(:id, :name)
+RETURNING id
+```
 
-| Method      | Arguments                                                                                                                                                                       | Returns                                                                                                                 | Description                                       |
-|-------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------|
-| __construct | string $table                                                                                                                                                                   | void                                                                                                                    | Constructs a UPDATE statement based on table name |
-| with        | bool $isRecursive = false                                                                                                                                                       | [Lucinda\Query\Clause\With](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/With.php)           | Sets a WITH statement                             |
-| set         | array $contents = []                                                                                                                                                            | [Lucinda\Query\Clause\Set](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Set.php)             | Sets up SET clause.                               |
-| where       | array $condition = [], string $logicalOperator = [Lucinda\Query\Operator\Logical](https://github.com/aherne/php-sql-statements-api/blob/master/src/Operator/Logical.php)::_AND_ | [Lucinda\Query\Clause\Condition](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Condition.php) | Sets up WHERE clause.                             |
+## Core API
 
-### Class Delete
+### Select
 
-[Lucinda\Query\Delete](https://github.com/aherne/php-sql-statements-api/blob/master/src/Delete.php) encapsulates a standard DELETE statement via following public methods:
+`Lucinda\Query\Select` builds a single `SELECT` statement.
 
-| Method      | Arguments                                                                                                                                                                     | Returns                                                                                                                 | Description                                       |
-|-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------|
-| with        | bool $isRecursive = false                                                                                                                                                     | [Lucinda\Query\Clause\With](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/With.php)           | Sets a WITH statement                             |
-| __construct | string $table                                                                                                                                                                 | void                                                                                                                    | Constructs a DELETE statement based on table name |
-| where       | array $condition=[], string $logicalOperator = [Lucinda\Query\Operator\Logical](https://github.com/aherne/php-sql-statements-api/blob/master/src/Operator/Logical.php)::_AND_ | [Lucinda\Query\Clause\Condition](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Condition.php) | Sets up WHERE clause.                             |
+| Method | Purpose |
+|--------|---------|
+| `__construct(string|Select|SelectGroup $tableDefinition, string $tableAlias = "")` | Sets the source table or derived table |
+| `distinct(): void` | Adds `DISTINCT` |
+| `fields(array $columns = []): Clause\Fields` | Sets selected expressions |
+| `joinLeft(...)`, `joinRight(...)`, `joinInner(...)`, `joinCross(...)` | Adds JOIN clauses |
+| `where(array $condition = [], Operator\Logical $logicalOperator = Operator\Logical::_AND_): Clause\Condition` | Adds `WHERE` |
+| `groupBy(array $columns = []): Clause\Columns` | Adds `GROUP BY` |
+| `having(array $condition = [], Operator\Logical $logicalOperator = Operator\Logical::_AND_): Clause\Condition` | Adds `HAVING` |
+| `orderBy(array $fields = []): Clause\OrderBy` | Adds `ORDER BY` |
+| `limit(int $limit, int $offset = 0): void` | Adds `LIMIT` / `OFFSET` |
+| `with(bool $isRecursive = false): Clause\With` | Adds common table expressions |
+| `window(): Clause\Window` | Adds window definitions |
 
-### Class Truncate
+### SelectGroup
 
-[Lucinda\Query\Truncate](https://github.com/aherne/php-sql-statements-api/blob/master/src/Truncate.php) encapsulates a standard TRUNCATE statement via following public methods:
+`Lucinda\Query\SelectGroup` combines `Select` or nested `SelectGroup` objects using
+a set operator.
 
-| Method      | Arguments     | Returns | Description                                                     |
-|-------------|---------------|---------|-----------------------------------------------------------------|
-| __construct | string $table | void    | Constructs a TRUNCATE statement based on table name             |
+| Method | Purpose |
+|--------|---------|
+| `__construct(Operator\Set $operator = Operator\Set::UNION)` | Chooses the set operator |
+| `addSelect(Stringable $select): void` | Adds a SELECT or SELECT group |
+| `orderBy(array $fields = []): Clause\OrderBy` | Adds final ordering |
+| `limit(int $limit, int $offset = 0): void` | Adds final limit |
 
-### Class MySQL Select
+### Insert
 
-[Lucinda\Query\Vendor\MySQL\Select](https://github.com/aherne/php-sql-statements-api/blob/master/drivers/MySQL/Select.php) encapsulates a MySQL SELECT statement on top of [Lucinda\Query\Select](https://github.com/aherne/php-sql-statements-api/blob/master/src/Select.php) via following extra methods:
+| Method | Purpose |
+|--------|---------|
+| `__construct(string $table)` | Sets target table |
+| `columns(array $columns = []): Clause\Columns` | Sets target columns |
+| `values(array $updates = []): Clause\Row` | Adds one VALUES row |
 
-| Method           | Arguments | Returns | Description                                                                       |
-|------------------|-----------|---------|-----------------------------------------------------------------------------------|
-| setCalcFoundRows | void      | void    | Appends a SQL_CALC_FOUND_ROWS option to SELECT                                    |
-| setStraightJoin  | void      | void    | Appends a STRAIGHT_JOIN option to SELECT                                          |
-| getCalcFoundRows | void      | string  | Gets query to retrieve found rows after a SELECT with SQL_CALC_FOUND_ROWS has ran |
+### InsertSelect
 
-In addition of above operations, *where* method can use:
+| Method | Purpose |
+|--------|---------|
+| `__construct(string $table)` | Sets target table |
+| `with(bool $isRecursive = false): Clause\With` | Adds common table expressions |
+| `columns(array $columns = []): Clause\Columns` | Sets target columns |
+| `select(Stringable $select): void` | Sets SELECT source |
 
-- [Lucinda\Query\Vendor\MySQL\Clause\Condition](https://github.com/aherne/php-sql-statements-api/blob/master/drivers/MySQL/Clause/Condition.php) to support regexp condition and fulltext searches
-- [Lucinda\Query\Vendor\MySQL\Operator\Logical](https://github.com/aherne/php-sql-statements-api/blob/master/drivers/MySQL/Operator/Logical.php) to support XOR operator
+### Update
 
-### Class MySQL Insert
+| Method | Purpose |
+|--------|---------|
+| `__construct(string $table)` | Sets target table |
+| `with(bool $isRecursive = false): Clause\With` | Adds common table expressions |
+| `set(array $contents = []): Clause\Set` | Adds `SET` assignments |
+| `where(array $condition = [], Operator\Logical $logicalOperator = Operator\Logical::_AND_): Clause\Condition` | Adds `WHERE` |
 
-[Lucinda\Query\Vendor\MySQL\Insert](https://github.com/aherne/php-sql-statements-api/blob/master/drivers/MySQL/Insert.php) encapsulates a MySQL INSERT INTO VALUES statement on top of [Lucinda\Query\Insert](https://github.com/aherne/php-sql-statements-api/blob/master/src/Insert.php) via following extra methods:
+### Delete
 
-| Method               | Arguments            | Returns                                                                                                     | Description                                                          |
-|----------------------|----------------------|-------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
-| ignore               | void                 | void                                                                                                        | Sets statement as IGNORE, ignoring foreign key errors and duplicates |
-| onDuplicateKeyUpdate | array $contents = [] | [Lucinda\Query\Clause\Set](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Set.php) | Sets up ON DUPLICATE KEY UPDATE clause.                              |
+| Method | Purpose |
+|--------|---------|
+| `__construct(string $table)` | Sets target table |
+| `with(bool $isRecursive = false): Clause\With` | Adds common table expressions |
+| `where(array $condition = [], Operator\Logical $logicalOperator = Operator\Logical::_AND_): Clause\Condition` | Adds `WHERE` |
 
-### Class MySQL InsertSelect
+### Truncate
 
-[Lucinda\Query\Vendor\MySQL\InsertSelect](https://github.com/aherne/php-sql-statements-api/blob/master/drivers/MySQL/InsertSelect.php) encapsulates a MySQL INSERT INTO SELECT statement on top of [Lucinda\Query\InsertSelect](https://github.com/aherne/php-sql-statements-api/blob/master/src/InsertSelect.php) via following extra methods:
+| Method | Purpose |
+|--------|---------|
+| `__construct(string $table)` | Sets target table |
 
-| Method               | Arguments            | Returns                                                                                                     | Description                                                          |
-|----------------------|----------------------|-------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
-| ignore               | void                 | void                                                                                                        | Sets statement as IGNORE, ignoring foreign key errors and duplicates |
-| onDuplicateKeyUpdate | array $contents = [] | [Lucinda\Query\Clause\Set](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Set.php) | Sets up ON DUPLICATE KEY UPDATE clause.                              |
+## Vendor API
 
-### Class MySQL InsertSet
+### MySQL
 
-[Lucinda\Query\Vendor\MySQL\InsertSet](https://github.com/aherne/php-sql-statements-api/blob/master/drivers/MySQL/InsertSet.php) encapsulates a MySQL INSERT INTO SET statement via following public methods:
+| Class | Extra methods |
+|-------|---------------|
+| `Vendor\MySQL\Select` | `setCalcFoundRows()`, `setStraightJoin()`, `getCalcFoundRows()` |
+| `Vendor\MySQL\Insert` | `ignore()`, `onDuplicateKeyUpdate(array $contents = []): Clause\Set` |
+| `Vendor\MySQL\InsertSelect` | `ignore()`, `onDuplicateKeyUpdate(array $contents = []): Clause\Set` |
+| `Vendor\MySQL\InsertSet` | `ignore()`, `set(array $contents = []): Clause\Set`, `onDuplicateKeyUpdate(array $contents = []): Clause\Set` |
+| `Vendor\MySQL\Replace` | Emits `REPLACE INTO ... VALUES` |
+| `Vendor\MySQL\ReplaceSelect` | Emits `REPLACE INTO ... SELECT` |
+| `Vendor\MySQL\ReplaceSet` | Emits `REPLACE INTO ... SET` |
+| `Vendor\MySQL\Update` | `ignore()`, JOIN helpers, MySQL conditions |
+| `Vendor\MySQL\Delete` | `ignore()`, JOIN helpers, MySQL conditions |
+| `Vendor\MySQL\Clause\Condition` | `setRegexp(...)`, `setMatchAgainst(...)` |
 
-| Method               | Arguments            | Returns                                                                                                     | Description                                                          |
-|----------------------|----------------------|-------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
-| __construct          | string $table        | void                                                                                                        | Constructs a INSERT INTO ... SET statement based on table name       |
-| ignore               | void                 | void                                                                                                        | Sets statement as IGNORE, ignoring foreign key errors and duplicates |
-| set                  | array $contents = [] | [Lucinda\Query\Clause\Set](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Set.php) | Sets up SET clause.                                                  |
-| onDuplicateKeyUpdate | array $contents = [] | [Lucinda\Query\Clause\Set](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Set.php) | Sets up ON DUPLICATE KEY UPDATE clause.                              |
+### PostgreSQL
 
-### Class MySQL Replace
+| Class | Extra methods |
+|-------|---------------|
+| `Vendor\PostgreSQL\Select` | PostgreSQL `where()` and `having()` condition objects |
+| `Vendor\PostgreSQL\Insert` | `onConflictDoNothing(...)`, `onConflictDoUpdate(...)`, `onConstraintDoNothing(...)`, `onConstraintDoUpdate(...)`, `returning(...)` |
+| `Vendor\PostgreSQL\InsertSelect` | Same conflict and `returning(...)` helpers |
+| `Vendor\PostgreSQL\Update` | PostgreSQL conditions and `returning(...)` |
+| `Vendor\PostgreSQL\Delete` | PostgreSQL conditions and `returning(...)` |
+| `Vendor\PostgreSQL\Clause\Condition` | `setILike(...)`, `setRegexp(...)`, `setFullTextSearch(...)` |
 
-[Lucinda\Query\Vendor\MySQL\Replace](https://github.com/aherne/php-sql-statements-api/blob/master/drivers/MySQL/Replace.php) encapsulates a MySQL REPLACE INTO VALUES statement on top of [Lucinda\Query\Insert](https://github.com/aherne/php-sql-statements-api/blob/master/src/Insert.php) with no extra methods, except that INSERT will have REPLACE instead.
+### SQLite
 
-### Class MySQL ReplaceSelect
+| Class | Extra methods |
+|-------|---------------|
+| `Vendor\SQLite\Select` | SQLite `where()` and `having()` condition objects |
+| `Vendor\SQLite\Insert` | `or(...)`, `orIgnore()`, `orReplace()`, `onConflictDoNothing(...)`, `onConflictDoUpdate(...)`, `returning(...)` |
+| `Vendor\SQLite\InsertSelect` | Same conflict and `returning(...)` helpers |
+| `Vendor\SQLite\Update` | SQLite conditions and `returning(...)` |
+| `Vendor\SQLite\Delete` | SQLite conditions and `returning(...)` |
+| `Vendor\SQLite\Clause\Condition` | `setGlob(...)` |
 
-[Lucinda\Query\Vendor\MySQL\ReplaceSelect](https://github.com/aherne/php-sql-statements-api/blob/master/drivers/MySQL/ReplaceSelect.php) encapsulates a MySQL REPLACE INTO SELECT statement on top of [Lucinda\Query\InsertSelect](https://github.com/aherne/php-sql-statements-api/blob/master/src/InsertSelect.php) with no extra methods, except that INSERT will have REPLACE instead.
+## Design Notes
 
-### Class MySQL ReplaceSet
+- Public builder classes are concrete and intentionally small.
+- Classes are `final` unless they are used as base classes by vendor drivers.
+- The standard classes remain open where drivers extend them: `Select`, `Insert`,
+  `InsertSelect`, `Update`, `Delete`, and `Clause\Condition`.
+- SQL values are passed as strings or placeholders exactly as supplied. This library
+  does not perform quoting or escaping.
 
-[Lucinda\Query\Vendor\MySQL\ReplaceSet](https://github.com/aherne/php-sql-statements-api/blob/master/drivers/MySQL/ReplaceSet.php) encapsulates a MySQL REPLACE INTO SET statement via following public methods:
+## Tests
 
-| Method      | Arguments            | Returns                                                                                                     | Description                                                     |
-|-------------|----------------------|-------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------|
-| __construct | string $table        | void                                                                                                        | Constructs a REPLACE INTO ... SET statement based on table name |
-| set         | array $contents = [] | [Lucinda\Query\Clause\Set](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Set.php) | Sets up SET clause.                                             |
+Install development dependencies, then run:
 
-### Class MySQL Update
+```console
+composer install
+php test.php
+```
 
-[Lucinda\Query\Vendor\MySQL\Update](https://github.com/aherne/php-sql-statements-api/blob/master/drivers/MySQL/Update.php) encapsulates a MySQL UPDATE statement on top of [Lucinda\Query\Update](https://github.com/aherne/php-sql-statements-api/blob/master/src/Update.php) via following extra methods:
-
-| Method    | Arguments         | Returns                                                                                                       | Description                                                          |
-|-----------|-------------------|---------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
-| ignore    | void              | void                                                                                                          | Sets statement as IGNORE, ignoring foreign key errors and duplicates |
-| joinLeft  | string $tableName | [Lucinda\Query\Clause\Join](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Join.php) | Adds a LEFT JOIN statement                                           |
-| joinRight | string $tableName | [Lucinda\Query\Clause\Join](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Join.php) | Adds a RIGHT JOIN statement                                          |
-| joinInner | string $tableName | [Lucinda\Query\Clause\Join](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Join.php) | Adds a INNER JOIN statement                                          |
-| joinCross | string $tableName | [Lucinda\Query\Clause\Join](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Join.php) | Adds a CROSS JOIN statement                                          |
-
-In addition of above operations, *where* method can use:
-
-- [Lucinda\Query\Vendor\MySQL\Clause\Condition](https://github.com/aherne/php-sql-statements-api/blob/master/drivers/MySQL/Clause/Condition.php) to support regexp condition and fulltext searches
-- [Lucinda\Query\Vendor\MySQL\Operator\Logical](https://github.com/aherne/php-sql-statements-api/blob/master/drivers/MySQL/Operator/Logical.php) to support XOR operator
-
-### Class MySQL Delete
-
-[Lucinda\Query\Vendor\MySQL\Delete](https://github.com/aherne/php-sql-statements-api/blob/master/drivers/MySQL/Delete.php) encapsulates a MySQL DELETE statement on top of [Lucinda\Query\Delete](https://github.com/aherne/php-sql-statements-api/blob/master/src/Delete.php) via following extra methods:
-
-| Method    | Arguments         | Returns                                                                                                       | Description                                                          |
-|-----------|-------------------|---------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------|
-| ignore    | void              | void                                                                                                          | Sets statement as IGNORE, ignoring foreign key errors and duplicates |
-| joinLeft  | string $tableName | [Lucinda\Query\Clause\Join](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Join.php) | Adds a LEFT JOIN statement                                           |
-| joinRight | string $tableName | [Lucinda\Query\Clause\Join](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Join.php) | Adds a RIGHT JOIN statement                                          |
-| joinInner | string $tableName | [Lucinda\Query\Clause\Join](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Join.php) | Adds a INNER JOIN statement                                          |
-| joinCross | string $tableName | [Lucinda\Query\Clause\Join](https://github.com/aherne/php-sql-statements-api/blob/master/src/Clause/Join.php) | Adds a CROSS JOIN statement                                          |
-
-In addition of above operations, *where* method can use:
-
-- [Lucinda\Query\Vendor\MySQL\Clause\Condition](https://github.com/aherne/php-sql-statements-api/blob/master/drivers/MySQL/Clause/Condition.php) to support regexp condition and fulltext searches
-- [Lucinda\Query\Vendor\MySQL\Operator\Logical](https://github.com/aherne/php-sql-statements-api/blob/master/drivers/MySQL/Operator/Logical.php) to support XOR operator
+The custom unit runner is configured by `unit-tests.xml`. Standard tests live in
+`tests/`; vendor tests live in `tests_drivers/`.

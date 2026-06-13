@@ -5,7 +5,7 @@ namespace Lucinda\Query;
 /**
  * Encapsulates SQL statement: TRUNCATE TABLE {TABLE}
  */
-class Truncate implements \Stringable
+final class Truncate implements \Stringable
 {
     protected string $table;
 

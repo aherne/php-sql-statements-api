@@ -10,7 +10,7 @@ use Lucinda\Query\Exception;
  * Encapsulates MySQL statement: INSERT {IGNORE} INTO {TABLE} ({COLUMNS}) VALUES ({ROW}), ...
  * ON DUPLICATE KEY UPDATE {UPDATES}
  */
-class Insert extends DefaultInsert
+final class Insert extends DefaultInsert
 {
     protected bool $isIgnore=false;
     protected ?Set $onDuplicateKeyUpdate = null;

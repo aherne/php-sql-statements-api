@@ -15,7 +15,7 @@ use Lucinda\Query\Clause\Limit;
  * ORDER BY {ORDER_BY}
  * LIMIT {LIMIT}
  */
-class SelectGroup implements \Stringable
+final class SelectGroup implements \Stringable
 {
     protected SetOperator $operator;
     protected ?OrderBy $orderBy = null;

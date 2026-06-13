@@ -19,7 +19,7 @@ use Lucinda\Query\Vendor\MySQL\Clause\Condition as MySQLCondition;
  * ORDER BY {ORDER_BY}
  * LIMIT {LIMIT}
  */
-class Select extends DefaultSelect
+final class Select extends DefaultSelect
 {
     private bool $calcFoundRows = false;
     private bool $straightJoin = false;

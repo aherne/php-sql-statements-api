@@ -56,16 +56,16 @@
         },
         {
             "name": "lucinda/unit-testing",
-            "version": "v2.0.3",
+            "version": "2.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aherne/unit-testing.git",
-                "reference": "731a048d5999dd23094d785bd4814f2740a7f6cc"
+                "reference": "628c7f56ff7d90425070fcf8cacebac7bca0ab74"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aherne/unit-testing/zipball/731a048d5999dd23094d785bd4814f2740a7f6cc",
-                "reference": "731a048d5999dd23094d785bd4814f2740a7f6cc",
+                "url": "https://api.github.com/repos/aherne/unit-testing/zipball/628c7f56ff7d90425070fcf8cacebac7bca0ab74",
+                "reference": "628c7f56ff7d90425070fcf8cacebac7bca0ab74",
                 "shasum": ""
             },
             "require": {
@@ -100,9 +100,9 @@
             ],
             "support": {
                 "issues": "https://github.com/aherne/unit-testing/issues",
-                "source": "https://github.com/aherne/unit-testing/tree/v2.0.3"
+                "source": "https://github.com/aherne/unit-testing/tree/2.0.5"
             },
-            "time": "2022-06-05T06:43:26+00:00"
+            "time": "2026-04-06T15:09:46+00:00"
         }
     ],
     "aliases": [],

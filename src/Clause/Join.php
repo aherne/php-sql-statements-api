@@ -8,7 +8,7 @@ use Lucinda\Query\Operator\Logical as LogicalOperator;
 /**
  * Encapsulates SQL JOIN clause
  */
-class Join implements \Stringable
+final class Join implements \Stringable
 {
     protected JoinOperator $joinType;
     protected string $table;

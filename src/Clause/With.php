@@ -10,7 +10,7 @@ use Lucinda\Query\Stringable;
 /**
  * Encapsulates SQL WITH clause (Common Table Expressions)
  */
-class With implements \Stringable
+final class With implements \Stringable
 {
     private bool $recursive;
     private array $selects = [];

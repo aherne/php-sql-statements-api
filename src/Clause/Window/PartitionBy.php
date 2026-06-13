@@ -5,7 +5,7 @@ namespace Lucinda\Query\Clause\Window;
 /**
  * Encapsulates SQL statement: PARTITION BY {EXPRESSION}
  */
-class PartitionBy implements \Stringable
+final class PartitionBy implements \Stringable
 {
     private array $columns = [];
 

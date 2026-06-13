@@ -13,7 +13,7 @@ use Lucinda\Query\Vendor\MySQL\Clause\Condition as MySQLCondition;
 /**
  * Encapsulates MySQL statement: UPDATE {IGNORE} {TABLE} SET {SET} WHERE {CONDITION}
  */
-class Update extends DefaultUpdate
+final class Update extends DefaultUpdate
 {
     protected bool $isIgnore=false;
     protected array $joins=[];

@@ -19,6 +19,11 @@
 			"Test\\Lucinda\\Query\\": "tests/"
 		}
 	},
+	"autoload-dev": {
+		"files": [
+			"tests/bootstrap/UnitTestRunner.php"
+		]
+	},
 	"authors": [
 		{
 			"name": "Lucian Popescu",

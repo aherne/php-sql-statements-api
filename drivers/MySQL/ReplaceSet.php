@@ -9,7 +9,7 @@ use Lucinda\Query\Exception;
 /**
  * Encapsulates MySQL statement: REPLACE INTO {TABLE} SET {SET}
  */
-class ReplaceSet implements \Stringable
+final class ReplaceSet implements \Stringable
 {
     protected string $table;
     protected ?Set $set = null;

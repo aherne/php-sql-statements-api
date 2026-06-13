@@ -7,7 +7,7 @@ use Lucinda\Query\Clause\Window\Over;
 /**
  * Encapsulates SQL WINDOW clause
  */
-class Window implements \Stringable
+final class Window implements \Stringable
 {
     private array $overClauses = [];
 

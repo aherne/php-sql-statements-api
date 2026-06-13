@@ -7,7 +7,7 @@ use Lucinda\Query\Exception;
 /**
  * Encapsulates MySQL statement: REPLACE INTO {TABLE} ({COLUMNS}) VALUES ({ROW})
  */
-class Replace extends \Lucinda\Query\Insert
+final class Replace extends \Lucinda\Query\Insert
 {
     /**
      * Compiles SQL statement based on data collected in class fields.

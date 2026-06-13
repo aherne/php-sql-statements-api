@@ -5,7 +5,7 @@ namespace Lucinda\Query\Clause;
 /**
  * Encapsulates SQL VALUES clause to be used by INSERT statements
  */
-class Row implements \Stringable
+final class Row implements \Stringable
 {
     /**
      * @var string[]
