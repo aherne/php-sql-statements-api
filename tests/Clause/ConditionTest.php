@@ -5,6 +5,7 @@ namespace Test\Lucinda\Query\Clause;
 use Lucinda\Query\Clause\Condition;
 use Lucinda\Query\Operator\Comparison;
 use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 use Lucinda\Query\Operator\Logical;
 
 class ConditionTest
@@ -13,7 +14,7 @@ class ConditionTest
     {
         $object = new Condition();
         $object->set("a", "b");
-        return new Result($object->__toString()=="a = b");
+        return (new Strings($object->__toString()))->assertEquals("a = b");
     }
 
 
@@ -21,7 +22,7 @@ class ConditionTest
     {
         $object = new Condition();
         $object->setIn("a", ["b", "c"]);
-        return new Result($object->__toString()=="a IN (b, c)");
+        return (new Strings($object->__toString()))->assertEquals("a IN (b, c)");
     }
 
 
@@ -29,7 +30,7 @@ class ConditionTest
     {
         $object = new Condition();
         $object->setIsNull("a", false);
-        return new Result($object->__toString()=="a IS NOT NULL");
+        return (new Strings($object->__toString()))->assertEquals("a IS NOT NULL");
     }
 
 
@@ -37,7 +38,7 @@ class ConditionTest
     {
         $object = new Condition();
         $object->setLike("a", "'%b%'");
-        return new Result($object->__toString()=="a LIKE '%b%'");
+        return (new Strings($object->__toString()))->assertEquals("a LIKE '%b%'");
     }
 
 
@@ -45,7 +46,7 @@ class ConditionTest
     {
         $object = new Condition();
         $object->setBetween("a", "c", "d");
-        return new Result($object->__toString()=="a BETWEEN c AND d");
+        return (new Strings($object->__toString()))->assertEquals("a BETWEEN c AND d");
     }
 
 
@@ -57,7 +58,7 @@ class ConditionTest
         $subcondition->set("c", "d");
         $subcondition->set("e", "f");
         $object->setGroup($subcondition);
-        return new Result($object->__toString()=="a = b OR (c = d AND e = f)");
+        return (new Strings($object->__toString()))->assertEquals("a = b OR (c = d AND e = f)");
     }
 
 
@@ -70,7 +71,7 @@ class ConditionTest
         $subcondition->set("e", "f");
         $subcondition->set("g", "h");
         $object->setGroup($subcondition);
-        return new Result($object->__toString()=="a >= b AND c = d AND (e = f OR g = h)");
+        return (new Strings($object->__toString()))->assertEquals("a >= b AND c = d AND (e = f OR g = h)");
     }
 
 

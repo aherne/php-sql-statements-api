@@ -4,6 +4,7 @@ namespace Test\Lucinda\Query\Vendor\PostgreSQL;
 
 use Lucinda\Query\Vendor\PostgreSQL\Insert;
 use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class InsertTest
 {
@@ -32,14 +33,14 @@ class InsertTest
     {
         $object = clone $this->object;
         $object->onConstraintDoNothing("users_pkey");
-        return new Result($this->normalize($object->__toString())=="INSERT INTO users (id, name) VALUES (:id, :name) ON CONFLICT ON CONSTRAINT users_pkey DO NOTHING");
+        return (new Strings($this->normalize($object->__toString())))->assertEquals("INSERT INTO users (id, name) VALUES (:id, :name) ON CONFLICT ON CONSTRAINT users_pkey DO NOTHING");
     }
 
     public function onConstraintDoUpdate()
     {
         $object = clone $this->object;
         $object->onConstraintDoUpdate("users_pkey", ["name"=>"EXCLUDED.name"]);
-        return new Result($this->normalize($object->__toString())=="INSERT INTO users (id, name) VALUES (:id, :name) ON CONFLICT ON CONSTRAINT users_pkey DO UPDATE SET name = EXCLUDED.name");
+        return (new Strings($this->normalize($object->__toString())))->assertEquals("INSERT INTO users (id, name) VALUES (:id, :name) ON CONFLICT ON CONSTRAINT users_pkey DO UPDATE SET name = EXCLUDED.name");
     }
 
     public function returning()
@@ -50,7 +51,7 @@ class InsertTest
 
     public function toString()
     {
-        return new Result($this->normalize($this->object->__toString())=="INSERT INTO users (id, name) VALUES (:id, :name) ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name RETURNING id, name");
+        return (new Strings($this->normalize($this->object->__toString())))->assertEquals("INSERT INTO users (id, name) VALUES (:id, :name) ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name RETURNING id, name");
     }
 
     private function normalize(string $string): string

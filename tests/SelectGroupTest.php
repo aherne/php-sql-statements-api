@@ -6,6 +6,7 @@ use Lucinda\Query\SelectGroup;
 use Lucinda\Query\Operator\Set;
 use Lucinda\Query\Select;
 use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class SelectGroupTest
 {
@@ -46,7 +47,7 @@ class SelectGroupTest
 
     public function toString()
     {
-        return new Result((string) $this->object=="(\r\nSELECT\r\nb, c\r\nFROM t1\r\n)\r\nUNION ALL\r\n(\r\nSELECT\r\nd, e\r\nFROM t2\r\n)\r\nORDER BY b ASC\r\nLIMIT 10 OFFSET 0");
+        return (new Strings((string) $this->object))->assertEquals("(\r\nSELECT\r\nb, c\r\nFROM t1\r\n)\r\nUNION ALL\r\n(\r\nSELECT\r\nd, e\r\nFROM t2\r\n)\r\nORDER BY b ASC\r\nLIMIT 10 OFFSET 0");
     }
 
 

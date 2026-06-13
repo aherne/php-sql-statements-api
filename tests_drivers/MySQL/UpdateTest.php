@@ -4,6 +4,7 @@ namespace Test\Lucinda\Query\Vendor\MySQL;
 
 use Lucinda\Query\Vendor\MySQL\Update;
 use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class UpdateTest
 {
@@ -30,7 +31,7 @@ class UpdateTest
     public function toString()
     {
         $normalized = $this->normalize($this->object->__toString());
-        return new Result($normalized=="UPDATE IGNORE q LEFT OUTER JOIN w ON q.z = w.b RIGHT OUTER JOIN e ON q.x = e.n INNER JOIN r ON q.c = r.m CROSS JOIN t ON q.v = t.k SET a = s WHERE d = f");
+        return (new Strings($normalized))->assertEquals("UPDATE IGNORE q LEFT OUTER JOIN w ON q.z = w.b RIGHT OUTER JOIN e ON q.x = e.n INNER JOIN r ON q.c = r.m CROSS JOIN t ON q.v = t.k SET a = s WHERE d = f");
     }
 
     public function __toString(): string

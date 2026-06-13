@@ -5,6 +5,7 @@ namespace Test\Lucinda\Query;
 use Lucinda\Query\InsertSelect;
 use Lucinda\Query\Select;
 use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class InsertSelectTest
 {
@@ -33,7 +34,7 @@ class InsertSelectTest
     public function toString()
     {
         $query = str_replace("\n", " ", str_replace("\r", "", $this->object->__toString()));
-        return new Result($query=="INSERT INTO x (a, b) SELECT c, d FROM y");
+        return (new Strings($query))->assertEquals("INSERT INTO x (a, b) SELECT c, d FROM y");
     }
 
     public function __toString(): string
@@ -67,7 +68,7 @@ class InsertSelectTest
         $select2->groupBy(["sales_month"]);
         $insert->with()->addSelect("MonthlySales", $select2);
         $normalized = preg_replace("/\s+/", " ", str_replace(["\n", "\r"], " ", $insert));
-        return new Result($normalized == "WITH MonthlySales AS ( SELECT strftime('%Y-%m', sale_date) AS sales_month, SUM(sale_amount) AS total_monthly_sales FROM daily_sales GROUP BY sales_month ) INSERT INTO monthly_summary (month, total_sales) SELECT sales_month, total_monthly_sales FROM MonthlySales");
+        return (new Strings($normalized))->assertEquals("WITH MonthlySales AS ( SELECT strftime('%Y-%m', sale_date) AS sales_month, SUM(sale_amount) AS total_monthly_sales FROM daily_sales GROUP BY sales_month ) INSERT INTO monthly_summary (month, total_sales) SELECT sales_month, total_monthly_sales FROM MonthlySales");
     }
 
 }

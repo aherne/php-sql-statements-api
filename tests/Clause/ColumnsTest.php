@@ -4,6 +4,7 @@ namespace Test\Lucinda\Query\Clause;
 
 use Lucinda\Query\Clause\Columns;
 use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class ColumnsTest
 {
@@ -23,7 +24,7 @@ class ColumnsTest
 
     public function toString()
     {
-        return new Result($this->object->__toString() == "a, b");
+        return (new Strings($this->object->__toString()))->assertEquals("a, b");
     }
 
 

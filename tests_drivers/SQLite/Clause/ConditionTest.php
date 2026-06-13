@@ -3,7 +3,7 @@
 namespace Test\Lucinda\Query\Vendor\SQLite\Clause;
 
 use Lucinda\Query\Vendor\SQLite\Clause\Condition;
-use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class ConditionTest
 {
@@ -11,6 +11,6 @@ class ConditionTest
     {
         $object = new Condition();
         $object->setGlob("name", "'Lu*'");
-        return new Result($object->__toString()=="name GLOB 'Lu*'");
+        return (new Strings($object->__toString()))->assertEquals("name GLOB 'Lu*'");
     }
 }

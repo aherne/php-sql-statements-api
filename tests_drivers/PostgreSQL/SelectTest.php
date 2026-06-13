@@ -4,6 +4,7 @@ namespace Test\Lucinda\Query\Vendor\PostgreSQL;
 
 use Lucinda\Query\Vendor\PostgreSQL\Select;
 use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class SelectTest
 {
@@ -28,12 +29,12 @@ class SelectTest
         $select->groupBy(["department_id"]);
         $select->having()->setFullTextSearch("to_tsvector('english', department_name)", "plainto_tsquery('english', :q)");
         $normalized = $this->normalize($select->__toString());
-        return new Result($normalized=="SELECT department_id, COUNT(*) AS total FROM users GROUP BY department_id HAVING to_tsvector('english', department_name) @@ plainto_tsquery('english', :q)");
+        return (new Strings($normalized))->assertEquals("SELECT department_id, COUNT(*) AS total FROM users GROUP BY department_id HAVING to_tsvector('english', department_name) @@ plainto_tsquery('english', :q)");
     }
 
     public function toString()
     {
-        return new Result($this->normalize($this->object->__toString())=="SELECT id, name FROM users WHERE name ILIKE ':name'");
+        return (new Strings($this->normalize($this->object->__toString())))->assertEquals("SELECT id, name FROM users WHERE name ILIKE ':name'");
     }
 
     private function normalize(string $string): string

@@ -6,6 +6,7 @@ use Lucinda\Query\Clause\Fields;
 use Lucinda\Query\Clause\Window\Over;
 use Lucinda\Query\Clause\Window\PartitionBy;
 use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class FieldsTest
 {
@@ -26,7 +27,7 @@ class FieldsTest
 
     public function toString()
     {
-        return new Result($this->object->__toString()=="a AS b, c");
+        return (new Strings($this->object->__toString()))->assertEquals("a AS b, c");
     }
 
 
@@ -46,7 +47,7 @@ class FieldsTest
         $fields->add("a", "b");
         $fields->over("AVG(a)", "w1", "c");
         $fields->over("SUM(b)",  new Over(new PartitionBy(["foo"])), "d");
-        return new Result($fields=="a AS b, AVG(a) OVER w1 AS c, SUM(b) OVER (PARTITION BY foo) AS d");
+        return (new Strings($fields))->assertEquals("a AS b, AVG(a) OVER w1 AS c, SUM(b) OVER (PARTITION BY foo) AS d");
     }
         
 

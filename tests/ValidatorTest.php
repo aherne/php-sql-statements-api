@@ -3,7 +3,7 @@ namespace Test\Lucinda\Query;
 
 use Lucinda\Query\Select;
 use Lucinda\Query\Validator;
-use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class ValidatorTest
 {
@@ -18,11 +18,11 @@ class ValidatorTest
     public function validateTable()
     {
         $output = [];
-        $output[] = new Result($this->validator->validateTable("asd") == "asd", "primitive");
+        $output[] = (new Strings($this->validator->validateTable("asd")))->assertEquals("asd", "primitive");
 
         $select = new Select("fgh");
         $select->fields()->add("id");
-        $output[] = new Result($this->normalize($this->validator->validateTable($select, "k")) == "( SELECT id FROM fgh )", "select");
+        $output[] = (new Strings($this->normalize($this->validator->validateTable($select, "k"))))->assertEquals("( SELECT id FROM fgh )", "select");
         return $output;
     }
 
@@ -30,11 +30,11 @@ class ValidatorTest
     public function validateSelectField()
     {
         $output = [];
-        $output[] = new Result($this->validator->validateSelectField("asd") == "asd", "primitive");
+        $output[] = (new Strings($this->validator->validateSelectField("asd")))->assertEquals("asd", "primitive");
 
         $select = new Select("fgh");
         $select->fields()->add("id");
-        $output[] = new Result($this->normalize($this->validator->validateSelectField($select, "k")) == "(SELECT id FROM fgh) AS k", "select");
+        $output[] = (new Strings($this->normalize($this->validator->validateSelectField($select, "k"))))->assertEquals("(SELECT id FROM fgh) AS k", "select");
         return $output;
     }
 
@@ -42,11 +42,11 @@ class ValidatorTest
     public function validateOrderByField()
     {
         $output = [];
-        $output[] = new Result($this->validator->validateOrderByField("asd") == "asd", "primitive");
+        $output[] = (new Strings($this->validator->validateOrderByField("asd")))->assertEquals("asd", "primitive");
 
         $select = new Select("fgh");
         $select->fields()->add("id");
-        $output[] = new Result($this->normalize($this->validator->validateOrderByField($select)) == "(SELECT id FROM fgh)", "select");
+        $output[] = (new Strings($this->normalize($this->validator->validateOrderByField($select))))->assertEquals("(SELECT id FROM fgh)", "select");
         return $output;
     }
 
@@ -54,11 +54,11 @@ class ValidatorTest
     public function validateCondition()
     {
         $output = [];
-        $output[] = new Result($this->validator->validateCondition("asd") == "asd", "primitive");
+        $output[] = (new Strings($this->validator->validateCondition("asd")))->assertEquals("asd", "primitive");
 
         $select = new Select("fgh");
         $select->fields()->add("id");
-        $output[] = new Result($this->normalize($this->validator->validateCondition($select)) == "(SELECT id FROM fgh)", "select");
+        $output[] = (new Strings($this->normalize($this->validator->validateCondition($select))))->assertEquals("(SELECT id FROM fgh)", "select");
         return $output;
     }
 

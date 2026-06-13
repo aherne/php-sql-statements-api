@@ -5,6 +5,7 @@ namespace Test\Lucinda\Query\Vendor\PostgreSQL;
 use Lucinda\Query\Vendor\PostgreSQL\InsertSelect;
 use Lucinda\Query\Vendor\PostgreSQL\Select;
 use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class InsertSelectTest
 {
@@ -35,14 +36,14 @@ class InsertSelectTest
     {
         $object = clone $this->object;
         $object->onConstraintDoNothing("users_pkey");
-        return new Result($this->normalize($object->__toString())=="INSERT INTO users (id, name) SELECT legacy_id, legacy_name FROM legacy_users ON CONFLICT ON CONSTRAINT users_pkey DO NOTHING");
+        return (new Strings($this->normalize($object->__toString())))->assertEquals("INSERT INTO users (id, name) SELECT legacy_id, legacy_name FROM legacy_users ON CONFLICT ON CONSTRAINT users_pkey DO NOTHING");
     }
 
     public function onConstraintDoUpdate()
     {
         $object = clone $this->object;
         $object->onConstraintDoUpdate("users_pkey", ["name"=>"EXCLUDED.name"]);
-        return new Result($this->normalize($object->__toString())=="INSERT INTO users (id, name) SELECT legacy_id, legacy_name FROM legacy_users ON CONFLICT ON CONSTRAINT users_pkey DO UPDATE SET name = EXCLUDED.name");
+        return (new Strings($this->normalize($object->__toString())))->assertEquals("INSERT INTO users (id, name) SELECT legacy_id, legacy_name FROM legacy_users ON CONFLICT ON CONSTRAINT users_pkey DO UPDATE SET name = EXCLUDED.name");
     }
 
     public function returning()
@@ -53,7 +54,7 @@ class InsertSelectTest
 
     public function toString()
     {
-        return new Result($this->normalize($this->object->__toString())=="INSERT INTO users (id, name) SELECT legacy_id, legacy_name FROM legacy_users ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name RETURNING id");
+        return (new Strings($this->normalize($this->object->__toString())))->assertEquals("INSERT INTO users (id, name) SELECT legacy_id, legacy_name FROM legacy_users ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name RETURNING id");
     }
 
     private function normalize(string $string): string

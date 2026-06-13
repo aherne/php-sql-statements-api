@@ -4,6 +4,7 @@ namespace Test\Lucinda\Query\Clause;
 use Lucinda\Query\Clause\With;
 use Lucinda\Query\Select;
 use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class WithTest
 {
@@ -27,7 +28,7 @@ class WithTest
         $with->addSelect("foo", $select1);
         $with->addSelect("bar", $select2);
         $normalized = preg_replace("/\s+/", " ", str_replace(["\r", "\n"], " ", (string) $with));
-        return new Result($normalized == "WITH RECURSIVE foo AS ( SELECT a FROM tbl1 ), bar AS ( SELECT b FROM tbl2 )");
+        return (new Strings($normalized))->assertEquals("WITH RECURSIVE foo AS ( SELECT a FROM tbl1 ), bar AS ( SELECT b FROM tbl2 )");
     }
 
     public function __toString()

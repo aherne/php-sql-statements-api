@@ -4,6 +4,7 @@ namespace Test\Lucinda\Query\Vendor\MySQL;
 
 use Lucinda\Query\Vendor\MySQL\Select;
 use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class SelectTest
 {
@@ -22,7 +23,7 @@ class SelectTest
 
     public function getCalcFoundRows()
     {
-        return new Result($this->object->getCalcFoundRows()=="SELECT FOUND_ROWS()");
+        return (new Strings($this->object->getCalcFoundRows()))->assertEquals("SELECT FOUND_ROWS()");
     }
 
 

@@ -4,6 +4,7 @@ namespace Test\Lucinda\Query\Clause;
 use Lucinda\Query\Clause\Window;
 use Lucinda\Query\Clause\Window\PartitionBy;
 use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class WindowTest
 {
@@ -26,7 +27,7 @@ class WindowTest
     {
         $object = new Window();
         $object->add("foo", new Window\Over(new PartitionBy(["bar"])));
-        return new Result((string) $object == "foo AS (PARTITION BY bar)");
+        return (new Strings((string) $object))->assertEquals("foo AS (PARTITION BY bar)");
     }
 
 

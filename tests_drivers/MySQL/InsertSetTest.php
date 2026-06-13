@@ -4,6 +4,7 @@ namespace Test\Lucinda\Query\Vendor\MySQL;
 
 use Lucinda\Query\Vendor\MySQL\InsertSet;
 use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class InsertSetTest
 {
@@ -37,7 +38,7 @@ class InsertSetTest
 
     public function toString()
     {
-        return new Result($this->object->__toString()=="INSERT IGNORE INTO x SET\r\na = b\r\nON DUPLICATE KEY UPDATE e = e + 1");
+        return (new Strings($this->object->__toString()))->assertEquals("INSERT IGNORE INTO x SET\r\na = b\r\nON DUPLICATE KEY UPDATE e = e + 1");
     }
 
     public function __toString(): string

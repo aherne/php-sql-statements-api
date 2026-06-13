@@ -3,7 +3,7 @@
 namespace Test\Lucinda\Query\Vendor\MySQL;
 
 use Lucinda\Query\Vendor\MySQL\Replace;
-use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class ReplaceTest
 {
@@ -18,7 +18,7 @@ class ReplaceTest
 
     public function toString()
     {
-        return new Result($this->object->__toString()=="REPLACE INTO x (a, b) VALUES\r\n(1, 2)");
+        return (new Strings($this->object->__toString()))->assertEquals("REPLACE INTO x (a, b) VALUES\r\n(1, 2)");
     }
 
     public function __toString(): string

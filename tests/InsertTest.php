@@ -4,6 +4,7 @@ namespace Test\Lucinda\Query;
 
 use Lucinda\Query\Insert;
 use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class InsertTest
 {
@@ -31,7 +32,7 @@ class InsertTest
 
     public function toString()
     {
-        return new Result($this->object->__toString()=="INSERT INTO x (a, b) VALUES\r\n(1, 2), (3, 4)");
+        return (new Strings($this->object->__toString()))->assertEquals("INSERT INTO x (a, b) VALUES\r\n(1, 2), (3, 4)");
     }
 
     public function __toString(): string

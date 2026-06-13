@@ -4,6 +4,7 @@ namespace Test\Lucinda\Query\Vendor\MySQL;
 
 use Lucinda\Query\Vendor\MySQL\ReplaceSet;
 use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class ReplaceSetTest
 {
@@ -22,7 +23,7 @@ class ReplaceSetTest
 
     public function toString()
     {
-        return new Result($this->object->__toString()=="REPLACE INTO x SET\r\na = b");
+        return (new Strings($this->object->__toString()))->assertEquals("REPLACE INTO x SET\r\na = b");
     }
 
     public function __toString(): string

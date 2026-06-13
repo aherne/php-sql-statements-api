@@ -6,6 +6,7 @@ use Lucinda\Query\Delete;
 use Lucinda\Query\Operator\Comparison;
 use Lucinda\Query\Select;
 use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class DeleteTest
 {
@@ -25,7 +26,7 @@ class DeleteTest
 
     public function toString()
     {
-        return new Result($this->object->__toString()=="DELETE FROM x\r\nWHERE a = b AND c = d");
+        return (new Strings($this->object->__toString()))->assertEquals("DELETE FROM x\r\nWHERE a = b AND c = d");
     }
 
     public function __toString(): string
@@ -45,7 +46,7 @@ class DeleteTest
         $delete->with()->addSelect("InactiveCustomers", $select1);
         $delete->where()->setIn("customer_id", $select2);
         $normalized = preg_replace("/\s+/", " ", str_replace(["\r", "\n"], " ", $delete));
-        return new Result($normalized == "WITH InactiveCustomers AS ( SELECT customer_id FROM customers WHERE last_order_date < (CURRENT_DATE - INTERVAL '1 year') ) DELETE FROM orders WHERE customer_id IN (SELECT customer_id FROM InactiveCustomers)");
+        return (new Strings($normalized))->assertEquals("WITH InactiveCustomers AS ( SELECT customer_id FROM customers WHERE last_order_date < (CURRENT_DATE - INTERVAL '1 year') ) DELETE FROM orders WHERE customer_id IN (SELECT customer_id FROM InactiveCustomers)");
     }
         
 

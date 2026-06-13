@@ -4,6 +4,7 @@ namespace Test\Lucinda\Query\Vendor\SQLite;
 
 use Lucinda\Query\Vendor\SQLite\Update;
 use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class UpdateTest
 {
@@ -29,7 +30,7 @@ class UpdateTest
 
     public function toString()
     {
-        return new Result($this->object->__toString()=="UPDATE users\r\nSET name = :name\r\nWHERE id = :id AND name GLOB 'Lu*'\r\nRETURNING id, name");
+        return (new Strings($this->object->__toString()))->assertEquals("UPDATE users\r\nSET name = :name\r\nWHERE id = :id AND name GLOB 'Lu*'\r\nRETURNING id, name");
     }
     public function __toString()
     {

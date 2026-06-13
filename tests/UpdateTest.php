@@ -4,6 +4,7 @@ namespace Test\Lucinda\Query;
 
 use Lucinda\Query\Update;
 use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class UpdateTest
 {
@@ -30,7 +31,7 @@ class UpdateTest
 
     public function toString()
     {
-        return new Result($this->object->__toString()=="UPDATE q\r\nSET a = s\r\nWHERE d = f");
+        return (new Strings($this->object->__toString()))->assertEquals("UPDATE q\r\nSET a = s\r\nWHERE d = f");
     }
 
     public function __toString(): string
@@ -65,7 +66,7 @@ class UpdateTest
 
         $update->where()->setIn("employee_id", $select2);
         $normalized = preg_replace("/\s+/", " ", str_replace(["\r", "\n"], " ", $update));
-        return new Result($normalized == "WITH SeniorSales AS ( SELECT employee_id FROM employees WHERE department = 'Sales' AND hire_date < (CURRENT_DATE - INTERVAL '5 years') ) UPDATE employees SET salary = salary * 1.10 WHERE employee_id IN (SELECT employee_id FROM SeniorSales)");
+        return (new Strings($normalized))->assertEquals("WITH SeniorSales AS ( SELECT employee_id FROM employees WHERE department = 'Sales' AND hire_date < (CURRENT_DATE - INTERVAL '5 years') ) UPDATE employees SET salary = salary * 1.10 WHERE employee_id IN (SELECT employee_id FROM SeniorSales)");
     }
         
 

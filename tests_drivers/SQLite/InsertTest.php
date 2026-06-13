@@ -5,6 +5,7 @@ namespace Test\Lucinda\Query\Vendor\SQLite;
 use Lucinda\Query\Vendor\SQLite\Insert;
 use Lucinda\Query\Vendor\SQLite\Operator\Conflict;
 use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class InsertTest
 {
@@ -21,7 +22,7 @@ class InsertTest
     {
         $object = clone $this->object;
         $object->or(Conflict::FAIL);
-        return new Result($this->normalize($object->__toString())=="INSERT OR FAIL INTO users (id, name) VALUES (:id, :name)");
+        return (new Strings($this->normalize($object->__toString())))->assertEquals("INSERT OR FAIL INTO users (id, name) VALUES (:id, :name)");
     }
 
     public function orIgnore()
@@ -34,7 +35,7 @@ class InsertTest
     {
         $object = clone $this->object;
         $object->orReplace();
-        return new Result($this->normalize($object->__toString())=="INSERT OR REPLACE INTO users (id, name) VALUES (:id, :name)");
+        return (new Strings($this->normalize($object->__toString())))->assertEquals("INSERT OR REPLACE INTO users (id, name) VALUES (:id, :name)");
     }
 
     public function onConflictDoNothing()
@@ -57,7 +58,7 @@ class InsertTest
 
     public function toString()
     {
-        return new Result($this->normalize($this->object->__toString())=="INSERT OR IGNORE INTO users (id, name) VALUES (:id, :name) ON CONFLICT (id) DO UPDATE SET name = excluded.name RETURNING id, name");
+        return (new Strings($this->normalize($this->object->__toString())))->assertEquals("INSERT OR IGNORE INTO users (id, name) VALUES (:id, :name) ON CONFLICT (id) DO UPDATE SET name = excluded.name RETURNING id, name");
     }
 
     private function normalize(string $string): string

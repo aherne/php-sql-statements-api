@@ -2,6 +2,7 @@
 namespace Test\Lucinda\Query\Clause\Window;
 
 use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class PartitionByTest
 {
@@ -17,7 +18,7 @@ class PartitionByTest
         $partitionBy = new \Lucinda\Query\Clause\Window\PartitionBy();
         $partitionBy->add("a");
         $partitionBy->add("b");
-        return new Result((string) $partitionBy == "PARTITION BY a, b");
+        return (new Strings((string) $partitionBy))->assertEquals("PARTITION BY a, b");
     }
 
     public function __toString(): string

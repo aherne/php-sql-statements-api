@@ -3,6 +3,7 @@ namespace Test\Lucinda\Query\Vendor\MySQL;
 
 use Lucinda\Query\Vendor\MySQL\Delete;
 use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class DeleteTest
 {
@@ -55,7 +56,7 @@ class DeleteTest
     public function toString()
     {
         $normalized = $this->normalize((string) $this->object);
-        return new Result($normalized == "DELETE IGNORE FROM q LEFT OUTER JOIN w ON q.z = w.b RIGHT OUTER JOIN e ON q.x = e.n INNER JOIN r ON q.c = r.m CROSS JOIN t ON q.v = t.k WHERE x = c");
+        return (new Strings($normalized))->assertEquals("DELETE IGNORE FROM q LEFT OUTER JOIN w ON q.z = w.b RIGHT OUTER JOIN e ON q.x = e.n INNER JOIN r ON q.c = r.m CROSS JOIN t ON q.v = t.k WHERE x = c");
     }
 
 

@@ -3,7 +3,7 @@
 namespace Test\Lucinda\Query\Clause;
 
 use Lucinda\Query\Clause\Alias;
-use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class AliasTest
 {
@@ -16,7 +16,7 @@ class AliasTest
 
     public function toString()
     {
-        return new Result(((string) $this->object) == "a AS b");
+        return (new Strings(((string) $this->object)))->assertEquals("a AS b");
     }
 
     public function __toString(): string

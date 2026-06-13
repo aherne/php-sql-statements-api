@@ -4,7 +4,7 @@ namespace Test\Lucinda\Query\Vendor\MySQL;
 
 use Lucinda\Query\Vendor\MySQL\ReplaceSelect;
 use Lucinda\Query\Vendor\MySQL\Select;
-use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class ReplaceSelectTest
 {
@@ -15,7 +15,7 @@ class ReplaceSelectTest
         $select = new Select("y");
         $select->fields(["c", "d"]);
         $this->object->select($select);
-        return new Result($this->object->__toString()=="REPLACE INTO x (a, b)\r\nSELECT\r\nc, d\r\nFROM y");
+        return (new Strings($this->object->__toString()))->assertEquals("REPLACE INTO x (a, b)\r\nSELECT\r\nc, d\r\nFROM y");
     }
 
     public function __toString(): string

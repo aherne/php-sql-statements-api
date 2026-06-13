@@ -6,6 +6,7 @@ use Lucinda\Query\Vendor\SQLite\InsertSelect;
 use Lucinda\Query\Vendor\SQLite\Operator\Conflict;
 use Lucinda\Query\Vendor\SQLite\Select;
 use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class InsertSelectTest
 {
@@ -24,7 +25,7 @@ class InsertSelectTest
     {
         $object = clone $this->object;
         $object->or(Conflict::FAIL);
-        return new Result($this->normalize($object->__toString())=="INSERT OR FAIL INTO users (id, name) SELECT legacy_id, legacy_name FROM legacy_users");
+        return (new Strings($this->normalize($object->__toString())))->assertEquals("INSERT OR FAIL INTO users (id, name) SELECT legacy_id, legacy_name FROM legacy_users");
     }
 
     public function orIgnore()
@@ -37,7 +38,7 @@ class InsertSelectTest
     {
         $object = clone $this->object;
         $object->orReplace();
-        return new Result($this->normalize($object->__toString())=="INSERT OR REPLACE INTO users (id, name) SELECT legacy_id, legacy_name FROM legacy_users");
+        return (new Strings($this->normalize($object->__toString())))->assertEquals("INSERT OR REPLACE INTO users (id, name) SELECT legacy_id, legacy_name FROM legacy_users");
     }
 
     public function onConflictDoNothing()
@@ -60,7 +61,7 @@ class InsertSelectTest
 
     public function toString()
     {
-        return new Result($this->normalize($this->object->__toString())=="INSERT OR IGNORE INTO users (id, name) SELECT legacy_id, legacy_name FROM legacy_users ON CONFLICT (id) DO UPDATE SET name = excluded.name RETURNING id");
+        return (new Strings($this->normalize($this->object->__toString())))->assertEquals("INSERT OR IGNORE INTO users (id, name) SELECT legacy_id, legacy_name FROM legacy_users ON CONFLICT (id) DO UPDATE SET name = excluded.name RETURNING id");
     }
 
     private function normalize(string $string): string

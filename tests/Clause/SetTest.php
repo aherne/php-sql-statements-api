@@ -4,6 +4,7 @@ namespace Test\Lucinda\Query\Clause;
 
 use Lucinda\Query\Clause\Set;
 use Lucinda\UnitTest\Result;
+use Lucinda\UnitTest\Validator\Strings;
 
 class SetTest
 {
@@ -11,14 +12,14 @@ class SetTest
     {
         $set = new Set();
         $set->set("a", "b");
-        return new Result($set->__toString()=="a = b");
+        return (new Strings($set->__toString()))->assertEquals("a = b");
     }
 
 
     public function toString()
     {
         $set = new Set(["a"=>"b", "c"=>"d"]);
-        return new Result($set->__toString()=="a = b, c = d");
+        return (new Strings($set->__toString()))->assertEquals("a = b, c = d");
     }
 
 
